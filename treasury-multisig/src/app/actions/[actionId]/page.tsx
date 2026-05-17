@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { ACTIONS_CONFIG } from "@/lib/constants";
 import { ActionType } from "@/types";
-import { ActionForm } from "@/components/ActionForm";
+import ActionForm from "@/components/ActionForm";
 import {
   Card,
   CardContent,
@@ -78,7 +78,7 @@ export default function ActionPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <Card className="lg:col-span-2">
           <CardContent className="p-6">
-            <ActionForm config={config} />
+            <ActionForm action={config} />
           </CardContent>
         </Card>
 
