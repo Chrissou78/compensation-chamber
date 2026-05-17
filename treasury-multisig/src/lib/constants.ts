@@ -573,3 +573,8 @@ export const SUBGRAPH_QUERY = {
     }
   `,
 }
+
+export const TOKEN_ADDRESSES = {
+  USDC: (process.env.NEXT_PUBLIC_USDC_ADDRESS || "0xEd589B57e559874A5202a0FB82406c46A2116675") as `0x${string}`,
+  USDT: (process.env.NEXT_PUBLIC_USDT_ADDRESS || "0xfa86C7c30840694293a5c997f399d00A4eD3cDD8") as `0x${string}`,
+} as const;

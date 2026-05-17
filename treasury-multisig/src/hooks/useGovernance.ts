@@ -6,7 +6,7 @@ import { getContractConfig } from "@/lib/contract";
 
 export function useValidatorLimits() {
   const config = getContractConfig("validators");
-  const enabled = config.address !== "0x";
+  const enabled = config.address !== ("0x" as `0x${string}`);
 
   const { data: minValidators } = useReadContract({
     address: config.address,
@@ -44,10 +44,9 @@ export function useActionThreshold(actionType: number) {
     abi: config.abi,
     functionName: "getActionThreshold",
     args: [actionType],
-    query: { enabled: config.address !== "0x" },
+    query: { enabled: config.address !== ("0x" as `0x${string}`) },
   });
 
-  // data is a tuple: { id, actionType, requiredSignatures, setAt, description, active }
   const threshold = data as
     | {
         id: string;
@@ -71,7 +70,7 @@ export function useActionThreshold(actionType: number) {
 
 export function useGovernorConstants() {
   const config = getContractConfig("governor");
-  const enabled = config.address !== "0x";
+  const enabled = config.address !== ("0x" as `0x${string}`);
 
   const { data: passageThreshold } = useReadContract({
     address: config.address,
@@ -99,9 +98,9 @@ export function useProposalState(proposalId: string) {
   const { data: stateExtended, isLoading } = useReadContract({
     address: config.address,
     abi: config.abi,
-    functionName: "getProposalStateExtended",
+    functionName: "getProposalState",
     args: [BigInt(proposalId || "0")],
-    query: { enabled: config.address !== "0x" && !!proposalId },
+    query: { enabled: config.address !== ("0x" as `0x${string}`) && !!proposalId },
   });
 
   const { data: isReady } = useReadContract({
@@ -109,7 +108,7 @@ export function useProposalState(proposalId: string) {
     abi: config.abi,
     functionName: "isReadyForExecution",
     args: [BigInt(proposalId || "0")],
-    query: { enabled: config.address !== "0x" && !!proposalId },
+    query: { enabled: config.address !== ("0x" as `0x${string}`) && !!proposalId },
   });
 
   const extended = stateExtended as

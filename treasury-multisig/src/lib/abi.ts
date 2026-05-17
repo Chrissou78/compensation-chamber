@@ -128,3 +128,16 @@ export const GAS_REFILLER_ABI = [
   { name: "FeeCollected", type: "event", inputs: [{ name: "token", type: "address", indexed: true }, { name: "amount", type: "uint256", indexed: false }] },
   { name: "BalanceRebalanced", type: "event", inputs: [{ name: "wallets", type: "address[]", indexed: false }, { name: "newBalances", type: "uint256[]", indexed: false }] },
 ] as const satisfies Abi;
+// ============================================================================
+// TestToken — Custom test stablecoins (USDC/USDT on Amoy)
+// ============================================================================
+export const TEST_TOKEN_ABI = [
+  { inputs: [{ internalType: "address", name: "receiver", type: "address" }, { internalType: "uint256", name: "Amount", type: "uint256" }], name: "Mint", outputs: [], stateMutability: "nonpayable", type: "function" },
+  { inputs: [{ internalType: "uint256", name: "value", type: "uint256" }], name: "Burn", outputs: [], stateMutability: "nonpayable", type: "function" },
+  { inputs: [{ internalType: "address", name: "account", type: "address" }], name: "balanceOf", outputs: [{ internalType: "uint256", name: "", type: "uint256" }], stateMutability: "view", type: "function" },
+  { inputs: [], name: "decimals", outputs: [{ internalType: "uint8", name: "", type: "uint8" }], stateMutability: "view", type: "function" },
+  { inputs: [], name: "symbol", outputs: [{ internalType: "string", name: "", type: "string" }], stateMutability: "view", type: "function" },
+  { inputs: [], name: "name", outputs: [{ internalType: "string", name: "", type: "string" }], stateMutability: "view", type: "function" },
+  { inputs: [{ internalType: "address", name: "spender", type: "address" }, { internalType: "uint256", name: "value", type: "uint256" }], name: "approve", outputs: [{ internalType: "bool", name: "", type: "bool" }], stateMutability: "nonpayable", type: "function" },
+  { inputs: [{ internalType: "address", name: "owner", type: "address" }, { internalType: "address", name: "spender", type: "address" }], name: "allowance", outputs: [{ internalType: "uint256", name: "", type: "uint256" }], stateMutability: "view", type: "function" },
+] as const satisfies Abi;

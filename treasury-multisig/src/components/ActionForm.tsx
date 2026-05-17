@@ -2,8 +2,10 @@
 
 import { useForm, FieldValues } from "react-hook-form";
 import { useState } from "react";
-import { usePropose } from "@/hooks/useVoting";
-import { ActionConfig, FormField as FormFieldType } from "@/types";
+import { type Address } from "viem";
+import { usePropose, usePauseTreasury, useRefillGas, useAuthorizeAgent } from "@/hooks/useVoting";
+import { ActionConfig, ActionType, FormField as FormFieldType } from "@/types";
+import { CONTRACT_ADDRESSES } from "@/lib/constants";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Loader2, CheckCircle2, AlertCircle, Info } from "lucide-react";
@@ -31,31 +33,25 @@ function FormField({
     "w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background transition-colors";
   const errorClasses = errors[field.name] ? "border-destructive" : "";
 
-  // Build registration options — pattern and valueAsNumber must never coexist
   const buildRegisterOptions = () => {
     const opts: Record<string, any> = {};
-
     if (field.required) {
       opts.required = `${field.label} is required`;
     }
-
     if (field.type === "number") {
       opts.valueAsNumber = true;
       opts.min = { value: 0, message: `${field.label} must be positive` };
-      // No pattern when valueAsNumber is true
     } else if (field.type === "address") {
       opts.pattern = {
         value: /^0x[a-fA-F0-9]{40}$/,
         message: "Invalid Ethereum address",
       };
     } else if (field.validation?.pattern) {
-      // field.validation.pattern is already a RegExp — use it directly
       opts.pattern = {
         value: field.validation.pattern,
         message: field.validation.message || "Invalid format",
       };
     }
-
     return opts;
   };
 
@@ -83,7 +79,6 @@ function FormField({
           )}
         </div>
       );
-
     case "select":
       return (
         <div className="space-y-2">
@@ -110,7 +105,6 @@ function FormField({
           )}
         </div>
       );
-
     case "checkbox":
       return (
         <div className="flex items-center gap-3">
@@ -124,7 +118,6 @@ function FormField({
           </label>
         </div>
       );
-
     default:
       return (
         <div className="space-y-2">
@@ -158,35 +151,73 @@ export default function ActionForm({ action }: { action: ActionConfig }) {
   } = useForm({ mode: "onBlur" });
 
   const { propose, isPending: isProposing } = usePropose();
+  const { pause, unpause, isPending: isPausing } = usePauseTreasury();
+  const { refillGas, isPending: isRefilling } = useRefillGas();
+  const { authorizeAgent, revokeAgent, isPending: isAuthorizing } = useAuthorizeAgent();
+
   const [status, setStatus] = useState<{
     type: "success" | "error" | null;
     message: string;
   }>({ type: null, message: "" });
 
+  const isPending = isProposing || isPausing || isRefilling || isAuthorizing;
+
   const onSubmit = async (data: FieldValues) => {
     try {
       setStatus({ type: null, message: "" });
 
-      if (action.requiresVoting) {
-        const severity = data.severity || "ROUTINE";
-        await propose(
-          [data.targetAddress || "0x0000000000000000000000000000000000000000"],
-          [BigInt(data.value || 0)],
-          [data.calldata || "0x"],
-          data.description || action.title,
-          getSeverityValue(severity)
-        );
-        setStatus({
-          type: "success",
-          message:
-            "Proposal submitted successfully! It will now go through the governance voting process.",
-        });
-      } else if (action.requiresApproval) {
-        setStatus({
-          type: "success",
-          message:
-            "Action submitted for multisig approval. Awaiting required signatures.",
-        });
+      switch (action.id) {
+        // ── Emergency actions (direct contract calls) ──
+        case ActionType.EXECUTE_PAUSE:
+          pause();
+          setStatus({ type: "success", message: "Pause transaction submitted." });
+          break;
+
+        case ActionType.EXECUTE_UNPAUSE:
+          unpause();
+          setStatus({ type: "success", message: "Unpause transaction submitted." });
+          break;
+
+        case ActionType.EXECUTE_EMERGENCY_REFILL: {
+          const contractKey = data.contract as keyof typeof CONTRACT_ADDRESSES;
+          const addr = CONTRACT_ADDRESSES[contractKey] as Address;
+          refillGas(addr, String(data.amount));
+          setStatus({ type: "success", message: "Refill transaction submitted." });
+          break;
+        }
+
+        case ActionType.PROPOSE_AUTHORIZE_AGENT:
+          authorizeAgent(data.agentAddress as Address);
+          setStatus({ type: "success", message: "Agent authorization submitted." });
+          break;
+
+        case ActionType.PROPOSE_REVOKE_AGENT:
+          revokeAgent(data.agentAddress as Address);
+          setStatus({ type: "success", message: "Agent revocation submitted." });
+          break;
+
+        // ── Governance proposals ──
+        default:
+          if (action.requiresVoting) {
+            const severity = data.severity || "ROUTINE";
+            await propose(
+              [data.targetAddress || "0x0000000000000000000000000000000000000000"],
+              [BigInt(data.value || 0)],
+              [data.calldata || "0x"],
+              data.description || action.title,
+              getSeverityValue(severity)
+            );
+            setStatus({
+              type: "success",
+              message: "Proposal submitted! It will go through governance voting.",
+            });
+          } else {
+            setStatus({
+              type: "success",
+              message: "Action submitted for multisig approval. Awaiting signatures.",
+            });
+          }
+          break;
       }
 
       reset();
@@ -241,18 +272,18 @@ export default function ActionForm({ action }: { action: ActionConfig }) {
               {action.requiresVoting
                 ? "This action creates a governance proposal that requires validator voting before execution."
                 : action.requiresApproval
-                ? "This action requires multisig approval from the required number of validators."
-                : "This action will be executed immediately upon submission."}
+                  ? "This action requires multisig approval from the required number of validators."
+                  : "This action will be executed immediately upon submission."}
             </p>
           </div>
 
           <Button
             type="submit"
-            disabled={isProposing}
+            disabled={isPending}
             className="w-full"
             size="lg"
           >
-            {isProposing ? (
+            {isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Processing...

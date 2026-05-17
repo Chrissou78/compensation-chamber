@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { useAccount, useChainId, useSwitchChain } from "wagmi";
-import { NETWORKS, CONTRACT_ADDRESSES } from "@/lib/constants";
 import { formatAddress } from "@/lib/utils";
 import { useAppStore } from "@/store";
+import { NETWORKS, CONTRACT_ADDRESSES, TOKEN_ADDRESSES } from "@/lib/constants";
+import { Coins } from "lucide-react";  // add Coins to the existing lucide import
 import {
   Card,
   CardContent,
@@ -158,6 +159,43 @@ export default function SettingsPage() {
                     )}
                   </Button>
                 )}
+              </div>
+            </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      {/* Token Addresses */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+          <div>
+            <CardTitle>Test Token Addresses</CardTitle>
+            <CardDescription>Deployed stablecoins on Amoy</CardDescription>
+          </div>
+          <Coins className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {Object.entries(TOKEN_ADDRESSES).map(([key, addr]) => (
+            <div key={key} className="p-3 rounded-lg bg-accent/50">
+              <div className="flex items-center justify-between">
+                <div className="min-w-0 flex-1">
+                  <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">
+                    {key}
+                  </p>
+                  <p className="font-mono text-xs mt-0.5 truncate">{addr}</p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="shrink-0 ml-2"
+                  onClick={() => handleCopy(addr, `token-${key}`)}
+                >
+                  {copied === `token-${key}` ? (
+                    <Check className="h-3 w-3" />
+                  ) : (
+                    <Copy className="h-3 w-3" />
+                  )}
+                </Button>
               </div>
             </div>
           ))}

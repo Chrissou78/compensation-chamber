@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
 import Link from "next/link";
+import { useAccount } from "wagmi";
 import { formatNumber, formatAddress } from "@/lib/utils";
-import { TreasuryBalance, Proposal } from "@/types";
+import { useTreasuryBalance, useGasReserves } from "@/hooks/useTreasury";
+import { useActiveProposals } from "@/hooks/useProposals";
+import { DashboardSkeleton } from "@/components/Skeleton";
 import {
   Card,
   CardContent,
@@ -27,42 +28,10 @@ import {
 
 export function Dashboard() {
   const { address, isConnected } = useAccount();
-  const [balance] = useState<TreasuryBalance>({
-    usdc: 125000,
-    usdt: 85000,
-    matic: 50,
-    total: 210000,
-  });
-  const [pendingProposals, setPendingProposals] = useState<Proposal[]>([]);
-  const [gasStatus] = useState({
-    healthy: 7,
-    warning: 1,
-    critical: 1,
-  });
-
-  useEffect(() => {
-    setPendingProposals([
-      {
-        id: "1",
-        title: "Add New Validator",
-        description: "Proposal to add CFO as validator",
-        targets: [],
-        values: [],
-        calldatas: [],
-        startBlock: 1000,
-        endBlock: 2000,
-        forVotes: 2,
-        againstVotes: 0,
-        abstainVotes: 0,
-        canceled: false,
-        executed: false,
-        state: "Active",
-        severity: "CRITICAL",
-        thresholdReachedAt: undefined,
-        readyForExecutionAt: undefined,
-      },
-    ]);
-  }, []);
+  const { data: balance, isLoading: balanceLoading } = useTreasuryBalance();
+  const { activeProposals, pendingProposals, isLoading: proposalsLoading } =
+    useActiveProposals();
+  const { data: gasReserves, isLoading: gasLoading } = useGasReserves();
 
   if (!isConnected) {
     return (
@@ -86,6 +55,28 @@ export function Dashboard() {
     );
   }
 
+  if (balanceLoading && proposalsLoading) {
+    return <DashboardSkeleton />;
+  }
+
+  // Compute gas status from reserves
+  const gasStatus = {
+    healthy: gasReserves?.filter(
+      (r) => r.currentBalance >= r.refillThreshold
+    ).length ?? 0,
+    warning: gasReserves?.filter(
+      (r) => r.currentBalance > 0 && r.currentBalance < r.refillThreshold
+    ).length ?? 0,
+    critical: gasReserves?.filter(
+      (r) => r.currentBalance === 0
+    ).length ?? 0,
+  };
+
+  const total = balance?.total ?? 0;
+  const usdc = balance?.usdc ?? 0;
+  const usdt = balance?.usdt ?? 0;
+  const matic = balance?.matic ?? 0;
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -105,10 +96,10 @@ export function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              ${formatNumber(balance.total)}
+              ${formatNumber(total)}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              {formatNumber(balance.usdc + balance.usdt)} in stablecoins
+              {formatNumber(usdc + usdt)} in stablecoins
             </p>
           </CardContent>
         </Card>
@@ -120,10 +111,10 @@ export function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              ${formatNumber(balance.usdc)}
+              ${formatNumber(usdc)}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              {((balance.usdc / balance.total) * 100).toFixed(1)}% of total
+              {total > 0 ? ((usdc / total) * 100).toFixed(1) : "0.0"}% of total
             </p>
           </CardContent>
         </Card>
@@ -135,10 +126,10 @@ export function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              ${formatNumber(balance.usdt)}
+              ${formatNumber(usdt)}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              {((balance.usdt / balance.total) * 100).toFixed(1)}% of total
+              {total > 0 ? ((usdt / total) * 100).toFixed(1) : "0.0"}% of total
             </p>
           </CardContent>
         </Card>
@@ -150,7 +141,7 @@ export function Dashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {formatNumber(balance.matic)}
+              {formatNumber(matic)}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
               Native gas token
@@ -185,8 +176,9 @@ export function Dashboard() {
             ) : (
               <div className="space-y-3">
                 {pendingProposals.map((proposal) => (
-                  <div
+                  <Link
                     key={proposal.id}
+                    href={`/proposals/${proposal.id}`}
                     className="flex items-center justify-between rounded-lg border border-border p-4 transition-colors hover:bg-accent/50"
                   >
                     <div className="flex items-center gap-4 min-w-0">
@@ -223,7 +215,7 @@ export function Dashboard() {
                         {proposal.severity}
                       </span>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}

@@ -2,28 +2,12 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useAccount, useReadContract, useBalance, usePublicClient } from "wagmi";
+import { useAccount, useReadContract, usePublicClient } from "wagmi";
 import { formatUnits } from "viem";
 import { getContractConfig } from "@/lib/contract";
-import { CONTRACT_ADDRESSES } from "@/lib/constants";
+import { CONTRACT_ADDRESSES, TOKEN_ADDRESSES } from "@/lib/constants";
+import { TEST_TOKEN_ABI } from "@/lib/abi";
 import { TreasuryBalance, GasReserve } from "@/types";
-
-// Known token addresses on Polygon Amoy / Polygon Mainnet
-// These should come from env vars in production
-const TOKEN_ADDRESSES = {
-  USDC: process.env.NEXT_PUBLIC_USDC_ADDRESS as `0x${string}` | undefined,
-  USDT: process.env.NEXT_PUBLIC_USDT_ADDRESS as `0x${string}` | undefined,
-};
-
-const ERC20_BALANCE_ABI = [
-  {
-    inputs: [{ name: "account", type: "address" }],
-    name: "balanceOf",
-    outputs: [{ name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-] as const;
 
 export function useTreasuryBalance() {
   const { isConnected } = useAccount();
@@ -34,7 +18,6 @@ export function useTreasuryBalance() {
     queryKey: ["treasuryBalance", treasuryAddress],
     queryFn: async (): Promise<TreasuryBalance> => {
       if (!publicClient || treasuryAddress === "0x") {
-        // Return zeros when no contract is deployed
         return { usdc: 0, usdt: 0, matic: 0, total: 0 };
       }
 
@@ -52,41 +35,51 @@ export function useTreasuryBalance() {
         // Contract not deployed yet
       }
 
-      // Fetch USDC balance
-      if (TOKEN_ADDRESSES.USDC) {
-        try {
-          const usdcBalance = await publicClient.readContract({
+      // Fetch USDC balance — use TEST_TOKEN_ABI (decimals read dynamically)
+      try {
+        const [usdcRaw, usdcDecimals] = await Promise.all([
+          publicClient.readContract({
             address: TOKEN_ADDRESSES.USDC,
-            abi: ERC20_BALANCE_ABI,
+            abi: TEST_TOKEN_ABI,
             functionName: "balanceOf",
             args: [treasuryAddress],
-          });
-          usdc = Number(formatUnits(usdcBalance, 6));
-        } catch {
-          // Token not available
-        }
+          }),
+          publicClient.readContract({
+            address: TOKEN_ADDRESSES.USDC,
+            abi: TEST_TOKEN_ABI,
+            functionName: "decimals",
+          }),
+        ]);
+        usdc = Number(formatUnits(usdcRaw, usdcDecimals));
+      } catch {
+        // Token not available on this chain
       }
 
       // Fetch USDT balance
-      if (TOKEN_ADDRESSES.USDT) {
-        try {
-          const usdtBalance = await publicClient.readContract({
+      try {
+        const [usdtRaw, usdtDecimals] = await Promise.all([
+          publicClient.readContract({
             address: TOKEN_ADDRESSES.USDT,
-            abi: ERC20_BALANCE_ABI,
+            abi: TEST_TOKEN_ABI,
             functionName: "balanceOf",
             args: [treasuryAddress],
-          });
-          usdt = Number(formatUnits(usdtBalance, 6));
-        } catch {
-          // Token not available
-        }
+          }),
+          publicClient.readContract({
+            address: TOKEN_ADDRESSES.USDT,
+            abi: TEST_TOKEN_ABI,
+            functionName: "decimals",
+          }),
+        ]);
+        usdt = Number(formatUnits(usdtRaw, usdtDecimals));
+      } catch {
+        // Token not available on this chain
       }
 
       return {
         usdc,
         usdt,
         matic,
-        total: usdc + usdt, // Total stablecoin value
+        total: usdc + usdt,
       };
     },
     enabled: isConnected,
@@ -102,7 +95,7 @@ export function useTreasuryPaused() {
     abi: config.abi,
     functionName: "paused",
     query: {
-      enabled: config.address !== "0x",
+      enabled: config.address !== ("0x" as `0x${string}`),
     },
   });
 
@@ -116,7 +109,6 @@ export function useGasReserves() {
   const { isConnected } = useAccount();
   const publicClient = usePublicClient();
 
-  // The contracts that need gas reserves
   const MONITORED_CONTRACTS: {
     name: string;
     addressKey: keyof typeof CONTRACT_ADDRESSES;
@@ -173,18 +165,94 @@ export function useAccumulatedFees() {
     address: config.address,
     abi: config.abi,
     functionName: "usdcAccumulated",
-    query: { enabled: config.address !== "0x" },
+    query: { enabled: config.address !== ("0x" as `0x${string}`) },
   });
 
   const { data: usdtFees } = useReadContract({
     address: config.address,
     abi: config.abi,
     functionName: "usdtAccumulated",
-    query: { enabled: config.address !== "0x" },
+    query: { enabled: config.address !== ("0x" as `0x${string}`) },
   });
 
   return {
     usdc: usdcFees ? Number(formatUnits(usdcFees as bigint, 6)) : 0,
     usdt: usdtFees ? Number(formatUnits(usdtFees as bigint, 6)) : 0,
+  };
+}
+
+// ─── Token-specific hooks ────────────────────────────────────
+export function useTokenBalance(
+  token: "USDC" | "USDT",
+  walletAddress?: `0x${string}`
+) {
+  const publicClient = usePublicClient();
+  const { address: connectedAddress } = useAccount();
+  const target = walletAddress || connectedAddress;
+
+  return useQuery({
+    queryKey: ["tokenBalance", token, target],
+    queryFn: async () => {
+      if (!publicClient || !target) return { balance: 0, symbol: token, decimals: 6 };
+
+      const tokenAddress = TOKEN_ADDRESSES[token];
+
+      const [rawBalance, decimals, symbol] = await Promise.all([
+        publicClient.readContract({
+          address: tokenAddress,
+          abi: TEST_TOKEN_ABI,
+          functionName: "balanceOf",
+          args: [target],
+        }),
+        publicClient.readContract({
+          address: tokenAddress,
+          abi: TEST_TOKEN_ABI,
+          functionName: "decimals",
+        }),
+        publicClient.readContract({
+          address: tokenAddress,
+          abi: TEST_TOKEN_ABI,
+          functionName: "symbol",
+        }),
+      ]);
+
+      return {
+        balance: Number(formatUnits(rawBalance, decimals)),
+        symbol: symbol as string,
+        decimals: Number(decimals),
+      };
+    },
+    enabled: !!target,
+    refetchInterval: 30000,
+  });
+}
+
+export function useTokenInfo(token: "USDC" | "USDT") {
+  const config = getContractConfig("gas");
+  const tokenAddress = TOKEN_ADDRESSES[token];
+
+  const { data: name } = useReadContract({
+    address: tokenAddress,
+    abi: TEST_TOKEN_ABI,
+    functionName: "name",
+  });
+
+  const { data: symbol } = useReadContract({
+    address: tokenAddress,
+    abi: TEST_TOKEN_ABI,
+    functionName: "symbol",
+  });
+
+  const { data: decimals } = useReadContract({
+    address: tokenAddress,
+    abi: TEST_TOKEN_ABI,
+    functionName: "decimals",
+  });
+
+  return {
+    address: tokenAddress,
+    name: (name as string) ?? token,
+    symbol: (symbol as string) ?? token,
+    decimals: decimals ? Number(decimals) : 6,
   };
 }
