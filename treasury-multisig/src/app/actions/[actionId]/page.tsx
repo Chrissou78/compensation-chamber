@@ -5,13 +5,7 @@ import Link from "next/link";
 import { ACTIONS_CONFIG } from "@/lib/constants";
 import { ActionType } from "@/types";
 import ActionForm from "@/components/ActionForm";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import {Card, CardContent, CardHeader, CardTitle,} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Info, CheckCircle, XCircle } from "lucide-react";
 
@@ -76,11 +70,9 @@ export default function ActionPage() {
 
       {/* Form + Sidebar */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card className="lg:col-span-2">
-          <CardContent className="p-6">
-            <ActionForm action={config} />
-          </CardContent>
-        </Card>
+        <div className="lg:col-span-2">
+          <ActionForm action={config} />
+        </div>
 
         <div className="space-y-4">
           <Card>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAccount, useChainId, useSwitchChain } from "wagmi";
 import { NETWORKS, CONTRACT_ADDRESSES } from "@/lib/constants";
 import { formatAddress } from "@/lib/utils";
+import { useAppStore } from "@/store";
 import {
   Card,
   CardContent,
@@ -12,17 +13,32 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Copy, Check, Wallet, Globe, FileCode, Key, Server } from "lucide-react";
+import {
+  Copy,
+  Check,
+  Wallet,
+  Globe,
+  FileCode,
+  Key,
+  Server,
+} from "lucide-react";
 
 export default function SettingsPage() {
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
   const { chains, switchChain } = useSwitchChain();
   const [copied, setCopied] = useState<string | null>(null);
+  const addToast = useAppStore((s) => s.addToast);
 
   const handleCopy = (text: string, key: string) => {
     navigator.clipboard.writeText(text);
     setCopied(key);
+    addToast({
+      type: "success",
+      title: "Copied to clipboard",
+      description: text.length > 20 ? `${text.slice(0, 10)}...${text.slice(-8)}` : text,
+      duration: 2000,
+    });
     setTimeout(() => setCopied(null), 2000);
   };
 
@@ -49,7 +65,9 @@ export default function SettingsPage() {
             <div className="flex items-center justify-between p-3 rounded-lg border border-border">
               <div className="flex items-center gap-2">
                 <div className="h-2 w-2 rounded-full bg-emerald-500" />
-                <span className="font-mono text-sm">{formatAddress(address)}</span>
+                <span className="font-mono text-sm">
+                  {formatAddress(address)}
+                </span>
               </div>
               <Button
                 variant="ghost"
@@ -84,7 +102,9 @@ export default function SettingsPage() {
           <div className="flex flex-wrap gap-2">
             {chains
               .filter((c) =>
-                [NETWORKS.AMOY, NETWORKS.POLYGON, NETWORKS.ETHEREUM].includes(c.id)
+                [NETWORKS.AMOY, NETWORKS.POLYGON, NETWORKS.ETHEREUM].includes(
+                  c.id
+                )
               )
               .map((chain) => (
                 <Button
@@ -155,9 +175,21 @@ export default function SettingsPage() {
         </CardHeader>
         <CardContent className="space-y-2">
           {[
-            { id: "local", name: "Local Wallet", description: "Sign with connected wallet (MetaMask, etc.)" },
-            { id: "fireblocks", name: "Fireblocks", description: "Enterprise-grade custody and signing" },
-            { id: "kms", name: "AWS KMS", description: "Hardware Security Module integration" },
+            {
+              id: "local",
+              name: "Local Wallet",
+              description: "Sign with connected wallet (MetaMask, etc.)",
+            },
+            {
+              id: "fireblocks",
+              name: "Fireblocks",
+              description: "Enterprise-grade custody and signing",
+            },
+            {
+              id: "kms",
+              name: "AWS KMS",
+              description: "Hardware Security Module integration",
+            },
           ].map((method) => (
             <label
               key={method.id}
@@ -169,10 +201,13 @@ export default function SettingsPage() {
                 value={method.id}
                 defaultChecked={method.id === "local"}
                 className="h-4 w-4 shrink-0"
+                suppressHydrationWarning
               />
               <div className="ml-3">
                 <p className="text-sm font-medium">{method.name}</p>
-                <p className="text-xs text-muted-foreground">{method.description}</p>
+                <p className="text-xs text-muted-foreground">
+                  {method.description}
+                </p>
               </div>
             </label>
           ))}
@@ -202,7 +237,8 @@ export default function SettingsPage() {
                 Amoy: {process.env.NEXT_PUBLIC_RPC_AMOY || "Not configured"}
               </p>
               <p className="font-mono text-xs p-2 rounded bg-accent/50 break-all">
-                Mainnet: {process.env.NEXT_PUBLIC_RPC_MAINNET || "Not configured"}
+                Mainnet:{" "}
+                {process.env.NEXT_PUBLIC_RPC_MAINNET || "Not configured"}
               </p>
             </div>
           </div>
