@@ -1,16 +1,14 @@
-"use client"
+"use client";
 
-import { useAccount, useBalance } from "wagmi"
-import { useValidatorCount } from "./useValidators"
-import { useActiveProposals } from "./useProposals"
+import { useAccount, useBalance } from "wagmi";
+import { useValidatorCount, useValidators } from "./useValidators";
+import { useActiveProposals } from "./useProposals";
 
 export function useMultisigStatus() {
-  const { address, isConnected } = useAccount()
-  const { data: balanceData } = useBalance({
-    address: address,
-  })
-  const { total: validatorCount, active: activeValidators } = useValidatorCount()
-  const { activeProposals } = useActiveProposals()
+  const { address, isConnected } = useAccount();
+  const { data: balanceData } = useBalance({ address });
+  const { total: validatorCount, active: activeValidators } = useValidatorCount();
+  const { activeProposals } = useActiveProposals();
 
   return {
     isConnected,
@@ -20,23 +18,27 @@ export function useMultisigStatus() {
     validatorCount,
     activeValidators,
     pendingProposalsCount: activeProposals.length,
-  }
+  };
 }
 
 export function useIsMultisigMember() {
-  const { address } = useAccount()
-  const { data: validators } = useValidators()
+  const { address } = useAccount();
+  const { data: validators } = useValidators();
 
-  const isMember = validators?.some((v) => v.address.toLowerCase() === address?.toLowerCase()) || false
-  const validator = validators?.find((v) => v.address.toLowerCase() === address?.toLowerCase())
+  const isMember =
+    validators?.some(
+      (v) => v.address.toLowerCase() === address?.toLowerCase()
+    ) || false;
+  const validator = validators?.find(
+    (v) => v.address.toLowerCase() === address?.toLowerCase()
+  );
 
-  return { isMember, validator }
+  return { isMember, validator };
 }
 
 export function useCanVote() {
-  const { isMember, validator } = useIsMultisigMember()
-  return isMember && validator?.status === "ACTIVE"
+  const { isMember, validator } = useIsMultisigMember();
+  return isMember && validator?.status === "ACTIVE";
 }
 
-// Re-export for convenience
-export { useValidators } from "./useValidators"
+export { useValidators } from "./useValidators";

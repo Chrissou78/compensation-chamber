@@ -1,151 +1,98 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Proposal } from "@/types"
-import { formatNumber } from "@/lib/utils"
-import { ThresholdIndicator } from "./ThresholdIndicator"
-import { CooldownTimer } from "./CooldownTimer"
+import Link from "next/link";
+import { Proposal } from "@/types";
+import { ThresholdIndicator } from "./ThresholdIndicator";
+import { CooldownTimer } from "./CooldownTimer";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+
+const severityStyle: Record<string, string> = {
+  EMERGENCY: "bg-red-500/10 text-red-400 ring-red-500/20",
+  CRITICAL: "bg-amber-500/10 text-amber-400 ring-amber-500/20",
+  IMPORTANT: "bg-yellow-500/10 text-yellow-400 ring-yellow-500/20",
+  ROUTINE: "bg-blue-500/10 text-blue-400 ring-blue-500/20",
+};
+
+const stateStyle: Record<string, string> = {
+  Pending: "bg-muted text-muted-foreground ring-border",
+  Active: "bg-blue-500/10 text-blue-400 ring-blue-500/20",
+  Canceled: "bg-red-500/10 text-red-400 ring-red-500/20",
+  Defeated: "bg-red-500/10 text-red-400 ring-red-500/20",
+  Succeeded: "bg-emerald-500/10 text-emerald-400 ring-emerald-500/20",
+  Queued: "bg-amber-500/10 text-amber-400 ring-amber-500/20",
+  Expired: "bg-muted text-muted-foreground ring-border",
+  Executed: "bg-emerald-500/10 text-emerald-400 ring-emerald-500/20",
+};
 
 interface ProposalCardProps {
-  proposal: Proposal
-  showActions?: boolean
+  proposal: Proposal;
+  showActions?: boolean;
 }
 
 export function ProposalCard({ proposal, showActions = true }: ProposalCardProps) {
-  const severityColor = {
-    EMERGENCY: "text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20",
-    CRITICAL: "text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20",
-    IMPORTANT: "text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20",
-    ROUTINE: "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20",
-  }[proposal.severity || "ROUTINE"]
-
-  const stateColor = {
-    Pending: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200",
-    Active: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
-    Canceled: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-    Defeated: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
-    Succeeded: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-    Queued: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-    Expired: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200",
-    Executed: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  }
-
   return (
-    <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden card-shadow hover:shadow-xl transition-shadow">
-      {/* Header */}
-      <div className="p-6 border-b border-slate-200 dark:border-slate-800">
-        <div className="flex items-start justify-between mb-3">
-          <div className="flex-1">
-            <h3 className="text-lg font-semibold">{proposal.title}</h3>
-            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-              {proposal.description}
-            </p>
+    <Card>
+      <CardContent className="p-6 space-y-4">
+        {/* Header */}
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <p className="text-sm font-semibold">{proposal.title}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{proposal.description}</p>
           </div>
-          <div className="flex gap-2 ml-4">
-            <span
-              className={`inline-block px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${
-                severityColor.split(" ").slice(0, -2).join(" ")
-              }`}
-            >
+          <div className="flex gap-1.5 shrink-0">
+            <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-medium ring-1 ring-inset ${severityStyle[proposal.severity || "ROUTINE"]}`}>
               {proposal.severity || "ROUTINE"}
             </span>
-            <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${stateColor[proposal.state]}`}>
+            <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-medium ring-1 ring-inset ${stateStyle[proposal.state]}`}>
               {proposal.state}
             </span>
           </div>
         </div>
-      </div>
 
-      {/* Content */}
-      <div className="p-6 space-y-4">
-        {/* Threshold Indicator */}
+        {/* Threshold */}
         {proposal.state === "Active" && (
-          <ThresholdIndicator
-            forVotes={proposal.forVotes}
-            requiredVotes={3}
-            totalVoters={5}
-            severity={proposal.severity}
-            showLabel={false}
-          />
+          <ThresholdIndicator forVotes={proposal.forVotes} requiredVotes={3} totalVoters={5} severity={proposal.severity} showLabel={false} />
         )}
 
-        {/* Cooldown Timer */}
+        {/* Cooldown */}
         {proposal.state === "Succeeded" && proposal.readyForExecutionAt && (
-          <CooldownTimer
-            readyForExecutionAt={proposal.readyForExecutionAt}
-            severity={proposal.severity}
-          />
+          <CooldownTimer readyForExecutionAt={proposal.readyForExecutionAt} severity={proposal.severity} />
         )}
 
-        {/* Vote Summary */}
+        {/* Votes */}
         {proposal.state === "Active" && (
-          <div className="grid grid-cols-3 gap-4">
-            <div className="rounded-lg bg-green-50 dark:bg-green-900/20 p-3">
-              <p className="text-xs text-green-600 dark:text-green-400 font-medium">FOR</p>
-              <p className="text-lg font-bold text-green-700 dark:text-green-300">
-                {proposal.forVotes}
-              </p>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="rounded-lg bg-emerald-500/5 border border-emerald-500/10 p-3">
+              <p className="text-[10px] font-medium text-emerald-400 uppercase">For</p>
+              <p className="text-lg font-bold text-emerald-400">{proposal.forVotes}</p>
             </div>
-            <div className="rounded-lg bg-red-50 dark:bg-red-900/20 p-3">
-              <p className="text-xs text-red-600 dark:text-red-400 font-medium">AGAINST</p>
-              <p className="text-lg font-bold text-red-700 dark:text-red-300">
-                {proposal.againstVotes}
-              </p>
+            <div className="rounded-lg bg-red-500/5 border border-red-500/10 p-3">
+              <p className="text-[10px] font-medium text-red-400 uppercase">Against</p>
+              <p className="text-lg font-bold text-red-400">{proposal.againstVotes}</p>
             </div>
-            <div className="rounded-lg bg-slate-100 dark:bg-slate-700 p-3">
-              <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">ABSTAIN</p>
-              <p className="text-lg font-bold text-slate-700 dark:text-slate-300">
-                {proposal.abstainVotes}
-              </p>
+            <div className="rounded-lg bg-accent p-3">
+              <p className="text-[10px] font-medium text-muted-foreground uppercase">Abstain</p>
+              <p className="text-lg font-bold">{proposal.abstainVotes}</p>
             </div>
           </div>
         )}
 
-        {/* Details */}
-        {proposal.id && (
-          <div className="text-xs text-slate-500 dark:text-slate-500 space-y-1">
-            <p>
-              <span className="font-medium">ID:</span> {proposal.id}
-            </p>
-            {proposal.createdAt && (
-              <p>
-                <span className="font-medium">Created:</span>{" "}
-                {new Date(proposal.createdAt * 1000).toLocaleDateString()}
-              </p>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Footer Actions */}
-      {showActions && (
-        <div className="p-6 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex gap-3">
-          {proposal.state === "Active" && (
-            <Link
-              href={`/proposals/${proposal.id}/vote`}
-              className="flex-1 px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 font-medium text-sm transition-colors text-center"
-            >
-              Vote
-            </Link>
-          )}
-
-          {proposal.state === "Succeeded" && (
-            <Link
-              href={`/proposals/${proposal.id}/execute`}
-              className="flex-1 px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-600 font-medium text-sm transition-colors text-center"
-            >
-              Execute
-            </Link>
-          )}
-
-          <Link
-            href={`/proposals/${proposal.id}`}
-            className="flex-1 px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-900 dark:text-white hover:bg-slate-300 dark:hover:bg-slate-600 font-medium text-sm transition-colors text-center"
-          >
-            Details
-          </Link>
+        {/* Meta */}
+        <div className="text-xs text-muted-foreground space-y-0.5">
+          <p>ID: {proposal.id}</p>
+          {proposal.createdAt && (<p>Created: {new Date(proposal.createdAt * 1000).toLocaleDateString()}</p>)}
         </div>
-      )}
-    </div>
-  )
+
+        {/* Actions */}
+        {showActions && (
+          <div className="flex gap-2 pt-2 border-t border-border">
+            {proposal.state === "Active" && (<Button size="sm" asChild><Link href={`/proposals/${proposal.id}/vote`}>Vote</Link></Button>)}
+            {proposal.state === "Succeeded" && (<Button size="sm" variant="default" asChild><Link href={`/proposals/${proposal.id}/execute`}>Execute</Link></Button>)}
+            <Button size="sm" variant="outline" asChild><Link href={`/proposals/${proposal.id}`}>Details</Link></Button>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
 }

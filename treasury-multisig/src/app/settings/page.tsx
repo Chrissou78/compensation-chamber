@@ -1,218 +1,213 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useAccount, useChainId, useSwitchChain } from "wagmi"
-import { NETWORKS, CONTRACT_ADDRESSES } from "@/lib/constants"
-import { formatAddress } from "@/lib/utils"
+import { useState } from "react";
+import { useAccount, useChainId, useSwitchChain } from "wagmi";
+import { NETWORKS, CONTRACT_ADDRESSES } from "@/lib/constants";
+import { formatAddress } from "@/lib/utils";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Copy, Check, Wallet, Globe, FileCode, Key, Server } from "lucide-react";
 
 export default function SettingsPage() {
-  const { address, isConnected } = useAccount()
-  const chainId = useChainId()
-  const { chains, switchChain } = useSwitchChain()
-  const [copied, setCopied] = useState<string | null>(null)
+  const { address, isConnected } = useAccount();
+  const chainId = useChainId();
+  const { chains, switchChain } = useSwitchChain();
+  const [copied, setCopied] = useState<string | null>(null);
 
   const handleCopy = (text: string, key: string) => {
-    navigator.clipboard.writeText(text)
-    setCopied(key)
-    setTimeout(() => setCopied(null), 2000)
-  }
+    navigator.clipboard.writeText(text);
+    setCopied(key);
+    setTimeout(() => setCopied(null), 2000);
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
-      <div className="container mx-auto px-4 py-8 max-w-2xl">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold">Settings</h1>
-          <p className="text-slate-600 dark:text-slate-400 mt-2">
-            Configure your multisig wallet preferences
+    <div className="space-y-8 max-w-2xl">
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          Configure your multisig wallet preferences
+        </p>
+      </div>
+
+      {/* Wallet */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+          <div>
+            <CardTitle>Wallet</CardTitle>
+            <CardDescription>Connected account</CardDescription>
+          </div>
+          <Wallet className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent>
+          {isConnected && address ? (
+            <div className="flex items-center justify-between p-3 rounded-lg border border-border">
+              <div className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-emerald-500" />
+                <span className="font-mono text-sm">{formatAddress(address)}</span>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleCopy(address, "address")}
+              >
+                {copied === "address" ? (
+                  <Check className="h-3 w-3" />
+                ) : (
+                  <Copy className="h-3 w-3" />
+                )}
+              </Button>
+            </div>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              No wallet connected. Use the sidebar button.
+            </p>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Network */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+          <div>
+            <CardTitle>Network</CardTitle>
+            <CardDescription>Chain ID: {chainId}</CardDescription>
+          </div>
+          <Globe className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex flex-wrap gap-2">
+            {chains
+              .filter((c) =>
+                [NETWORKS.AMOY, NETWORKS.POLYGON, NETWORKS.ETHEREUM].includes(c.id)
+              )
+              .map((chain) => (
+                <Button
+                  key={chain.id}
+                  variant={chainId === chain.id ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => switchChain({ chainId: chain.id })}
+                >
+                  {chain.name}
+                </Button>
+              ))}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Use Polygon Amoy Testnet to test multisig functionality.
           </p>
-        </div>
+        </CardContent>
+      </Card>
 
-        {/* Wallet Section */}
-        <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 card-shadow mb-6">
-          <h2 className="text-lg font-semibold mb-4">Wallet</h2>
-
-          <div className="space-y-4">
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
-                Connected Wallet
-              </p>
-              {isConnected && address ? (
-                <div className="flex items-center gap-2 p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
-                  <span className="w-2 h-2 rounded-full bg-green-600"></span>
-                  <span className="font-mono text-sm">{formatAddress(address)}</span>
-                  <button
-                    onClick={() => handleCopy(address, "address")}
-                    className="ml-auto text-xs px-2 py-1 rounded bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-200 hover:bg-green-200 dark:hover:bg-green-800"
-                  >
-                    {copied === "address" ? "Copied!" : "Copy"}
-                  </button>
-                </div>
-              ) : (
-                <div className="p-3 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
-                  <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                    No wallet connected. Use the Connect Wallet button in the navbar.
+      {/* Contract Addresses */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+          <div>
+            <CardTitle>Contract Addresses</CardTitle>
+            <CardDescription>Deployed contract registry</CardDescription>
+          </div>
+          <FileCode className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {Object.entries(CONTRACT_ADDRESSES).map(([key, addr]) => (
+            <div key={key} className="p-3 rounded-lg bg-accent/50">
+              <div className="flex items-center justify-between">
+                <div className="min-w-0 flex-1">
+                  <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide">
+                    {key}
+                  </p>
+                  <p className="font-mono text-xs mt-0.5 truncate">
+                    {addr === "0x" ? "Not configured" : addr}
                   </p>
                 </div>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Network Section */}
-        <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 card-shadow mb-6">
-          <h2 className="text-lg font-semibold mb-4">Network</h2>
-
-          <div className="space-y-4">
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
-                Current Network
-              </p>
-              <p className="text-base font-semibold">
-                {chainId === NETWORKS.AMOY
-                  ? "Polygon Amoy (Testnet)"
-                  : chainId === NETWORKS.POLYGON
-                    ? "Polygon Mainnet"
-                    : "Ethereum Mainnet"}
-              </p>
-              <p className="text-xs text-slate-500 dark:text-slate-500 mt-1">Chain ID: {chainId}</p>
-            </div>
-
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-2">
-                Switch Network
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {chains
-                  .filter(
-                    (c) =>
-                      [NETWORKS.AMOY, NETWORKS.POLYGON, NETWORKS.ETHEREUM].includes(
-                        c.id
-                      )
-                  )
-                  .map((chain) => (
-                    <button
-                      key={chain.id}
-                      onClick={() => switchChain({ chainId: chain.id })}
-                      className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                        chainId === chain.id
-                          ? "bg-blue-600 text-white"
-                          : "bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700"
-                      }`}
-                    >
-                      {chain.name}
-                    </button>
-                  ))}
-              </div>
-              <p className="text-xs text-slate-500 dark:text-slate-500 mt-2">
-                ⚠️ Most features work on Polygon Amoy Testnet. Switch to testnet to test multisig functionality.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Contract Addresses */}
-        <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 card-shadow mb-6">
-          <h2 className="text-lg font-semibold mb-4">Contract Addresses</h2>
-
-          <div className="space-y-3">
-            {Object.entries(CONTRACT_ADDRESSES).map(([key, address]) => (
-              <div key={key} className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800">
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <p className="text-xs font-medium text-slate-600 dark:text-slate-400 uppercase tracking-wide">
-                      {key}
-                    </p>
-                    <p className="font-mono text-xs mt-1 break-all text-slate-700 dark:text-slate-300">
-                      {address === "0x" ? "Not configured" : address}
-                    </p>
-                  </div>
-                  {address !== "0x" && (
-                    <button
-                      onClick={() => handleCopy(address, key)}
-                      className="ml-2 text-xs px-2 py-1 rounded bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600 whitespace-nowrap"
-                    >
-                      {copied === key ? "✓" : "Copy"}
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Signature Method */}
-        <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 card-shadow mb-6">
-          <h2 className="text-lg font-semibold mb-4">Signature Method</h2>
-
-          <div className="space-y-3">
-            {[
-              {
-                id: "local",
-                name: "Local Wallet",
-                description: "Sign with connected wallet (MetaMask, etc.)",
-              },
-              {
-                id: "fireblocks",
-                name: "Fireblocks",
-                description: "Enterprise-grade custody and signing",
-              },
-              {
-                id: "kms",
-                name: "AWS KMS",
-                description: "Hardware Security Module integration",
-              },
-            ].map((method) => (
-              <label
-                key={method.id}
-                className="flex items-center p-4 rounded-lg border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-colors"
-              >
-                <input
-                  type="radio"
-                  name="signature-method"
-                  value={method.id}
-                  defaultChecked={method.id === "local"}
-                  className="w-4 h-4"
-                />
-                <div className="ml-3 flex-1">
-                  <p className="font-medium">{method.name}</p>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">{method.description}</p>
-                </div>
-              </label>
-            ))}
-          </div>
-        </div>
-
-        {/* API Endpoints */}
-        <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 card-shadow">
-          <h2 className="text-lg font-semibold mb-4">API Endpoints</h2>
-
-          <div className="space-y-3">
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
-                Subgraph URL
-              </p>
-              <p className="font-mono text-xs break-all p-2 rounded bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                {process.env.NEXT_PUBLIC_SUBGRAPH_URL || "Not configured"}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400 mb-1">
-                RPC Endpoints
-              </p>
-              <div className="space-y-2">
-                <div className="font-mono text-xs break-all p-2 rounded bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                  Amoy: {process.env.NEXT_PUBLIC_RPC_AMOY}
-                </div>
-                <div className="font-mono text-xs break-all p-2 rounded bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                  Mainnet: {process.env.NEXT_PUBLIC_RPC_MAINNET}
-                </div>
+                {addr !== "0x" && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="shrink-0 ml-2"
+                    onClick={() => handleCopy(addr, key)}
+                  >
+                    {copied === key ? (
+                      <Check className="h-3 w-3" />
+                    ) : (
+                      <Copy className="h-3 w-3" />
+                    )}
+                  </Button>
+                )}
               </div>
             </div>
+          ))}
+        </CardContent>
+      </Card>
+
+      {/* Signature Method */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+          <div>
+            <CardTitle>Signature Method</CardTitle>
+            <CardDescription>How transactions are signed</CardDescription>
           </div>
-        </div>
-      </div>
+          <Key className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent className="space-y-2">
+          {[
+            { id: "local", name: "Local Wallet", description: "Sign with connected wallet (MetaMask, etc.)" },
+            { id: "fireblocks", name: "Fireblocks", description: "Enterprise-grade custody and signing" },
+            { id: "kms", name: "AWS KMS", description: "Hardware Security Module integration" },
+          ].map((method) => (
+            <label
+              key={method.id}
+              className="flex items-center p-3 rounded-lg border border-border hover:bg-accent/50 cursor-pointer transition-colors"
+            >
+              <input
+                type="radio"
+                name="signature-method"
+                value={method.id}
+                defaultChecked={method.id === "local"}
+                className="h-4 w-4 shrink-0"
+              />
+              <div className="ml-3">
+                <p className="text-sm font-medium">{method.name}</p>
+                <p className="text-xs text-muted-foreground">{method.description}</p>
+              </div>
+            </label>
+          ))}
+        </CardContent>
+      </Card>
+
+      {/* API Endpoints */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+          <div>
+            <CardTitle>API Endpoints</CardTitle>
+            <CardDescription>External service configuration</CardDescription>
+          </div>
+          <Server className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div>
+            <p className="text-xs text-muted-foreground mb-1">Subgraph URL</p>
+            <p className="font-mono text-xs p-2 rounded bg-accent/50 break-all">
+              {process.env.NEXT_PUBLIC_SUBGRAPH_URL || "Not configured"}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs text-muted-foreground mb-1">RPC Endpoints</p>
+            <div className="space-y-1">
+              <p className="font-mono text-xs p-2 rounded bg-accent/50 break-all">
+                Amoy: {process.env.NEXT_PUBLIC_RPC_AMOY || "Not configured"}
+              </p>
+              <p className="font-mono text-xs p-2 rounded bg-accent/50 break-all">
+                Mainnet: {process.env.NEXT_PUBLIC_RPC_MAINNET || "Not configured"}
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
-  )
+  );
 }

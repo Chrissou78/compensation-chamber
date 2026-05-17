@@ -1,80 +1,69 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { useProposals } from "@/hooks/useProposals"
-import { ProposalCard } from "@/components/ProposalCard"
-import { PROPOSAL_STATES } from "@/lib/constants"
+import { useState } from "react";
+import { useProposals } from "@/hooks/useProposals";
+import { ProposalCard } from "@/components/ProposalCard";
+import { PROPOSAL_STATES } from "@/lib/constants";
+import { Button } from "@/components/ui/button";
+import { ScrollText } from "lucide-react";
 
 export default function ProposalsPage() {
-  const { data: proposals, isLoading } = useProposals()
-  const [selectedState, setSelectedState] = useState<string | null>(null)
+  const { data: proposals, isLoading } = useProposals();
+  const [selectedState, setSelectedState] = useState<string | null>(null);
 
   const filteredProposals = selectedState
     ? proposals?.filter((p) => p.state === selectedState)
-    : proposals
+    : proposals;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold">Proposals</h1>
-          <p className="text-slate-600 dark:text-slate-400 mt-2">
-            View and vote on governance proposals
-          </p>
-        </div>
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Proposals</h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          View and vote on governance proposals
+        </p>
+      </div>
 
-        {/* State Filter */}
-        <div className="flex flex-wrap gap-2 mb-8">
-          <button
-            onClick={() => setSelectedState(null)}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-              selectedState === null
-                ? "bg-blue-600 text-white"
-                : "bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700"
-            }`}
+      <div className="flex flex-wrap gap-2">
+        <Button
+          variant={selectedState === null ? "default" : "outline"}
+          size="sm"
+          onClick={() => setSelectedState(null)}
+        >
+          All
+        </Button>
+        {PROPOSAL_STATES.map((state) => (
+          <Button
+            key={state}
+            variant={selectedState === state ? "default" : "outline"}
+            size="sm"
+            onClick={() => setSelectedState(state)}
           >
-            All States
-          </button>
-          {PROPOSAL_STATES.map((state) => (
-            <button
-              key={state}
-              onClick={() => setSelectedState(state)}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                selectedState === state
-                  ? "bg-blue-600 text-white"
-                  : "bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700"
-              }`}
-            >
-              {state}
-            </button>
+            {state}
+          </Button>
+        ))}
+      </div>
+
+      {isLoading && (
+        <div className="flex items-center justify-center py-16">
+          <p className="text-sm text-muted-foreground">Loading proposals...</p>
+        </div>
+      )}
+
+      {!isLoading && (!filteredProposals || filteredProposals.length === 0) && (
+        <div className="flex flex-col items-center justify-center py-16">
+          <ScrollText className="h-10 w-10 text-muted-foreground mb-4" />
+          <p className="text-sm text-muted-foreground">No proposals found</p>
+        </div>
+      )}
+
+      {!isLoading && filteredProposals && filteredProposals.length > 0 && (
+        <div className="space-y-4">
+          {filteredProposals.map((proposal) => (
+            <ProposalCard key={proposal.id} proposal={proposal} />
           ))}
         </div>
-
-        {/* Loading State */}
-        {isLoading && (
-          <div className="text-center py-12">
-            <p className="text-slate-600 dark:text-slate-400">Loading proposals...</p>
-          </div>
-        )}
-
-        {/* Empty State */}
-        {!isLoading && (!filteredProposals || filteredProposals.length === 0) && (
-          <div className="text-center py-12">
-            <p className="text-slate-600 dark:text-slate-400">No proposals found</p>
-          </div>
-        )}
-
-        {/* Proposals List */}
-        {!isLoading && filteredProposals && filteredProposals.length > 0 && (
-          <div className="space-y-4">
-            {filteredProposals.map((proposal) => (
-              <ProposalCard key={proposal.id} proposal={proposal} />
-            ))}
-          </div>
-        )}
-      </div>
+      )}
     </div>
-  )
+  );
 }

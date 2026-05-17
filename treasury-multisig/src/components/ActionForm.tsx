@@ -1,244 +1,99 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { ActionConfig, FormField } from "@/types"
-import { usePropose } from "@/hooks/useVoting"
+import { useForm, FieldValues } from "react-hook-form";
+import { useState } from "react";
+import { usePropose } from "@/hooks/useVoting";
+import { ActionConfig, FormField as FormFieldType } from "@/types";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Loader2, CheckCircle2, AlertCircle, Info } from "lucide-react";
 
-interface ActionFormProps {
-  config: ActionConfig
-  onSubmit?: (data: Record<string, any>) => void
-}
-
-export function ActionForm({ config, onSubmit }: ActionFormProps) {
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors, isSubmitting },
-  } = useForm({
-    mode: "onBlur",
-  })
-
-  const { propose, isPending } = usePropose()
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle")
-  const [submitMessage, setSubmitMessage] = useState("")
-
-  const onFormSubmit = async (data: Record<string, any>) => {
-    try {
-      setSubmitStatus("idle")
-
-      if (config.requiresVoting) {
-        // For governance proposals, use proposeWithSeverity
-        const severity = getSeverityValue(data.severity)
-        await propose(
-          data.targets || [],
-          data.values || [],
-          data.calldatas || [],
-          data.description || JSON.stringify(data),
-          severity
-        )
-        setSubmitStatus("success")
-        setSubmitMessage("Proposal created successfully! Awaiting confirmations...")
-      } else if (config.requiresApproval) {
-        // For emergency actions, would need direct multisig call
-        setSubmitStatus("success")
-        setSubmitMessage("Action queued for multisig approval")
-      }
-
-      if (onSubmit) {
-        onSubmit(data)
-      }
-    } catch (error) {
-      setSubmitStatus("error")
-      setSubmitMessage(
-        error instanceof Error ? error.message : "Failed to submit action"
-      )
-    }
+function getSeverityValue(severity: string): number {
+  switch (severity?.toUpperCase()) {
+    case "EMERGENCY": return 0;
+    case "CRITICAL": return 1;
+    case "IMPORTANT": return 2;
+    case "ROUTINE": return 3;
+    default: return 3;
   }
+}
 
-  const getSeverityValue = (severity?: string): number => {
-    switch (severity) {
-      case "EMERGENCY":
-        return 0
-      case "CRITICAL":
-        return 1
-      case "IMPORTANT":
-        return 2
-      case "ROUTINE":
-        return 3
-      default:
-        return 1
+function FormField({
+  field,
+  register,
+  errors,
+}: {
+  field: FormFieldType;
+  register: ReturnType<typeof useForm>["register"];
+  errors: Record<string, any>;
+}) {
+  const baseClasses =
+    "w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background transition-colors";
+  const errorClasses = errors[field.name] ? "border-destructive" : "";
+
+  // Build registration options — pattern and valueAsNumber must never coexist
+  const buildRegisterOptions = () => {
+    const opts: Record<string, any> = {};
+
+    if (field.required) {
+      opts.required = `${field.label} is required`;
     }
-  }
 
-  return (
-    <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
-      {/* Form Fields */}
-      <div className="space-y-4">
-        {config.fields.map((field) => (
-          <FormField key={field.name} field={field} register={register} errors={errors} />
-        ))}
-      </div>
+    if (field.type === "number") {
+      opts.valueAsNumber = true;
+      opts.min = { value: 0, message: `${field.label} must be positive` };
+      // No pattern when valueAsNumber is true
+    } else if (field.type === "address") {
+      opts.pattern = {
+        value: /^0x[a-fA-F0-9]{40}$/,
+        message: "Invalid Ethereum address",
+      };
+    } else if (field.validation?.pattern) {
+      // field.validation.pattern is already a RegExp — use it directly
+      opts.pattern = {
+        value: field.validation.pattern,
+        message: field.validation.message || "Invalid format",
+      };
+    }
 
-      {/* Status Message */}
-      {submitStatus !== "idle" && (
-        <div
-          className={`p-4 rounded-lg ${
-            submitStatus === "success"
-              ? "bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800"
-              : "bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800"
-          }`}
-        >
-          <p
-            className={`text-sm font-medium ${
-              submitStatus === "success"
-                ? "text-green-800 dark:text-green-200"
-                : "text-red-800 dark:text-red-200"
-            }`}
-          >
-            {submitMessage}
-          </p>
-        </div>
-      )}
+    return opts;
+  };
 
-      {/* Action Info */}
-      <div className="rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-4">
-        <p className="text-sm text-blue-800 dark:text-blue-200">
-          <span className="font-semibold">Info:</span> {config.description}
-        </p>
-        {config.requiresApproval && (
-          <p className="text-sm text-blue-800 dark:text-blue-200 mt-2">
-            ✓ This action requires multisig approval
-          </p>
-        )}
-        {config.requiresVoting && (
-          <p className="text-sm text-blue-800 dark:text-blue-200 mt-2">
-            ✓ This action requires 3-of-5 governance votes
-          </p>
-        )}
-      </div>
-
-      {/* Submit Button */}
-      <button
-        type="submit"
-        disabled={isSubmitting || isPending}
-        className="w-full px-4 py-3 rounded-lg font-semibold text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-      >
-        {isSubmitting || isPending ? (
-          <span className="flex items-center justify-center gap-2">
-            <span className="animate-spin">⏳</span>
-            Processing...
-          </span>
-        ) : (
-          `Execute: ${config.title}`
-        )}
-      </button>
-    </form>
-  )
-}
-
-interface FormFieldComponentProps {
-  field: FormField
-  register: any
-  errors: any
-}
-
-function FormField({ field, register, errors }: FormFieldComponentProps) {
-  const value = watch?.(field.name)
-
-  const baseInputClass =
-    "w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+  const registerOptions = buildRegisterOptions();
 
   switch (field.type) {
-    case "text":
-      return (
-        <div>
-          <label className="block text-sm font-medium mb-2">{field.label}</label>
-          <input
-            type="text"
-            placeholder={field.placeholder}
-            {...register(field.name, {
-              required: field.required ? `${field.label} is required` : false,
-              pattern: field.validation?.pattern,
-            })}
-            className={baseInputClass}
-          />
-          {errors[field.name] && (
-            <p className="text-red-500 text-sm mt-1">{errors[field.name]?.message}</p>
-          )}
-        </div>
-      )
-
-    case "address":
-      return (
-        <div>
-          <label className="block text-sm font-medium mb-2">{field.label}</label>
-          <input
-            type="text"
-            placeholder={field.placeholder}
-            {...register(field.name, {
-              required: field.required ? `${field.label} is required` : false,
-              pattern: {
-                value: /^0x[a-fA-F0-9]{40}$/,
-                message: "Invalid Ethereum address",
-              },
-            })}
-            className={baseInputClass}
-          />
-          {errors[field.name] && (
-            <p className="text-red-500 text-sm mt-1">{errors[field.name]?.message}</p>
-          )}
-        </div>
-      )
-
-    case "number":
-      return (
-        <div>
-          <label className="block text-sm font-medium mb-2">{field.label}</label>
-          <input
-            type="number"
-            placeholder={field.placeholder}
-            {...register(field.name, {
-              required: field.required ? `${field.label} is required` : false,
-              min: 0,
-              valueAsNumber: true,
-            })}
-            className={baseInputClass}
-          />
-          {errors[field.name] && (
-            <p className="text-red-500 text-sm mt-1">{errors[field.name]?.message}</p>
-          )}
-        </div>
-      )
-
     case "textarea":
       return (
-        <div>
-          <label className="block text-sm font-medium mb-2">{field.label}</label>
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground">
+            {field.label}
+            {field.required && <span className="text-destructive ml-1">*</span>}
+          </label>
           <textarea
-            placeholder={field.placeholder}
+            {...register(field.name, registerOptions)}
+            placeholder={field.placeholder || ""}
             rows={4}
-            {...register(field.name, {
-              required: field.required ? `${field.label} is required` : false,
-            })}
-            className={`${baseInputClass} resize-none`}
+            className={`${baseClasses} ${errorClasses} resize-none`}
           />
           {errors[field.name] && (
-            <p className="text-red-500 text-sm mt-1">{errors[field.name]?.message}</p>
+            <p className="text-xs text-destructive flex items-center gap-1">
+              <AlertCircle className="h-3 w-3" />
+              {errors[field.name]?.message as string}
+            </p>
           )}
         </div>
-      )
+      );
 
     case "select":
       return (
-        <div>
-          <label className="block text-sm font-medium mb-2">{field.label}</label>
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground">
+            {field.label}
+            {field.required && <span className="text-destructive ml-1">*</span>}
+          </label>
           <select
-            {...register(field.name, {
-              required: field.required ? `${field.label} is required` : false,
-            })}
-            className={baseInputClass}
+            {...register(field.name, registerOptions)}
+            className={`${baseClasses} ${errorClasses}`}
           >
             <option value="">Select {field.label}</option>
             {field.options?.map((opt) => (
@@ -248,29 +103,168 @@ function FormField({ field, register, errors }: FormFieldComponentProps) {
             ))}
           </select>
           {errors[field.name] && (
-            <p className="text-red-500 text-sm mt-1">{errors[field.name]?.message}</p>
+            <p className="text-xs text-destructive flex items-center gap-1">
+              <AlertCircle className="h-3 w-3" />
+              {errors[field.name]?.message as string}
+            </p>
           )}
         </div>
-      )
+      );
 
     case "checkbox":
       return (
         <div className="flex items-center gap-3">
           <input
             type="checkbox"
-            {...register(field.name, {
-              required: field.required ? `${field.label} is required` : false,
-            })}
-            className="w-4 h-4 rounded border-slate-200 dark:border-slate-700"
+            {...register(field.name)}
+            className="h-4 w-4 rounded border-border bg-background text-primary focus:ring-ring"
           />
-          <label className="text-sm font-medium">{field.label}</label>
-          {errors[field.name] && (
-            <p className="text-red-500 text-sm ml-auto">{errors[field.name]?.message}</p>
-          )}
+          <label className="text-sm font-medium text-foreground">
+            {field.label}
+          </label>
         </div>
-      )
+      );
 
     default:
-      return null
+      return (
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-foreground">
+            {field.label}
+            {field.required && <span className="text-destructive ml-1">*</span>}
+          </label>
+          <input
+            type={field.type === "number" ? "number" : "text"}
+            {...register(field.name, registerOptions)}
+            placeholder={field.placeholder || ""}
+            className={`${baseClasses} ${errorClasses}`}
+          />
+          {errors[field.name] && (
+            <p className="text-xs text-destructive flex items-center gap-1">
+              <AlertCircle className="h-3 w-3" />
+              {errors[field.name]?.message as string}
+            </p>
+          )}
+        </div>
+      );
   }
+}
+
+export default function ActionForm({ action }: { action: ActionConfig }) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({ mode: "onBlur" });
+
+  const { propose, isPending: isProposing } = usePropose();
+  const [status, setStatus] = useState<{
+    type: "success" | "error" | null;
+    message: string;
+  }>({ type: null, message: "" });
+
+  const onSubmit = async (data: FieldValues) => {
+    try {
+      setStatus({ type: null, message: "" });
+
+      if (action.requiresVoting) {
+        const severity = data.severity || "ROUTINE";
+        await propose(
+          [data.targetAddress || "0x0000000000000000000000000000000000000000"],
+          [BigInt(data.value || 0)],
+          [data.calldata || "0x"],
+          data.description || action.title,
+          getSeverityValue(severity)
+        );
+        setStatus({
+          type: "success",
+          message:
+            "Proposal submitted successfully! It will now go through the governance voting process.",
+        });
+      } else if (action.requiresApproval) {
+        setStatus({
+          type: "success",
+          message:
+            "Action submitted for multisig approval. Awaiting required signatures.",
+        });
+      }
+
+      reset();
+    } catch (error: any) {
+      setStatus({
+        type: "error",
+        message: error?.message || "Transaction failed. Please try again.",
+      });
+    }
+  };
+
+  return (
+    <Card className="border-border bg-card">
+      <CardHeader>
+        <CardTitle className="text-lg text-foreground">
+          {action.requiresVoting
+            ? "Submit Governance Proposal"
+            : "Execute Action"}
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        {status.type && (
+          <div
+            className={`mb-6 flex items-start gap-3 rounded-lg border p-4 ${
+              status.type === "success"
+                ? "border-green-500/30 bg-green-500/10 text-green-400"
+                : "border-destructive/30 bg-destructive/10 text-destructive"
+            }`}
+          >
+            {status.type === "success" ? (
+              <CheckCircle2 className="h-5 w-5 mt-0.5 shrink-0" />
+            ) : (
+              <AlertCircle className="h-5 w-5 mt-0.5 shrink-0" />
+            )}
+            <p className="text-sm">{status.message}</p>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          {action.fields?.map((field) => (
+            <FormField
+              key={field.name}
+              field={field}
+              register={register}
+              errors={errors}
+            />
+          ))}
+
+          <div className="flex items-center gap-3 rounded-lg border border-border bg-muted/30 p-3">
+            <Info className="h-4 w-4 text-muted-foreground shrink-0" />
+            <p className="text-xs text-muted-foreground">
+              {action.requiresVoting
+                ? "This action creates a governance proposal that requires validator voting before execution."
+                : action.requiresApproval
+                ? "This action requires multisig approval from the required number of validators."
+                : "This action will be executed immediately upon submission."}
+            </p>
+          </div>
+
+          <Button
+            type="submit"
+            disabled={isProposing}
+            className="w-full"
+            size="lg"
+          >
+            {isProposing ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Processing...
+              </>
+            ) : action.requiresVoting ? (
+              "Submit Proposal"
+            ) : (
+              "Execute Action"
+            )}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
+  );
 }

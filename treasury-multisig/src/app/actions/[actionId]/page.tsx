@@ -1,143 +1,153 @@
-"use client"
+"use client";
 
-import { useParams } from "next/navigation"
-import Link from "next/link"
-import { ACTIONS_CONFIG } from "@/lib/constants"
-import { ActionType } from "@/types"
-import { ActionForm } from "@/components/ActionForm"
+import { useParams } from "next/navigation";
+import Link from "next/link";
+import { ACTIONS_CONFIG } from "@/lib/constants";
+import { ActionType } from "@/types";
+import { ActionForm } from "@/components/ActionForm";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft, Info, CheckCircle, XCircle } from "lucide-react";
 
 export default function ActionPage() {
-  const params = useParams()
-  const actionId = params?.actionId as string
+  const params = useParams();
+  const actionId = params?.actionId as string;
 
   if (!actionId) {
     return (
-      <div className="text-center py-12">
-        <p className="text-slate-600 dark:text-slate-400">Action not found</p>
+      <div className="flex items-center justify-center py-16">
+        <p className="text-sm text-muted-foreground">Action not found</p>
       </div>
-    )
+    );
   }
 
-  const config = ACTIONS_CONFIG[actionId as ActionType]
+  const config = ACTIONS_CONFIG[actionId as ActionType];
 
   if (!config) {
     return (
-      <div className="text-center py-12">
-        <p className="text-slate-600 dark:text-slate-400">Action not found</p>
-        <Link href="/actions" className="text-blue-600 hover:text-blue-700 mt-4 inline-block">
-          ← Back to Actions
-        </Link>
+      <div className="flex flex-col items-center justify-center py-16 space-y-4">
+        <p className="text-sm text-muted-foreground">Action not found</p>
+        <Button variant="outline" size="sm" asChild>
+          <Link href="/actions">
+            <ArrowLeft className="h-3 w-3 mr-1" />
+            Back to Actions
+          </Link>
+        </Button>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900">
-      <div className="container mx-auto px-4 py-8">
-        {/* Back Button */}
-        <Link
-          href="/actions"
-          className="inline-flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 mb-8 font-medium"
-        >
-          ← Back to Actions
+    <div className="space-y-8">
+      {/* Back */}
+      <Button variant="ghost" size="sm" asChild>
+        <Link href="/actions">
+          <ArrowLeft className="h-3 w-3 mr-1" />
+          Back to Actions
         </Link>
+      </Button>
 
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-4 mb-4">
-            <span className="text-5xl">{config.icon}</span>
-            <div>
-              <h1 className="text-3xl font-bold">{config.title}</h1>
-              <p className="text-slate-600 dark:text-slate-400 mt-1">{config.description}</p>
-            </div>
-          </div>
-
-          {/* Badges */}
-          <div className="flex flex-wrap gap-2 mt-4">
-            <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-              {config.category.toUpperCase()}
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">{config.title}</h1>
+        <p className="text-sm text-muted-foreground mt-1">{config.description}</p>
+        <div className="flex flex-wrap gap-2 mt-3">
+          <span className="inline-flex items-center rounded-md px-2 py-1 text-[11px] font-medium ring-1 ring-inset bg-blue-500/10 text-blue-400 ring-blue-500/20 capitalize">
+            {config.category}
+          </span>
+          {config.requiresApproval && (
+            <span className="inline-flex items-center rounded-md px-2 py-1 text-[11px] font-medium ring-1 ring-inset bg-amber-500/10 text-amber-400 ring-amber-500/20">
+              Requires Approval
             </span>
-            {config.requiresApproval && (
-              <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200">
-                Requires Approval
-              </span>
-            )}
-            {config.requiresVoting && (
-              <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
-                Governance Vote
-              </span>
-            )}
-          </div>
+          )}
+          {config.requiresVoting && (
+            <span className="inline-flex items-center rounded-md px-2 py-1 text-[11px] font-medium ring-1 ring-inset bg-purple-500/10 text-purple-400 ring-purple-500/20">
+              Governance Vote
+            </span>
+          )}
         </div>
+      </div>
 
-        {/* Form Container */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Form */}
-          <div className="lg:col-span-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 card-shadow">
+      {/* Form + Sidebar */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Card className="lg:col-span-2">
+          <CardContent className="p-6">
             <ActionForm config={config} />
-          </div>
+          </CardContent>
+        </Card>
 
-          {/* Info Sidebar */}
-          <div className="space-y-6">
-            {/* Action Details */}
-            <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 card-shadow">
-              <h3 className="font-semibold mb-4">Action Details</h3>
-              <div className="space-y-3 text-sm">
-                <div>
-                  <p className="text-slate-600 dark:text-slate-400">Category</p>
-                  <p className="font-medium text-slate-900 dark:text-white capitalize">
-                    {config.category}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-slate-600 dark:text-slate-400">Requires Approval</p>
-                  <p className="font-medium text-slate-900 dark:text-white">
-                    {config.requiresApproval ? "✓ Yes" : "✗ No"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-slate-600 dark:text-slate-400">Requires Voting</p>
-                  <p className="font-medium text-slate-900 dark:text-white">
-                    {config.requiresVoting ? "✓ Yes (3-of-5)" : "✗ No"}
-                  </p>
-                </div>
+        <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Action Details</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Category</span>
+                <span className="font-medium capitalize">{config.category}</span>
               </div>
-            </div>
-
-            {/* Fields Info */}
-            <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 card-shadow">
-              <h3 className="font-semibold mb-4">Required Fields</h3>
-              <div className="space-y-2">
-                {config.fields.length === 0 ? (
-                  <p className="text-sm text-slate-600 dark:text-slate-400">No fields required</p>
-                ) : (
-                  config.fields.map((field) => (
-                    <div key={field.name} className="flex items-center gap-2 text-sm">
-                      <span className="text-slate-400">•</span>
-                      <span>{field.label}</span>
-                      {field.required && (
-                        <span className="text-red-500 font-bold">*</span>
-                      )}
-                    </div>
-                  ))
-                )}
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Approval</span>
+                <span className="flex items-center gap-1">
+                  {config.requiresApproval ? (
+                    <><CheckCircle className="h-3 w-3 text-emerald-400" /> Yes</>
+                  ) : (
+                    <><XCircle className="h-3 w-3 text-muted-foreground" /> No</>
+                  )}
+                </span>
               </div>
-            </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Voting</span>
+                <span className="flex items-center gap-1">
+                  {config.requiresVoting ? (
+                    <><CheckCircle className="h-3 w-3 text-emerald-400" /> 3-of-5</>
+                  ) : (
+                    <><XCircle className="h-3 w-3 text-muted-foreground" /> No</>
+                  )}
+                </span>
+              </div>
+            </CardContent>
+          </Card>
 
-            {/* Help */}
-            <div className="rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 p-4">
-              <p className="text-xs font-semibold text-blue-900 dark:text-blue-200 mb-2">
-                💡 Need Help?
-              </p>
-              <p className="text-xs text-blue-800 dark:text-blue-300 leading-relaxed">
-                Fill out the form with the required information and review your submission before
-                confirming. This action {config.requiresApproval ? "will require multisig approval" : ""}{" "}
-                {config.requiresVoting ? "and a governance vote (3-of-5 threshold)" : ""}.
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Required Fields</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-1">
+              {config.fields.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No fields required</p>
+              ) : (
+                config.fields.map((field) => (
+                  <div key={field.name} className="flex items-center gap-2 text-sm">
+                    <span className="h-1 w-1 rounded-full bg-muted-foreground" />
+                    <span>{field.label}</span>
+                    {field.required && (
+                      <span className="text-destructive text-xs">*</span>
+                    )}
+                  </div>
+                ))
+              )}
+            </CardContent>
+          </Card>
+
+          <div className="rounded-lg border border-border bg-accent/30 p-4">
+            <div className="flex items-start gap-2">
+              <Info className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Fill out the form and review before confirming.
+                {config.requiresApproval && " This action requires multisig approval."}
+                {config.requiresVoting && " A governance vote (3-of-5) is required."}
               </p>
             </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

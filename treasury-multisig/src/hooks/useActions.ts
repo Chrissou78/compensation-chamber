@@ -1,29 +1,18 @@
-import { ACTIONS } from '@/lib/constants';
-import { ActionType, ActionConfig } from '@/types';
+import { ACTIONS_CONFIG } from "@/lib/constants";
+import { ActionType, ActionConfig } from "@/types";
 
 export function useActions() {
-  const getAllActions = (): ActionConfig[] => {
-    return Object.values(ACTIONS);
-  };
+  const getAllActions = (): ActionConfig[] => Object.values(ACTIONS_CONFIG);
 
   const getActionsByCategory = (
-    category: 'governance' | 'voting' | 'emergency' | 'treasury'
-  ): ActionConfig[] => {
-    return Object.values(ACTIONS).filter((action) => action.category === category);
-  };
+    category: "governance" | "voting" | "emergency" | "treasury"
+  ): ActionConfig[] =>
+    Object.values(ACTIONS_CONFIG).filter((action) => action.category === category);
 
-  const getAction = (id: ActionType): ActionConfig | undefined => {
-    return ACTIONS[id];
-  };
+  const getAction = (id: ActionType): ActionConfig | undefined => ACTIONS_CONFIG[id];
 
-  const requiresGovernance = (id: ActionType): boolean => {
-    return ACTIONS[id]?.requiresApproval ?? false;
-  };
+  const requiresGovernance = (id: ActionType): boolean =>
+    ACTIONS_CONFIG[id]?.requiresApproval ?? false;
 
-  return {
-    getAllActions,
-    getActionsByCategory,
-    getAction,
-    requiresGovernance,
-  };
+  return { getAllActions, getActionsByCategory, getAction, requiresGovernance };
 }
