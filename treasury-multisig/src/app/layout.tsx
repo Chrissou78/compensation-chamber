@@ -1,11 +1,14 @@
-import type { Metadata } from 'next';
-import { Providers } from './providers';
-import { Navbar } from '@/components/Navbar';
-import './globals.css';
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import { Providers } from "./providers";
+import { Sidebar } from "@/components/Sidebar";
+import "./globals.css";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Treasury Multisig Wallet',
-  description: 'Governance-first multisig treasury management',
+  title: "Treasury Multisig",
+  description: "Governance-first multisig treasury management",
 };
 
 export default function RootLayout({
@@ -14,11 +17,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
         <Providers>
-          <Navbar />
-          <main className="container mx-auto py-6">{children}</main>
+          <div className="flex min-h-screen">
+            <Sidebar />
+            <main className="flex-1 md:ml-64 pb-16 md:pb-0">
+              <div className="container mx-auto px-6 py-8">{children}</div>
+            </main>
+          </div>
         </Providers>
       </body>
     </html>

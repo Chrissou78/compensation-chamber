@@ -1,29 +1,46 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useAccount } from "wagmi"
-import Link from "next/link"
-import { formatNumber, formatAddress } from "@/lib/utils"
-import { TreasuryBalance, Proposal } from "@/types"
+import { useEffect, useState } from "react";
+import { useAccount } from "wagmi";
+import Link from "next/link";
+import { formatNumber, formatAddress } from "@/lib/utils";
+import { TreasuryBalance, Proposal } from "@/types";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  DollarSign,
+  CircleDot,
+  Hexagon,
+  ScrollText,
+  Fuel,
+  PauseCircle,
+  ChevronRight,
+  ArrowUpRight,
+  Shield,
+} from "lucide-react";
 
 export function Dashboard() {
-  const { address, isConnected } = useAccount()
-  const [balance, setBalance] = useState<TreasuryBalance>({
+  const { address, isConnected } = useAccount();
+  const [balance] = useState<TreasuryBalance>({
     usdc: 125000,
     usdt: 85000,
     matic: 50,
     total: 210000,
-  })
-  const [pendingProposals, setPendingProposals] = useState<Proposal[]>([])
-  const [gasStatus, setGasStatus] = useState({
+  });
+  const [pendingProposals, setPendingProposals] = useState<Proposal[]>([]);
+  const [gasStatus] = useState({
     healthy: 7,
     warning: 1,
     critical: 1,
-  })
+  });
 
   useEffect(() => {
-    // Simulate loading data
-    // In production, use useProposals hook and contract queries
     setPendingProposals([
       {
         id: "1",
@@ -44,212 +61,284 @@ export function Dashboard() {
         thresholdReachedAt: undefined,
         readyForExecutionAt: undefined,
       },
-    ])
-  }, [])
+    ]);
+  }, []);
 
   if (!isConnected) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-white mb-4">Treasury Multisig</h1>
-          <p className="text-slate-300 mb-8">
-            Connect your wallet to access the governance interface
+      <div className="flex min-h-[80vh] flex-col items-center justify-center">
+        <div className="text-center max-w-md">
+          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-secondary">
+            <Shield className="h-8 w-8 text-foreground" />
+          </div>
+          <h1 className="text-2xl font-bold text-foreground mb-2">
+            Treasury Multisig
+          </h1>
+          <p className="text-sm text-muted-foreground mb-8">
+            Connect your wallet to access the governance interface and manage
+            treasury operations.
           </p>
-          <p className="text-sm text-slate-400">Use the Connect Wallet button in the navbar</p>
+          <p className="text-xs text-muted-foreground">
+            Use the Connect Wallet button in the sidebar
+          </p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="pt-4">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <p className="text-slate-600 dark:text-slate-400">
-          Welcome, {formatAddress(address!)}
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+        <p className="text-sm text-muted-foreground">
+          {formatAddress(address!)}
         </p>
       </div>
 
-      {/* Key Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Total Balance */}
-        <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 card-shadow">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                Total Balance
-              </p>
-              <p className="text-2xl font-bold mt-2">
-                ${formatNumber(balance.total)}
-              </p>
+      {/* Balance Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardDescription>Total Balance</CardDescription>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              ${formatNumber(balance.total)}
             </div>
-            <span className="text-4xl">💰</span>
-          </div>
-          <p className="text-xs text-slate-500 dark:text-slate-500 mt-4">
-            {balance.usdc + balance.usdt > 0
-              ? `${formatNumber(balance.usdc + balance.usdt)} stablecoins`
-              : "No stablecoins"}
-          </p>
-        </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              {formatNumber(balance.usdc + balance.usdt)} in stablecoins
+            </p>
+          </CardContent>
+        </Card>
 
-        {/* USDC */}
-        <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 card-shadow">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">USDC</p>
-              <p className="text-2xl font-bold mt-2">${formatNumber(balance.usdc)}</p>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardDescription>USDC</CardDescription>
+            <CircleDot className="h-4 w-4 text-blue-400" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              ${formatNumber(balance.usdc)}
             </div>
-            <span className="text-4xl">🔵</span>
-          </div>
-        </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              {((balance.usdc / balance.total) * 100).toFixed(1)}% of total
+            </p>
+          </CardContent>
+        </Card>
 
-        {/* USDT */}
-        <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 card-shadow">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">USDT</p>
-              <p className="text-2xl font-bold mt-2">${formatNumber(balance.usdt)}</p>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardDescription>USDT</CardDescription>
+            <CircleDot className="h-4 w-4 text-emerald-400" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              ${formatNumber(balance.usdt)}
             </div>
-            <span className="text-4xl">🟢</span>
-          </div>
-        </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              {((balance.usdt / balance.total) * 100).toFixed(1)}% of total
+            </p>
+          </CardContent>
+        </Card>
 
-        {/* MATIC */}
-        <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 card-shadow">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">MATIC</p>
-              <p className="text-2xl font-bold mt-2">{formatNumber(balance.matic)} MATIC</p>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+            <CardDescription>MATIC</CardDescription>
+            <Hexagon className="h-4 w-4 text-purple-400" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {formatNumber(balance.matic)}
             </div>
-            <span className="text-4xl">🟣</span>
-          </div>
-        </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Native gas token
+            </p>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Status Cards */}
+      {/* Middle row */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Pending Proposals */}
-        <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 card-shadow">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold">Pending Proposals</h3>
-            <span className="text-2xl">📋</span>
-          </div>
-          <p className="text-3xl font-bold">{pendingProposals.length}</p>
-          <p className="text-xs text-slate-500 dark:text-slate-500 mt-2">
-            {pendingProposals.length > 0
-              ? `${pendingProposals.length} awaiting action`
-              : "No pending proposals"}
-          </p>
-          <Link
-            href="/proposals"
-            className="mt-4 inline-block text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
-          >
-            View All →
-          </Link>
-        </div>
+        {/* Active Proposals */}
+        <Card className="lg:col-span-2">
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>Active Proposals</CardTitle>
+              <CardDescription>
+                {pendingProposals.length} awaiting action
+              </CardDescription>
+            </div>
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/proposals">
+                View all
+                <ChevronRight className="h-3 w-3 ml-1" />
+              </Link>
+            </Button>
+          </CardHeader>
+          <CardContent>
+            {pendingProposals.length === 0 ? (
+              <p className="text-sm text-muted-foreground py-8 text-center">
+                No active proposals
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {pendingProposals.map((proposal) => (
+                  <div
+                    key={proposal.id}
+                    className="flex items-center justify-between rounded-lg border border-border p-4 transition-colors hover:bg-accent/50"
+                  >
+                    <div className="flex items-center gap-4 min-w-0">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary">
+                        <ScrollText className="h-4 w-4 text-muted-foreground" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium truncate">
+                          {proposal.title}
+                        </p>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {proposal.description}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 shrink-0 ml-4">
+                      <div className="text-right">
+                        <p className="text-sm font-medium">
+                          {proposal.forVotes}/3
+                        </p>
+                        <p className="text-[11px] text-muted-foreground">
+                          signatures
+                        </p>
+                      </div>
+                      <span
+                        className={`inline-flex items-center rounded-md px-2 py-1 text-[11px] font-medium ring-1 ring-inset ${
+                          proposal.severity === "CRITICAL"
+                            ? "bg-red-500/10 text-red-400 ring-red-500/20"
+                            : proposal.severity === "IMPORTANT"
+                              ? "bg-amber-500/10 text-amber-400 ring-amber-500/20"
+                              : "bg-blue-500/10 text-blue-400 ring-blue-500/20"
+                        }`}
+                      >
+                        {proposal.severity}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
 
-        {/* Gas Reserve Status */}
-        <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 card-shadow">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold">Gas Reserves</h3>
-            <span className="text-2xl">⛽</span>
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-600 dark:text-slate-400">Healthy</span>
-              <span className="text-lg font-bold text-green-600">{gasStatus.healthy}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-600 dark:text-slate-400">Warning</span>
-              <span className="text-lg font-bold text-yellow-600">{gasStatus.warning}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-600 dark:text-slate-400">Critical</span>
-              <span className="text-lg font-bold text-red-600">{gasStatus.critical}</span>
-            </div>
-          </div>
-          <Link
-            href="/treasury"
-            className="mt-4 inline-block text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
-          >
-            Manage →
-          </Link>
-        </div>
+        {/* Gas Reserves */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Gas Reserves</CardTitle>
+            <CardDescription>Contract gas status</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-emerald-500" />
+                  <span className="text-sm">Healthy</span>
+                </div>
+                <span className="text-sm font-semibold">
+                  {gasStatus.healthy}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-amber-500" />
+                  <span className="text-sm">Warning</span>
+                </div>
+                <span className="text-sm font-semibold">
+                  {gasStatus.warning}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-red-500" />
+                  <span className="text-sm">Critical</span>
+                </div>
+                <span className="text-sm font-semibold">
+                  {gasStatus.critical}
+                </span>
+              </div>
 
-        {/* Quick Actions */}
-        <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 card-shadow">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold">Quick Actions</h3>
-            <span className="text-2xl">⚡</span>
-          </div>
-          <div className="space-y-2">
-            <Link
-              href="/actions/execute_pause"
-              className="block text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 font-medium"
-            >
-              🚨 Emergency Pause
-            </Link>
-            <Link
-              href="/actions/execute_emergency_refill"
-              className="block text-sm text-yellow-600 hover:text-yellow-700 dark:text-yellow-400 dark:hover:text-yellow-300 font-medium"
-            >
-              ⛽ Emergency Refill
-            </Link>
-            <Link
-              href="/proposals"
-              className="block text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
-            >
-              🗳️ View Proposals
-            </Link>
-          </div>
-        </div>
+              <div className="border-t border-border pt-4 mt-4">
+                <Button variant="outline" size="sm" className="w-full" asChild>
+                  <Link href="/treasury">
+                    Manage reserves
+                    <ArrowUpRight className="h-3 w-3 ml-1" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Recent Proposals */}
-      {pendingProposals.length > 0 && (
-        <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 card-shadow">
-          <h3 className="font-semibold mb-4">Active Proposals</h3>
-          <div className="space-y-3">
-            {pendingProposals.slice(0, 3).map((proposal) => (
-              <div
-                key={proposal.id}
-                className="flex items-center justify-between p-4 rounded-lg bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-              >
-                <div className="flex-1">
-                  <p className="font-medium">{proposal.title}</p>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">
-                    {proposal.description}
-                  </p>
-                </div>
-                <div className="flex items-center gap-4">
-                  <div className="text-right">
-                    <p className="text-sm font-medium">
-                      {proposal.forVotes}/{3} votes
-                    </p>
-                    <p className="text-xs text-slate-500">
-                      {proposal.state}
-                    </p>
+      {/* Quick Actions */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Quick Actions</CardTitle>
+          <CardDescription>
+            Emergency controls and common operations
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <Button
+              variant="destructive"
+              className="h-auto py-3 justify-start"
+              asChild
+            >
+              <Link href="/actions/execute_pause">
+                <PauseCircle className="h-4 w-4 mr-2" />
+                <div className="text-left">
+                  <div className="text-sm font-medium">Emergency Pause</div>
+                  <div className="text-[11px] opacity-70">
+                    Halt all operations
                   </div>
-                  <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
-                    proposal.severity === "CRITICAL"
-                      ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-                      : "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-                  }`}>
-                    {proposal.severity}
-                  </span>
                 </div>
-              </div>
-            ))}
+              </Link>
+            </Button>
+
+            <Button
+              variant="outline"
+              className="h-auto py-3 justify-start"
+              asChild
+            >
+              <Link href="/actions/execute_emergency_refill">
+                <Fuel className="h-4 w-4 mr-2" />
+                <div className="text-left">
+                  <div className="text-sm font-medium">Emergency Refill</div>
+                  <div className="text-[11px] text-muted-foreground">
+                    Top up gas reserves
+                  </div>
+                </div>
+              </Link>
+            </Button>
+
+            <Button
+              variant="outline"
+              className="h-auto py-3 justify-start"
+              asChild
+            >
+              <Link href="/proposals">
+                <ScrollText className="h-4 w-4 mr-2" />
+                <div className="text-left">
+                  <div className="text-sm font-medium">View Proposals</div>
+                  <div className="text-[11px] text-muted-foreground">
+                    Review & vote
+                  </div>
+                </div>
+              </Link>
+            </Button>
           </div>
-          <Link
-            href="/proposals"
-            className="mt-4 inline-block text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium"
-          >
-            View All Proposals →
-          </Link>
-        </div>
-      )}
+        </CardContent>
+      </Card>
     </div>
-  )
+  );
 }

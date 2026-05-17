@@ -1,5 +1,3 @@
-"use client"
-
 export enum ActionType {
   PROPOSE_THRESHOLD_CHANGE = "propose_threshold_change",
   PROPOSE_ADD_VALIDATOR = "propose_add_validator",
