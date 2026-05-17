@@ -1,93 +1,98 @@
+"use client"
+
 export enum ActionType {
-  // Governance
-  PROPOSE_THRESHOLD_CHANGE = 'propose_threshold_change',
-  PROPOSE_ADD_VALIDATOR = 'propose_add_validator',
-  PROPOSE_REMOVE_VALIDATOR = 'propose_remove_validator',
-  PROPOSE_BLACKLIST = 'propose_blacklist',
-  PROPOSE_REMOVE_BLACKLIST = 'propose_remove_blacklist',
-  PROPOSE_AUTHORIZE_AGENT = 'propose_authorize_agent',
-  PROPOSE_REVOKE_AGENT = 'propose_revoke_agent',
-  PROPOSE_UPGRADE = 'propose_upgrade',
-  PROPOSE_OWNERSHIP_TRANSFER = 'propose_ownership_transfer',
-
-  // Direct Actions (No Governance)
-  EMERGENCY_BLACKLIST = 'emergency_blacklist',
-  EMERGENCY_PAUSE = 'emergency_pause',
-  EMERGENCY_UNPAUSE = 'emergency_unpause',
-  EMERGENCY_REFILL_GAS = 'emergency_refill_gas',
-
-  // Voting
-  VOTE_ON_PROPOSAL = 'vote_on_proposal',
-  EXECUTE_PROPOSAL = 'execute_proposal',
-  CANCEL_PROPOSAL = 'cancel_proposal',
-
-  // Treasury
-  WITHDRAW_MATIC = 'withdraw_matic',
-  TRANSFER_OWNERSHIP = 'transfer_ownership',
-}
-
-export interface ActionConfig {
-  id: ActionType;
-  title: string;
-  description: string;
-  icon: string;
-  category: 'governance' | 'voting' | 'emergency' | 'treasury';
-  requiresApproval: boolean;
-  cooldownSeverity?: 'EMERGENCY' | 'CRITICAL' | 'IMPORTANT' | 'ROUTINE';
-  fields: FormField[];
+  PROPOSE_THRESHOLD_CHANGE = "propose_threshold_change",
+  PROPOSE_ADD_VALIDATOR = "propose_add_validator",
+  PROPOSE_REMOVE_VALIDATOR = "propose_remove_validator",
+  PROPOSE_BLACKLIST_ADDRESS = "propose_blacklist_address",
+  PROPOSE_AUTHORIZE_AGENT = "propose_authorize_agent",
+  PROPOSE_REVOKE_AGENT = "propose_revoke_agent",
+  PROPOSE_UPDATE_DELAY = "propose_update_delay",
+  PROPOSE_OWNERSHIP_TRANSFER = "propose_ownership_transfer",
+  EXECUTE_PAUSE = "execute_pause",
+  EXECUTE_UNPAUSE = "execute_unpause",
+  EXECUTE_EMERGENCY_REFILL = "execute_emergency_refill",
+  EXECUTE_WITHDRAW = "execute_withdraw",
+  VIEW_PROPOSALS = "view_proposals",
+  VIEW_VALIDATORS = "view_validators",
+  VIEW_TREASURY_BALANCE = "view_treasury_balance",
+  VIEW_GAS_RESERVES = "view_gas_reserves",
+  VOTE_ON_PROPOSAL = "vote_on_proposal",
+  EXECUTE_PROPOSAL = "execute_proposal",
 }
 
 export interface FormField {
-  name: string;
-  label: string;
-  type: 'text' | 'address' | 'number' | 'select' | 'textarea';
-  required: boolean;
-  placeholder?: string;
-  options?: { label: string; value: string }[];
-  validation?: string;
+  name: string
+  label: string
+  type: "text" | "address" | "number" | "select" | "textarea" | "checkbox"
+  required: boolean
+  placeholder?: string
+  options?: { label: string; value: string }[]
+  validation?: { pattern?: RegExp; message?: string }
+}
+
+export interface ActionConfig {
+  id: ActionType
+  title: string
+  description: string
+  icon: string
+  category: "governance" | "voting" | "emergency" | "treasury" | "view"
+  requiresApproval: boolean
+  requiresVoting: boolean
+  fields: FormField[]
 }
 
 export interface Proposal {
-  id: string;
-  createdAt: number;
-  proposer: string;
-  targets: string[];
-  values: string[];
-  calldatas: string[];
-  description: string;
-  severity: 'EMERGENCY' | 'CRITICAL' | 'IMPORTANT' | 'ROUTINE';
-  forVotes: number;
-  againstVotes: number;
-  abstainVotes: number;
-  startBlock: number;
-  endBlock: number;
-  thresholdReachedAt?: number;
-  readyForExecutionAt?: number;
-  executed: boolean;
-  cancelled: boolean;
+  id: string
+  title: string
+  description: string
+  targets: string[]
+  values: number[]
+  calldatas: string[]
+  startBlock: number
+  endBlock: number
+  forVotes: number
+  againstVotes: number
+  abstainVotes: number
+  canceled: boolean
+  executed: boolean
+  state: "Pending" | "Active" | "Canceled" | "Defeated" | "Succeeded" | "Queued" | "Expired" | "Executed"
+  severity?: "EMERGENCY" | "CRITICAL" | "IMPORTANT" | "ROUTINE"
+  thresholdReachedAt?: number
+  readyForExecutionAt?: number
+  createdAt?: number
+  updatedAt?: number
 }
 
 export interface Validator {
-  id: string;
-  wallet: string;
-  name: string;
-  role: string;
-  status: 'ACTIVE' | 'BLACKLISTED';
-  votingPower: bigint;
-  addedAt: number;
+  address: string
+  name: string
+  status: "ACTIVE" | "BLACKLISTED"
+  votingPower: number
+  joinedAt?: number
 }
 
-export interface ContractStatus {
-  address: string;
-  name: string;
-  balance: bigint;
-  owner: string;
-  paused?: boolean;
+export interface TreasuryBalance {
+  usdc: number
+  usdt: number
+  matic: number
+  total: number
 }
 
 export interface GasReserve {
-  contract: string;
-  current: bigint;
-  target: bigint;
-  threshold: bigint;
+  contractName: string
+  contractAddress: string
+  currentBalance: number
+  targetBalance: number
+  threshold: number
+  lastRefillAt?: number
+}
+
+export interface Order {
+  id: string
+  orderType: "PAYOUT" | "REBALANCE" | "STAKING"
+  status: "PENDING" | "SIGNED" | "EXECUTED" | "FAILED" | "CANCELED"
+  createdAt: number
+  executedAt?: number
+  data: Record<string, any>
 }

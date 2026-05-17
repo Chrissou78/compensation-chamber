@@ -1,501 +1,575 @@
-import { parseAbi } from 'viem';
+import { ActionType, ActionConfig } from "@/types"
 
-export const ACTIONS: Record<string, any> = {
-  propose_threshold_change: {
-    id: 'propose_threshold_change',
-    title: 'Propose Threshold Change',
-    description: 'Change signature requirement for an action type',
-    icon: '⚙️',
-    category: 'governance',
+export const ACTIONS_CONFIG: Record<ActionType, ActionConfig> = {
+  [ActionType.PROPOSE_THRESHOLD_CHANGE]: {
+    id: ActionType.PROPOSE_THRESHOLD_CHANGE,
+    title: "Change Signature Threshold",
+    description: "Modify the required number of signatures for actions",
+    icon: "⚙️",
+    category: "governance",
     requiresApproval: true,
-    cooldownSeverity: 'IMPORTANT',
+    requiresVoting: true,
     fields: [
       {
-        name: 'actionType',
-        label: 'Action Type',
-        type: 'select',
+        name: "actionType",
+        label: "Action Type",
+        type: "select",
         required: true,
         options: [
-          { label: 'Payout', value: '0' },
-          { label: 'Rebalance', value: '1' },
-          { label: 'Staking', value: '2' },
-          { label: 'Upgrade', value: '3' },
-          { label: 'Minting', value: '4' },
+          { label: "Payout", value: "PAYOUT" },
+          { label: "Rebalance", value: "REBALANCE" },
+          { label: "Staking", value: "STAKING" },
+          { label: "Upgrade", value: "UPGRADE" },
+          { label: "Minting", value: "MINTING" },
         ],
       },
       {
-        name: 'newThreshold',
-        label: 'New Threshold (e.g., 3)',
-        type: 'number',
+        name: "newThreshold",
+        label: "New Threshold (1-5)",
+        type: "number",
         required: true,
-        validation: '^[1-5]$',
+        placeholder: "e.g., 3",
       },
       {
-        name: 'description',
-        label: 'Reason',
-        type: 'textarea',
+        name: "description",
+        label: "Description",
+        type: "textarea",
         required: true,
-      },
-    ],
-  },
-
-  propose_add_validator: {
-    id: 'propose_add_validator',
-    title: 'Add Validator',
-    description: 'Propose adding a new validator to the registry',
-    icon: '➕',
-    category: 'governance',
-    requiresApproval: true,
-    cooldownSeverity: 'ROUTINE',
-    fields: [
-      {
-        name: 'wallet',
-        label: 'Validator Wallet Address',
-        type: 'address',
-        required: true,
-        placeholder: '0x...',
-      },
-      {
-        name: 'name',
-        label: 'Name',
-        type: 'text',
-        required: true,
-        placeholder: 'e.g., New CEO',
-      },
-      {
-        name: 'role',
-        label: 'Role',
-        type: 'text',
-        required: true,
-        placeholder: 'e.g., Executive',
-      },
-      {
-        name: 'reason',
-        label: 'Reason',
-        type: 'textarea',
-        required: true,
+        placeholder: "Why is this change needed?",
       },
     ],
   },
 
-  propose_remove_validator: {
-    id: 'propose_remove_validator',
-    title: 'Remove Validator',
-    description: 'Propose removing a validator from the registry',
-    icon: '➖',
-    category: 'governance',
+  [ActionType.PROPOSE_ADD_VALIDATOR]: {
+    id: ActionType.PROPOSE_ADD_VALIDATOR,
+    title: "Add Validator",
+    description: "Add a new member to the validator set",
+    icon: "👤",
+    category: "governance",
     requiresApproval: true,
-    cooldownSeverity: 'CRITICAL',
+    requiresVoting: true,
     fields: [
       {
-        name: 'validatorId',
-        label: 'Validator ID',
-        type: 'text',
+        name: "validatorAddress",
+        label: "Validator Address",
+        type: "address",
         required: true,
+        placeholder: "0x...",
       },
       {
-        name: 'reason',
-        label: 'Reason',
-        type: 'textarea',
+        name: "validatorName",
+        label: "Validator Name",
+        type: "text",
         required: true,
+        placeholder: "e.g., CEO",
+      },
+      {
+        name: "votingPower",
+        label: "Voting Power (TGV)",
+        type: "number",
+        required: true,
+        placeholder: "200000",
+      },
+      {
+        name: "description",
+        label: "Description",
+        type: "textarea",
+        required: true,
+        placeholder: "Background and rationale",
       },
     ],
   },
 
-  propose_blacklist: {
-    id: 'propose_blacklist',
-    title: 'Propose Blacklist',
-    description: 'Propose blacklisting an address',
-    icon: '🚫',
-    category: 'governance',
+  [ActionType.PROPOSE_REMOVE_VALIDATOR]: {
+    id: ActionType.PROPOSE_REMOVE_VALIDATOR,
+    title: "Remove Validator",
+    description: "Remove a member from the validator set",
+    icon: "🚫",
+    category: "governance",
     requiresApproval: true,
-    cooldownSeverity: 'CRITICAL',
+    requiresVoting: true,
     fields: [
       {
-        name: 'account',
-        label: 'Address to Blacklist',
-        type: 'address',
+        name: "validatorAddress",
+        label: "Validator Address",
+        type: "address",
         required: true,
+        placeholder: "0x...",
       },
       {
-        name: 'reason',
-        label: 'Reason',
-        type: 'textarea',
+        name: "reason",
+        label: "Reason for Removal",
+        type: "textarea",
         required: true,
+        placeholder: "Why should this validator be removed?",
       },
     ],
   },
 
-  propose_remove_blacklist: {
-    id: 'propose_remove_blacklist',
-    title: 'Propose Blacklist Removal',
-    description: 'Propose removing an address from blacklist',
-    icon: '✅',
-    category: 'governance',
+  [ActionType.PROPOSE_BLACKLIST_ADDRESS]: {
+    id: ActionType.PROPOSE_BLACKLIST_ADDRESS,
+    title: "Blacklist Address",
+    description: "Blacklist an address from receiving or holding TGV tokens",
+    icon: "⛔",
+    category: "emergency",
     requiresApproval: true,
-    cooldownSeverity: 'IMPORTANT',
+    requiresVoting: false,
     fields: [
       {
-        name: 'account',
-        label: 'Address to Unblacklist',
-        type: 'address',
+        name: "accountAddress",
+        label: "Account to Blacklist",
+        type: "address",
         required: true,
+        placeholder: "0x...",
       },
       {
-        name: 'reason',
-        label: 'Reason',
-        type: 'textarea',
+        name: "reason",
+        label: "Reason",
+        type: "textarea",
         required: true,
+        placeholder: "Security incident, regulatory, etc.",
       },
     ],
   },
 
-  propose_authorize_agent: {
-    id: 'propose_authorize_agent',
-    title: 'Authorize AI Agent',
-    description: 'Authorize an AI settlement agent',
-    icon: '🤖',
-    category: 'governance',
+  [ActionType.PROPOSE_AUTHORIZE_AGENT]: {
+    id: ActionType.PROPOSE_AUTHORIZE_AGENT,
+    title: "Authorize AI Agent",
+    description: "Authorize an AI settlement agent to execute treasury orders",
+    icon: "🤖",
+    category: "governance",
     requiresApproval: true,
-    cooldownSeverity: 'ROUTINE',
+    requiresVoting: true,
     fields: [
       {
-        name: 'agentAddress',
-        label: 'Agent Address',
-        type: 'address',
+        name: "agentAddress",
+        label: "Agent Address",
+        type: "address",
         required: true,
+        placeholder: "0x...",
       },
       {
-        name: 'agentName',
-        label: 'Agent Name',
-        type: 'text',
+        name: "agentName",
+        label: "Agent Name",
+        type: "text",
         required: true,
-        placeholder: 'e.g., Settlement Agent v1',
+        placeholder: "e.g., Settlement Agent v1",
       },
       {
-        name: 'reason',
-        label: 'Reason',
-        type: 'textarea',
+        name: "description",
+        label: "Description",
+        type: "textarea",
         required: true,
+        placeholder: "Agent capabilities and scope",
       },
     ],
   },
 
-  propose_revoke_agent: {
-    id: 'propose_revoke_agent',
-    title: 'Revoke AI Agent',
-    description: 'Revoke authorization for an AI settlement agent',
-    icon: '🔕',
-    category: 'governance',
+  [ActionType.PROPOSE_REVOKE_AGENT]: {
+    id: ActionType.PROPOSE_REVOKE_AGENT,
+    title: "Revoke AI Agent",
+    description: "Revoke authorization from an AI settlement agent",
+    icon: "🔐",
+    category: "governance",
     requiresApproval: true,
-    cooldownSeverity: 'CRITICAL',
+    requiresVoting: true,
     fields: [
       {
-        name: 'agentAddress',
-        label: 'Agent Address',
-        type: 'address',
+        name: "agentAddress",
+        label: "Agent Address",
+        type: "address",
         required: true,
+        placeholder: "0x...",
       },
       {
-        name: 'reason',
-        label: 'Reason',
-        type: 'textarea',
+        name: "reason",
+        label: "Reason for Revocation",
+        type: "textarea",
         required: true,
+        placeholder: "Why is the agent being revoked?",
       },
     ],
   },
 
-  propose_upgrade: {
-    id: 'propose_upgrade',
-    title: 'Propose Contract Upgrade',
-    description: 'Propose upgrading a contract implementation',
-    icon: '🔄',
-    category: 'governance',
+  [ActionType.PROPOSE_UPDATE_DELAY]: {
+    id: ActionType.PROPOSE_UPDATE_DELAY,
+    title: "Update Timelock Delay",
+    description: "Modify the timelock delay for an action severity level",
+    icon: "⏱️",
+    category: "governance",
     requiresApproval: true,
-    cooldownSeverity: 'CRITICAL',
+    requiresVoting: true,
     fields: [
       {
-        name: 'contractName',
-        label: 'Contract to Upgrade',
-        type: 'select',
+        name: "severity",
+        label: "Severity Level",
+        type: "select",
         required: true,
         options: [
-          { label: 'GovernanceTokenV2', value: 'governance_token' },
-          { label: 'DynamicValidatorRegistry', value: 'validator_registry' },
-          { label: 'TreasuryController', value: 'treasury_controller' },
-          { label: 'GasRefiller', value: 'gas_refiller' },
-          { label: 'UpgradeGovernor', value: 'governor' },
+          { label: "Emergency (0h)", value: "EMERGENCY" },
+          { label: "Critical (24h)", value: "CRITICAL" },
+          { label: "Important (12h)", value: "IMPORTANT" },
+          { label: "Routine (4h)", value: "ROUTINE" },
         ],
       },
       {
-        name: 'newImplementation',
-        label: 'New Implementation Address',
-        type: 'address',
+        name: "newDelay",
+        label: "New Delay (seconds)",
+        type: "number",
         required: true,
+        placeholder: "86400",
       },
       {
-        name: 'reason',
-        label: 'Reason for Upgrade',
-        type: 'textarea',
+        name: "description",
+        label: "Reason for Change",
+        type: "textarea",
         required: true,
       },
     ],
   },
 
-  propose_ownership_transfer: {
-    id: 'propose_ownership_transfer',
-    title: 'Transfer Ownership',
-    description: 'Transfer contract ownership to a new multisig',
-    icon: '👑',
-    category: 'treasury',
+  [ActionType.PROPOSE_OWNERSHIP_TRANSFER]: {
+    id: ActionType.PROPOSE_OWNERSHIP_TRANSFER,
+    title: "Transfer Ownership",
+    description: "Transfer all treasury contracts to a new multisig",
+    icon: "👑",
+    category: "governance",
     requiresApproval: true,
-    cooldownSeverity: 'CRITICAL',
+    requiresVoting: true,
     fields: [
       {
-        name: 'newOwner',
-        label: 'New Owner Address',
-        type: 'address',
+        name: "newOwner",
+        label: "New Multisig Address",
+        type: "address",
         required: true,
+        placeholder: "0x...",
       },
       {
-        name: 'reason',
-        label: 'Reason',
-        type: 'textarea',
+        name: "newMembers",
+        label: "New Member Addresses (comma-separated)",
+        type: "textarea",
         required: true,
+        placeholder: "0x..., 0x..., 0x..., 0x..., 0x...",
+      },
+      {
+        name: "description",
+        label: "Reason for Transfer",
+        type: "textarea",
+        required: true,
+        placeholder: "New governance structure, security upgrade, etc.",
       },
     ],
   },
 
-  emergency_blacklist: {
-    id: 'emergency_blacklist',
-    title: '🚨 EMERGENCY: Blacklist Address',
-    description: 'Immediately blacklist an address (no governance)',
-    icon: '🚨',
-    category: 'emergency',
-    requiresApproval: false,
-    fields: [
-      {
-        name: 'account',
-        label: 'Address to Blacklist',
-        type: 'address',
-        required: true,
-      },
-      {
-        name: 'reason',
-        label: 'Reason (must be critical)',
-        type: 'textarea',
-        required: true,
-      },
-    ],
-  },
-
-  emergency_pause: {
-    id: 'emergency_pause',
-    title: '🚨 EMERGENCY: Pause Operations',
-    description: 'Immediately pause all treasury operations',
-    icon: '⏸️',
-    category: 'emergency',
-    requiresApproval: false,
-    fields: [
-      {
-        name: 'reason',
-        label: 'Reason for Emergency Pause',
-        type: 'textarea',
-        required: true,
-      },
-    ],
-  },
-
-  emergency_unpause: {
-    id: 'emergency_unpause',
-    title: '▶️ Resume Operations',
-    description: 'Resume paused treasury operations',
-    icon: '▶️',
-    category: 'emergency',
+  [ActionType.EXECUTE_PAUSE]: {
+    id: ActionType.EXECUTE_PAUSE,
+    title: "Pause Treasury Operations",
+    description: "Immediately pause all treasury operations (emergency)",
+    icon: "⏸️",
+    category: "emergency",
     requiresApproval: true,
-    cooldownSeverity: 'ROUTINE',
+    requiresVoting: false,
     fields: [
       {
-        name: 'reason',
-        label: 'Reason to Resume',
-        type: 'textarea',
+        name: "reason",
+        label: "Reason for Pause",
+        type: "textarea",
         required: true,
+        placeholder: "Security incident, system upgrade, etc.",
       },
     ],
   },
 
-  emergency_refill_gas: {
-    id: 'emergency_refill_gas',
-    title: '⛽ Emergency Gas Refill',
-    description: 'Manually refill contract gas reserves',
-    icon: '⛽',
-    category: 'emergency',
-    requiresApproval: false,
+  [ActionType.EXECUTE_UNPAUSE]: {
+    id: ActionType.EXECUTE_UNPAUSE,
+    title: "Unpause Treasury Operations",
+    description: "Resume all treasury operations after pause",
+    icon: "▶️",
+    category: "governance",
+    requiresApproval: true,
+    requiresVoting: false,
     fields: [
       {
-        name: 'contract',
-        label: 'Contract to Refill',
-        type: 'select',
+        name: "description",
+        label: "Confirmation Message",
+        type: "textarea",
+        required: true,
+        placeholder: "All systems checked and ready to resume",
+      },
+    ],
+  },
+
+  [ActionType.EXECUTE_EMERGENCY_REFILL]: {
+    id: ActionType.EXECUTE_EMERGENCY_REFILL,
+    title: "Emergency Gas Refill",
+    description: "Immediately refill gas reserves for critical contracts",
+    icon: "⛽",
+    category: "emergency",
+    requiresApproval: true,
+    requiresVoting: false,
+    fields: [
+      {
+        name: "contract",
+        label: "Contract to Refill",
+        type: "select",
         required: true,
         options: [
-          { label: 'TreasuryController', value: 'treasury_controller' },
-          { label: 'GasRefiller', value: 'gas_refiller' },
-          { label: 'PayoutExecutor', value: 'payout_executor' },
-          { label: 'RebalancingExecutor', value: 'rebalancing_executor' },
-          { label: 'StakingExecutor', value: 'staking_executor' },
+          { label: "Treasury Controller", value: "TREASURY_CONTROLLER" },
+          { label: "Payout Executor", value: "PAYOUT_EXECUTOR" },
+          { label: "Rebalancing Executor", value: "REBALANCING_EXECUTOR" },
+          { label: "Staking Executor", value: "STAKING_EXECUTOR" },
         ],
       },
       {
-        name: 'amount',
-        label: 'Amount (MATIC)',
-        type: 'number',
+        name: "amount",
+        label: "Amount (MATIC)",
+        type: "number",
         required: true,
-        placeholder: '10',
+        placeholder: "10",
       },
     ],
   },
 
-  vote_on_proposal: {
-    id: 'vote_on_proposal',
-    title: 'Vote on Proposal',
-    description: 'Cast your vote on an active proposal',
-    icon: '🗳️',
-    category: 'voting',
-    requiresApproval: false,
+  [ActionType.EXECUTE_WITHDRAW]: {
+    id: ActionType.EXECUTE_WITHDRAW,
+    title: "Emergency Withdraw",
+    description: "Withdraw funds from treasury to a specified address",
+    icon: "💸",
+    category: "emergency",
+    requiresApproval: true,
+    requiresVoting: false,
     fields: [
       {
-        name: 'proposalId',
-        label: 'Proposal ID',
-        type: 'text',
-        required: true,
-      },
-      {
-        name: 'support',
-        label: 'Your Vote',
-        type: 'select',
+        name: "token",
+        label: "Token",
+        type: "select",
         required: true,
         options: [
-          { label: 'FOR', value: '1' },
-          { label: 'AGAINST', value: '0' },
-          { label: 'ABSTAIN', value: '2' },
+          { label: "USDC", value: "USDC" },
+          { label: "USDT", value: "USDT" },
+          { label: "MATIC", value: "MATIC" },
         ],
       },
       {
-        name: 'reason',
-        label: 'Reason (optional)',
-        type: 'textarea',
+        name: "amount",
+        label: "Amount",
+        type: "number",
+        required: true,
+        placeholder: "1000",
+      },
+      {
+        name: "recipient",
+        label: "Recipient Address",
+        type: "address",
+        required: true,
+        placeholder: "0x...",
+      },
+      {
+        name: "reason",
+        label: "Reason",
+        type: "textarea",
+        required: true,
+      },
+    ],
+  },
+
+  [ActionType.VIEW_PROPOSALS]: {
+    id: ActionType.VIEW_PROPOSALS,
+    title: "View Proposals",
+    description: "View all governance proposals and their status",
+    icon: "📋",
+    category: "view",
+    requiresApproval: false,
+    requiresVoting: false,
+    fields: [],
+  },
+
+  [ActionType.VIEW_VALIDATORS]: {
+    id: ActionType.VIEW_VALIDATORS,
+    title: "View Validators",
+    description: "View all active validators and their voting power",
+    icon: "👥",
+    category: "view",
+    requiresApproval: false,
+    requiresVoting: false,
+    fields: [],
+  },
+
+  [ActionType.VIEW_TREASURY_BALANCE]: {
+    id: ActionType.VIEW_TREASURY_BALANCE,
+    title: "View Treasury Balance",
+    description: "Check total treasury funds across all tokens",
+    icon: "💰",
+    category: "view",
+    requiresApproval: false,
+    requiresVoting: false,
+    fields: [],
+  },
+
+  [ActionType.VIEW_GAS_RESERVES]: {
+    id: ActionType.VIEW_GAS_RESERVES,
+    title: "View Gas Reserves",
+    description: "Check gas reserves for each contract",
+    icon: "📊",
+    category: "view",
+    requiresApproval: false,
+    requiresVoting: false,
+    fields: [],
+  },
+
+  [ActionType.VOTE_ON_PROPOSAL]: {
+    id: ActionType.VOTE_ON_PROPOSAL,
+    title: "Vote on Proposal",
+    description: "Cast your vote on an active governance proposal",
+    icon: "🗳️",
+    category: "voting",
+    requiresApproval: false,
+    requiresVoting: false,
+    fields: [
+      {
+        name: "proposalId",
+        label: "Proposal ID",
+        type: "text",
+        required: true,
+        placeholder: "e.g., 42",
+      },
+      {
+        name: "vote",
+        label: "Your Vote",
+        type: "select",
+        required: true,
+        options: [
+          { label: "For", value: "1" },
+          { label: "Against", value: "0" },
+          { label: "Abstain", value: "2" },
+        ],
+      },
+      {
+        name: "reason",
+        label: "Voting Reason (optional)",
+        type: "textarea",
         required: false,
+        placeholder: "Why are you voting this way?",
       },
     ],
   },
 
-  execute_proposal: {
-    id: 'execute_proposal',
-    title: 'Execute Proposal',
-    description: 'Execute a proposal after cooldown expires',
-    icon: '✓',
-    category: 'voting',
+  [ActionType.EXECUTE_PROPOSAL]: {
+    id: ActionType.EXECUTE_PROPOSAL,
+    title: "Execute Proposal",
+    description: "Execute a proposal that has met threshold and cooldown",
+    icon: "✅",
+    category: "voting",
     requiresApproval: false,
+    requiresVoting: false,
     fields: [
       {
-        name: 'proposalId',
-        label: 'Proposal ID',
-        type: 'text',
+        name: "proposalId",
+        label: "Proposal ID",
+        type: "text",
+        required: true,
+        placeholder: "e.g., 42",
+      },
+      {
+        name: "confirmation",
+        label: "I confirm this proposal is ready for execution",
+        type: "checkbox",
         required: true,
       },
     ],
   },
-
-  cancel_proposal: {
-    id: 'cancel_proposal',
-    title: 'Cancel Proposal',
-    description: 'Cancel a pending proposal (multisig only)',
-    icon: '❌',
-    category: 'voting',
-    requiresApproval: false,
-    fields: [
-      {
-        name: 'proposalId',
-        label: 'Proposal ID',
-        type: 'text',
-        required: true,
-      },
-      {
-        name: 'reason',
-        label: 'Reason for Cancellation',
-        type: 'textarea',
-        required: true,
-      },
-    ],
-  },
-
-  withdraw_matic: {
-    id: 'withdraw_matic',
-    title: 'Withdraw MATIC',
-    description: 'Withdraw excess MATIC from treasury',
-    icon: '💰',
-    category: 'treasury',
-    requiresApproval: true,
-    cooldownSeverity: 'ROUTINE',
-    fields: [
-      {
-        name: 'amount',
-        label: 'Amount (MATIC)',
-        type: 'number',
-        required: true,
-        placeholder: '10',
-      },
-      {
-        name: 'recipient',
-        label: 'Recipient Address',
-        type: 'address',
-        required: true,
-      },
-      {
-        name: 'reason',
-        label: 'Reason',
-        type: 'textarea',
-        required: true,
-      },
-    ],
-  },
-
-  transfer_ownership: {
-    id: 'transfer_ownership',
-    title: 'Direct Ownership Transfer',
-    description: 'Direct ownership transfer (multisig only)',
-    icon: '👑',
-    category: 'treasury',
-    requiresApproval: false,
-    fields: [
-      {
-        name: 'contract',
-        label: 'Contract',
-        type: 'select',
-        required: true,
-        options: [
-          { label: 'All Contracts', value: 'all' },
-          { label: 'TreasuryController', value: 'treasury_controller' },
-          { label: 'GasRefiller', value: 'gas_refiller' },
-        ],
-      },
-      {
-        name: 'newOwner',
-        label: 'New Owner',
-        type: 'address',
-        required: true,
-      },
-    ],
-  },
-};
+}
 
 export const CONTRACT_ADDRESSES = {
-  polygonAmoy: {
-    variableTimelock: process.env.NEXT_PUBLIC_VARIABLE_TIMELOCK!,
-    governanceToken: process.env.NEXT_PUBLIC_GOVERNANCE_TOKEN!,
-    upgradeGovernor: process.env.NEXT_PUBLIC_UPGRADE_GOVERNOR!,
-    validatorRegistry: process.env.NEXT_PUBLIC_VALIDATOR_REGISTRY!,
-    treasuryController: process.env.NEXT_PUBLIC_TREASURY_CONTROLLER!,
-    gasRefiller: process.env.NEXT_PUBLIC_GAS_REFILLER!,
-  },
-};
+  VARIABLE_TIMELOCK: process.env.NEXT_PUBLIC_VARIABLE_TIMELOCK || "0x",
+  GOVERNANCE_TOKEN: process.env.NEXT_PUBLIC_GOVERNANCE_TOKEN || "0x",
+  UPGRADE_GOVERNOR: process.env.NEXT_PUBLIC_UPGRADE_GOVERNOR || "0x",
+  VALIDATOR_REGISTRY: process.env.NEXT_PUBLIC_VALIDATOR_REGISTRY || "0x",
+  TREASURY_CONTROLLER: process.env.NEXT_PUBLIC_TREASURY_CONTROLLER || "0x",
+  GAS_REFILLER: process.env.NEXT_PUBLIC_GAS_REFILLER || "0x",
+}
+
+export const NETWORKS = {
+  AMOY: 80002,
+  POLYGON: 137,
+  ETHEREUM: 1,
+}
+
+export const CATEGORY_LABELS: Record<string, string> = {
+  governance: "🏛️ Governance",
+  voting: "🗳️ Voting",
+  emergency: "🚨 Emergency",
+  treasury: "💎 Treasury",
+  view: "👁️ View",
+}
+
+export const CATEGORY_COLORS: Record<string, string> = {
+  governance: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200",
+  voting: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200",
+  emergency: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+  treasury: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
+  view: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200",
+}
+
+export const PROPOSAL_STATES = [
+  "Pending",
+  "Active",
+  "Canceled",
+  "Defeated",
+  "Succeeded",
+  "Queued",
+  "Expired",
+  "Executed",
+] as const
+
+export const SEVERITY_DELAYS = {
+  EMERGENCY: 0,
+  CRITICAL: 86400, // 24 hours
+  IMPORTANT: 43200, // 12 hours
+  ROUTINE: 14400, // 4 hours
+}
+
+export const REQUIRED_THRESHOLD = 3
+export const TOTAL_VALIDATORS = 5
+export const MAX_VALIDATORS = 20
+export const MIN_VALIDATORS = 3
+
+export const SUBGRAPH_QUERY = {
+  GET_PROPOSALS: `
+    query GetProposals($first: Int!, $skip: Int!) {
+      proposals(first: $first, skip: $skip, orderBy: createdAt, orderDirection: desc) {
+        id
+        title
+        description
+        state
+        severity
+        forVotes
+        againstVotes
+        abstainVotes
+        createdAt
+        thresholdReachedAt
+        readyForExecutionAt
+      }
+    }
+  `,
+  GET_VALIDATORS: `
+    query GetValidators {
+      validators(where: { status: ACTIVE }) {
+        id
+        address
+        name
+        votingPower
+        status
+      }
+    }
+  `,
+  GET_TREASURY_BALANCE: `
+    query GetTreasuryBalance {
+      treasuryBalances(first: 1) {
+        usdc
+        usdt
+        matic
+      }
+    }
+  `,
+}
