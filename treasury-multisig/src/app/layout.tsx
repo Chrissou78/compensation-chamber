@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Providers } from "./providers";
 import { Sidebar } from "@/components/Sidebar";
+import { Toaster } from "@/components/Toaster";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -26,6 +27,7 @@ export default function RootLayout({
               <div className="container mx-auto px-6 py-8">{children}</div>
             </main>
           </div>
+          <Toaster />
         </Providers>
       </body>
     </html>
