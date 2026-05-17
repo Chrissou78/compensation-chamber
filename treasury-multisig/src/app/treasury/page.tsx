@@ -1,9 +1,18 @@
+// src/app/treasury/page.tsx
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
 import { useAccount } from "wagmi";
 import { CONTRACT_ADDRESSES } from "@/lib/constants";
+import { formatNumber } from "@/lib/utils";
+import {
+  useTreasuryBalance,
+  useTreasuryPaused,
+  useGasReserves,
+  useAccumulatedFees,
+} from "@/hooks/useTreasury";
+import { CardSkeleton } from "@/components/Skeleton";
 import {
   Card,
   CardContent,
@@ -15,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import {
   Shield,
   PauseCircle,
+  PlayCircle,
   Fuel,
   Wallet,
   Timer,
@@ -28,6 +38,8 @@ import {
   ChevronRight,
   ArrowUpRight,
   Crown,
+  DollarSign,
+  AlertTriangle,
 } from "lucide-react";
 
 const ICON_MAP: Record<string, React.ElementType> = {
@@ -45,6 +57,10 @@ const ICON_MAP: Record<string, React.ElementType> = {
 export default function TreasuryPage() {
   const { isConnected } = useAccount();
   const [expandedContract, setExpandedContract] = useState<string | null>(null);
+  const { data: balance, isLoading: balanceLoading } = useTreasuryBalance();
+  const { isPaused } = useTreasuryPaused();
+  const { data: gasReserves, isLoading: gasLoading } = useGasReserves();
+  const accumulatedFees = useAccumulatedFees();
 
   const contracts = [
     { name: "VariableTimelockController", address: CONTRACT_ADDRESSES.VARIABLE_TIMELOCK, description: "Severity-based timelock for scheduled operations", actions: ["Update Delays"] },
@@ -86,9 +102,156 @@ export default function TreasuryPage() {
         </p>
       </div>
 
+      {/* Pause Banner */}
+      {isPaused && (
+        <div className="flex items-start gap-3 rounded-lg border border-red-500/30 bg-red-500/10 p-4">
+          <AlertTriangle className="h-5 w-5 text-red-400 mt-0.5 shrink-0" />
+          <div className="flex-1">
+            <p className="text-sm font-medium text-red-400">
+              Treasury Operations Paused
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              All order execution is currently halted. Unpause to resume operations.
+            </p>
+          </div>
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/actions/execute_unpause">
+              <PlayCircle className="h-3 w-3 mr-1" />
+              Unpause
+            </Link>
+          </Button>
+        </div>
+      )}
+
+      {/* Balance Overview */}
+      {balanceLoading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <CardSkeleton />
+          <CardSkeleton />
+          <CardSkeleton />
+          <CardSkeleton />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardDescription>Total Stablecoins</CardDescription>
+              <DollarSign className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                ${formatNumber(balance?.total ?? 0)}
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardDescription>USDC</CardDescription>
+              <DollarSign className="h-4 w-4 text-blue-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                ${formatNumber(balance?.usdc ?? 0)}
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardDescription>USDT</CardDescription>
+              <DollarSign className="h-4 w-4 text-emerald-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                ${formatNumber(balance?.usdt ?? 0)}
+              </div>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+              <CardDescription>Accumulated Fees</CardDescription>
+              <Coins className="h-4 w-4 text-amber-400" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                ${formatNumber(accumulatedFees.usdc + accumulatedFees.usdt)}
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Pending swap to MATIC
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Gas Reserves */}
+      {gasLoading ? (
+        <CardSkeleton />
+      ) : gasReserves && gasReserves.length > 0 ? (
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>Gas Reserves</CardTitle>
+              <CardDescription>MATIC balance per contract</CardDescription>
+            </div>
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/actions/execute_emergency_refill">
+                <Fuel className="h-3 w-3 mr-1" />
+                Refill
+              </Link>
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {gasReserves.map((reserve) => {
+                const percentage =
+                  reserve.targetBalance > 0
+                    ? (reserve.currentBalance / reserve.targetBalance) * 100
+                    : 0;
+                const status =
+                  reserve.currentBalance >= reserve.refillThreshold
+                    ? "healthy"
+                    : reserve.currentBalance > 0
+                      ? "warning"
+                      : "critical";
+                const barColor =
+                  status === "healthy"
+                    ? "bg-emerald-500"
+                    : status === "warning"
+                      ? "bg-amber-500"
+                      : "bg-red-500";
+
+                return (
+                  <div key={reserve.contractAddress} className="space-y-1.5">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="font-medium">{reserve.contractName}</span>
+                      <span className="text-muted-foreground">
+                        {formatNumber(reserve.currentBalance, 3)} /{" "}
+                        {formatNumber(reserve.targetBalance, 1)} MATIC
+                      </span>
+                    </div>
+                    <div className="h-2 rounded-full bg-secondary overflow-hidden">
+                      <div
+                        className={`h-full rounded-full transition-all ${barColor}`}
+                        style={{
+                          width: `${Math.min(100, percentage)}%`,
+                        }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      ) : null}
+
       {/* Emergency Actions */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <Button variant="destructive" className="h-auto py-3 justify-start" asChild>
+        <Button
+          variant="destructive"
+          className="h-auto py-3 justify-start"
+          asChild
+        >
           <Link href="/actions/execute_pause">
             <PauseCircle className="h-4 w-4 mr-2" />
             <div className="text-left">
@@ -97,21 +260,33 @@ export default function TreasuryPage() {
             </div>
           </Link>
         </Button>
-        <Button variant="outline" className="h-auto py-3 justify-start" asChild>
+        <Button
+          variant="outline"
+          className="h-auto py-3 justify-start"
+          asChild
+        >
           <Link href="/actions/execute_emergency_refill">
             <Fuel className="h-4 w-4 mr-2" />
             <div className="text-left">
               <div className="text-sm font-medium">Emergency Refill</div>
-              <div className="text-[11px] text-muted-foreground">Top up gas reserves</div>
+              <div className="text-[11px] text-muted-foreground">
+                Top up gas reserves
+              </div>
             </div>
           </Link>
         </Button>
-        <Button variant="outline" className="h-auto py-3 justify-start" asChild>
+        <Button
+          variant="outline"
+          className="h-auto py-3 justify-start"
+          asChild
+        >
           <Link href="/actions/execute_withdraw">
             <Wallet className="h-4 w-4 mr-2" />
             <div className="text-left">
               <div className="text-sm font-medium">Emergency Withdraw</div>
-              <div className="text-[11px] text-muted-foreground">Extract funds</div>
+              <div className="text-[11px] text-muted-foreground">
+                Extract funds
+              </div>
             </div>
           </Link>
         </Button>
@@ -130,7 +305,13 @@ export default function TreasuryPage() {
               return (
                 <div key={contract.name}>
                   <button
-                    onClick={() => setExpandedContract(expandedContract === contract.name ? null : contract.name)}
+                    onClick={() =>
+                      setExpandedContract(
+                        expandedContract === contract.name
+                          ? null
+                          : contract.name
+                      )
+                    }
                     className="w-full px-6 py-4 flex items-center justify-between hover:bg-accent/50 transition-colors text-left"
                   >
                     <div className="flex items-center gap-3">
@@ -139,7 +320,9 @@ export default function TreasuryPage() {
                       </div>
                       <div>
                         <p className="text-sm font-medium">{contract.name}</p>
-                        <p className="text-xs text-muted-foreground">{contract.description}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {contract.description}
+                        </p>
                       </div>
                     </div>
                     {expandedContract === contract.name ? (
@@ -151,18 +334,32 @@ export default function TreasuryPage() {
 
                   {expandedContract === contract.name && (
                     <div className="px-6 py-4 bg-accent/30 border-t border-border space-y-4">
-                      {contract.address !== "0x..." && contract.address !== "0x" && (
-                        <div>
-                          <p className="text-xs text-muted-foreground mb-1">Contract Address</p>
-                          <p className="font-mono text-xs break-all p-2 rounded bg-secondary">{contract.address}</p>
-                        </div>
-                      )}
+                      {contract.address !== "0x..." &&
+                        contract.address !== "0x" && (
+                          <div>
+                            <p className="text-xs text-muted-foreground mb-1">
+                              Contract Address
+                            </p>
+                            <p className="font-mono text-xs break-all p-2 rounded bg-secondary">
+                              {contract.address}
+                            </p>
+                          </div>
+                        )}
                       <div>
-                        <p className="text-xs text-muted-foreground mb-2">Available Actions</p>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          Available Actions
+                        </p>
                         <div className="flex flex-wrap gap-2">
                           {contract.actions.map((action) => (
-                            <Button key={action} variant="secondary" size="sm" asChild>
-                              <Link href={actionHrefMap[action] || "/"}>
+                            <Button
+                              key={action}
+                              variant="secondary"
+                              size="sm"
+                              asChild
+                            >
+                              <Link
+                                href={actionHrefMap[action] || "/"}
+                              >
                                 {action}
                                 <ArrowUpRight className="h-3 w-3 ml-1" />
                               </Link>
@@ -185,7 +382,8 @@ export default function TreasuryPage() {
           <div>
             <p className="text-sm font-medium">Transfer All Ownership</p>
             <p className="text-xs text-muted-foreground mt-1">
-              Initiate governance proposal to transfer contracts to a new multisig
+              Initiate governance proposal to transfer contracts to a new
+              multisig
             </p>
           </div>
           <Button variant="outline" asChild>

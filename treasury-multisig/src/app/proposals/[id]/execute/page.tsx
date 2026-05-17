@@ -1,9 +1,11 @@
+// src/app/proposals/[id]/execute/page.tsx
 "use client";
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useProposal } from "@/hooks/useProposals";
+import { useExecuteProposal } from "@/hooks/useVoting";
 import { CooldownTimer } from "@/components/CooldownTimer";
 import {
   Card,
@@ -25,22 +27,32 @@ export default function ExecuteProposalPage() {
   const params = useParams();
   const proposalId = params?.id as string;
   const { data: proposal, isLoading } = useProposal(proposalId);
-  const [executing, setExecuting] = useState(false);
-  const [executed, setExecuted] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    executeProposal,
+    isPending: executing,
+    isSuccess: executed,
+    hash,
+    error: txError,
+  } = useExecuteProposal();
   const [cooldownExpired, setCooldownExpired] = useState(false);
+  const [localError, setLocalError] = useState<string | null>(null);
 
   const handleExecute = async () => {
+    if (!proposal) return;
+    setLocalError(null);
+
     try {
-      setExecuting(true);
-      setError(null);
-      // TODO: Call governor.executeProposal(targets, values, calldatas, descriptionHash, proposalId)
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      setExecuted(true);
-    } catch (err: any) {
-      setError(err?.message || "Execution failed");
-    } finally {
-      setExecuting(false);
+      await executeProposal(
+        proposal.targets as `0x${string}`[],
+        proposal.values.map((v) => BigInt(v)),
+        proposal.calldatas as `0x${string}`[],
+        proposal.description,
+        proposalId
+      );
+    } catch (err: unknown) {
+      const message =
+        err instanceof Error ? err.message : "Execution failed";
+      setLocalError(message);
     }
   };
 
@@ -94,6 +106,11 @@ export default function ExecuteProposalPage() {
             <p className="text-sm text-muted-foreground mt-1">
               All target contracts have been called successfully
             </p>
+            {hash && (
+              <p className="text-xs font-mono text-muted-foreground mt-2 break-all">
+                TX: {hash}
+              </p>
+            )}
           </div>
           <Button variant="outline" size="sm" asChild>
             <Link href="/proposals">View All Proposals</Link>
@@ -106,6 +123,8 @@ export default function ExecuteProposalPage() {
   const canExecute =
     proposal.state === "Succeeded" &&
     (!proposal.readyForExecutionAt || cooldownExpired);
+
+  const displayError = localError || txError?.message;
 
   return (
     <div className="space-y-8 max-w-2xl mx-auto">
@@ -142,7 +161,8 @@ export default function ExecuteProposalPage() {
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Targets</span>
             <span className="font-medium">
-              {proposal.targets.filter((t) => t !== "0x").length || 1} contract(s)
+              {proposal.targets.filter((t) => t !== "0x").length || 1}{" "}
+              contract(s)
             </span>
           </div>
           <div className="flex justify-between text-sm">
@@ -175,10 +195,10 @@ export default function ExecuteProposalPage() {
         </div>
       </div>
 
-      {error && (
+      {displayError && (
         <div className="flex items-start gap-3 rounded-lg border border-destructive/30 bg-destructive/10 p-4">
           <AlertTriangle className="h-5 w-5 text-destructive mt-0.5 shrink-0" />
-          <p className="text-sm text-destructive">{error}</p>
+          <p className="text-sm text-destructive">{displayError}</p>
         </div>
       )}
 

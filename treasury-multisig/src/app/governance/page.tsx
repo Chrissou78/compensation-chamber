@@ -1,10 +1,15 @@
+// src/app/governance/page.tsx
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
 import { useValidators, useValidatorCount } from "@/hooks/useValidators";
+import {
+  useValidatorLimits,
+  useGovernorConstants,
+} from "@/hooks/useGovernance";
 import { formatAddress, formatNumber } from "@/lib/utils";
-import { REQUIRED_THRESHOLD, TOTAL_VALIDATORS } from "@/lib/constants";
+import { CardSkeleton } from "@/components/Skeleton";
 import {
   Card,
   CardContent,
@@ -28,6 +33,8 @@ import {
 export default function GovernancePage() {
   const { data: validators, isLoading } = useValidators();
   const { total, active, blacklisted } = useValidatorCount();
+  const { minValidators, maxValidators } = useValidatorLimits();
+  const { passageThreshold } = useGovernorConstants();
   const [expandedValidator, setExpandedValidator] = useState<string | null>(
     null
   );
@@ -62,9 +69,7 @@ export default function GovernancePage() {
             <ShieldCheck className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {REQUIRED_THRESHOLD}/{TOTAL_VALIDATORS}
-            </div>
+            <div className="text-2xl font-bold">3/{total || 5}</div>
             <p className="text-xs text-muted-foreground mt-1">
               Required for actions
             </p>
@@ -73,26 +78,28 @@ export default function GovernancePage() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardDescription>Voting Power</CardDescription>
+            <CardDescription>Passage Threshold</CardDescription>
             <Scale className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">Equal</div>
+            <div className="text-2xl font-bold">{passageThreshold}%</div>
             <p className="text-xs text-muted-foreground mt-1">
-              200K TGV per validator
+              For-vote percentage required
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-            <CardDescription>Voting Period</CardDescription>
+            <CardDescription>Validator Limits</CardDescription>
             <Timer className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">Immediate</div>
+            <div className="text-2xl font-bold">
+              {minValidators}–{maxValidators}
+            </div>
             <p className="text-xs text-muted-foreground mt-1">
-              On 3-of-5 threshold
+              Min–Max validators
             </p>
           </CardContent>
         </Card>
@@ -100,13 +107,21 @@ export default function GovernancePage() {
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <Button variant="outline" className="h-auto py-3 justify-start" asChild>
+        <Button
+          variant="outline"
+          className="h-auto py-3 justify-start"
+          asChild
+        >
           <Link href="/actions/propose_add_validator">
             <UserPlus className="h-4 w-4 mr-2" />
             Add Validator
           </Link>
         </Button>
-        <Button variant="outline" className="h-auto py-3 justify-start text-destructive hover:text-destructive" asChild>
+        <Button
+          variant="outline"
+          className="h-auto py-3 justify-start text-destructive hover:text-destructive"
+          asChild
+        >
           <Link href="/actions/propose_remove_validator">
             <UserMinus className="h-4 w-4 mr-2" />
             Remove Validator
@@ -124,8 +139,9 @@ export default function GovernancePage() {
         </CardHeader>
         <CardContent className="p-0">
           {isLoading ? (
-            <div className="p-6 text-center text-sm text-muted-foreground">
-              Loading validators...
+            <div className="p-6 space-y-4">
+              <CardSkeleton />
+              <CardSkeleton />
             </div>
           ) : !validators || validators.length === 0 ? (
             <div className="p-6 text-center text-sm text-muted-foreground">
@@ -150,7 +166,9 @@ export default function GovernancePage() {
                         {index + 1}
                       </div>
                       <div>
-                        <p className="text-sm font-medium">{validator.name}</p>
+                        <p className="text-sm font-medium">
+                          {validator.name}
+                        </p>
                         <p className="text-xs font-mono text-muted-foreground">
                           {formatAddress(validator.address)}
                         </p>
@@ -201,7 +219,9 @@ export default function GovernancePage() {
                         </div>
                         {validator.joinedAt && (
                           <div>
-                            <p className="text-muted-foreground mb-1">Joined</p>
+                            <p className="text-muted-foreground mb-1">
+                              Joined
+                            </p>
                             <p>
                               {new Date(
                                 validator.joinedAt * 1000
@@ -235,21 +255,30 @@ export default function GovernancePage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card>
           <CardHeader>
-            <CardTitle>Signature Threshold</CardTitle>
+            <CardTitle>Governance Parameters</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Required Signatures</span>
-              <span className="font-bold">
-                {REQUIRED_THRESHOLD} of {TOTAL_VALIDATORS}
-              </span>
+              <span className="text-muted-foreground">Passage Threshold</span>
+              <span className="font-bold">{passageThreshold}% for-votes</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Min Validators</span>
+              <span className="font-bold">{minValidators}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Max Validators</span>
+              <span className="font-bold">{maxValidators}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-muted-foreground">Active Validators</span>
               <span className="font-bold">{active}</span>
             </div>
             <div className="pt-3 border-t border-border text-muted-foreground space-y-1">
-              <p>Applies to: governance proposals, emergency actions, ownership transfers, contract upgrades</p>
+              <p>
+                Execution is immediate once threshold is met. Cooldown delays
+                are determined by proposal severity.
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -278,7 +307,7 @@ export default function GovernancePage() {
               >
                 <span className="text-sm">{action.name}</span>
                 <span className="text-sm font-bold">
-                  {action.threshold}/{TOTAL_VALIDATORS}
+                  {action.threshold}/{total || 5}
                 </span>
               </div>
             ))}

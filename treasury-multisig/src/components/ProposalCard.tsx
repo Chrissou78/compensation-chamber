@@ -1,11 +1,18 @@
+// src/components/ProposalCard.tsx
 "use client";
 
 import Link from "next/link";
 import { Proposal } from "@/types";
-import { ThresholdIndicator } from "./ThresholdIndicator";
-import { CooldownTimer } from "./CooldownTimer";
+import { ThresholdIndicator } from "@/components/ThresholdIndicator";
+import { CooldownTimer } from "@/components/CooldownTimer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+  CheckCircle,
+  XCircle,
+  MinusCircle,
+  ChevronRight,
+} from "lucide-react";
 
 const severityStyle: Record<string, string> = {
   EMERGENCY: "bg-red-500/10 text-red-400 ring-red-500/20",
@@ -25,74 +32,111 @@ const stateStyle: Record<string, string> = {
   Executed: "bg-emerald-500/10 text-emerald-400 ring-emerald-500/20",
 };
 
-interface ProposalCardProps {
-  proposal: Proposal;
-  showActions?: boolean;
-}
-
-export function ProposalCard({ proposal, showActions = true }: ProposalCardProps) {
+export function ProposalCard({ proposal }: { proposal: Proposal }) {
   return (
-    <Card>
-      <CardContent className="p-6 space-y-4">
-        {/* Header */}
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <p className="text-sm font-semibold">{proposal.title}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">{proposal.description}</p>
-          </div>
-          <div className="flex gap-1.5 shrink-0">
-            <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-medium ring-1 ring-inset ${severityStyle[proposal.severity || "ROUTINE"]}`}>
-              {proposal.severity || "ROUTINE"}
-            </span>
-            <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-medium ring-1 ring-inset ${stateStyle[proposal.state]}`}>
-              {proposal.state}
-            </span>
-          </div>
-        </div>
-
-        {/* Threshold */}
-        {proposal.state === "Active" && (
-          <ThresholdIndicator forVotes={proposal.forVotes} requiredVotes={3} totalVoters={5} severity={proposal.severity} showLabel={false} />
-        )}
-
-        {/* Cooldown */}
-        {proposal.state === "Succeeded" && proposal.readyForExecutionAt && (
-          <CooldownTimer readyForExecutionAt={proposal.readyForExecutionAt} severity={proposal.severity} />
-        )}
-
-        {/* Votes */}
-        {proposal.state === "Active" && (
-          <div className="grid grid-cols-3 gap-3">
-            <div className="rounded-lg bg-emerald-500/5 border border-emerald-500/10 p-3">
-              <p className="text-[10px] font-medium text-emerald-400 uppercase">For</p>
-              <p className="text-lg font-bold text-emerald-400">{proposal.forVotes}</p>
+    <Link href={`/proposals/${proposal.id}`}>
+      <Card className="transition-colors hover:bg-accent/30 cursor-pointer">
+        <CardContent className="p-6">
+          {/* Header row */}
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              <h3 className="text-sm font-semibold truncate">
+                {proposal.title}
+              </h3>
+              <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
+                {proposal.description}
+              </p>
             </div>
-            <div className="rounded-lg bg-red-500/5 border border-red-500/10 p-3">
-              <p className="text-[10px] font-medium text-red-400 uppercase">Against</p>
-              <p className="text-lg font-bold text-red-400">{proposal.againstVotes}</p>
-            </div>
-            <div className="rounded-lg bg-accent p-3">
-              <p className="text-[10px] font-medium text-muted-foreground uppercase">Abstain</p>
-              <p className="text-lg font-bold">{proposal.abstainVotes}</p>
+            <div className="flex items-center gap-1.5 shrink-0">
+              {proposal.severity && (
+                <span
+                  className={`inline-flex items-center rounded-md px-2 py-1 text-[11px] font-medium ring-1 ring-inset ${severityStyle[proposal.severity]}`}
+                >
+                  {proposal.severity}
+                </span>
+              )}
+              <span
+                className={`inline-flex items-center rounded-md px-2 py-1 text-[11px] font-medium ring-1 ring-inset ${stateStyle[proposal.state]}`}
+              >
+                {proposal.state}
+              </span>
             </div>
           </div>
-        )}
 
-        {/* Meta */}
-        <div className="text-xs text-muted-foreground space-y-0.5">
-          <p>ID: {proposal.id}</p>
-          {proposal.createdAt && (<p>Created: {new Date(proposal.createdAt * 1000).toLocaleDateString()}</p>)}
-        </div>
+          {/* Threshold indicator for active proposals */}
+          {proposal.state === "Active" && (
+            <div className="mt-4">
+              <ThresholdIndicator
+                forVotes={proposal.forVotes}
+                requiredVotes={3}
+                totalVoters={5}
+                severity={proposal.severity}
+                showLabel={false}
+              />
+            </div>
+          )}
 
-        {/* Actions */}
-        {showActions && (
-          <div className="flex gap-2 pt-2 border-t border-border">
-            {proposal.state === "Active" && (<Button size="sm" asChild><Link href={`/proposals/${proposal.id}/vote`}>Vote</Link></Button>)}
-            {proposal.state === "Succeeded" && (<Button size="sm" variant="default" asChild><Link href={`/proposals/${proposal.id}/execute`}>Execute</Link></Button>)}
-            <Button size="sm" variant="outline" asChild><Link href={`/proposals/${proposal.id}`}>Details</Link></Button>
+          {/* Cooldown timer for succeeded proposals */}
+          {proposal.state === "Succeeded" &&
+            proposal.readyForExecutionAt && (
+              <div className="mt-4">
+                <CooldownTimer
+                  readyForExecutionAt={proposal.readyForExecutionAt}
+                  severity={proposal.severity}
+                />
+              </div>
+            )}
+
+          {/* Footer */}
+          <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
+            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1">
+                <CheckCircle className="h-3 w-3 text-emerald-400" />
+                {proposal.forVotes}
+              </span>
+              <span className="flex items-center gap-1">
+                <XCircle className="h-3 w-3 text-red-400" />
+                {proposal.againstVotes}
+              </span>
+              <span className="flex items-center gap-1">
+                <MinusCircle className="h-3 w-3" />
+                {proposal.abstainVotes}
+              </span>
+              <span>ID: {proposal.id}</span>
+              {proposal.createdAt && (
+                <span>
+                  {new Date(proposal.createdAt * 1000).toLocaleDateString()}
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              {proposal.state === "Active" && (
+                <Button
+                  variant="default"
+                  size="sm"
+                  asChild
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Link href={`/proposals/${proposal.id}/vote`}>Vote</Link>
+                </Button>
+              )}
+              {proposal.state === "Succeeded" && (
+                <Button
+                  variant="default"
+                  size="sm"
+                  asChild
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <Link href={`/proposals/${proposal.id}/execute`}>
+                    Execute
+                  </Link>
+                </Button>
+              )}
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            </div>
           </div>
-        )}
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }

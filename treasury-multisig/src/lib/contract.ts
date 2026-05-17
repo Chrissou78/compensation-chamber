@@ -1,17 +1,23 @@
-import { type Address } from "viem";
+// src/lib/contract.ts
+import { type Address, type Abi } from "viem";
 import { CONTRACT_ADDRESSES } from "./constants";
-import {GOVERNOR_ABI, TREASURY_ABI, REGISTRY_ABI, GAS_REFILLER_ABI,} from "./abi";
+import {
+  GOVERNOR_ABI,
+  TREASURY_ABI,
+  REGISTRY_ABI,
+  GAS_REFILLER_ABI,
+} from "./abi";
 
 type ContractName = "governor" | "treasury" | "validators" | "gas";
 
 const CONTRACT_MAP: Record<
   ContractName,
-  { addressKey: keyof typeof CONTRACT_ADDRESSES; abi: readonly unknown[] }
+  { addressKey: keyof typeof CONTRACT_ADDRESSES; abi: Abi }
 > = {
-  governor: { addressKey: "UPGRADE_GOVERNOR", abi: GOVERNOR_ABI },
-  treasury: { addressKey: "TREASURY_CONTROLLER", abi: TREASURY_ABI },
-  validators: { addressKey: "VALIDATOR_REGISTRY", abi: REGISTRY_ABI },
-  gas: { addressKey: "GAS_REFILLER", abi: GAS_REFILLER_ABI },
+  governor: { addressKey: "UPGRADE_GOVERNOR", abi: GOVERNOR_ABI as unknown as Abi },
+  treasury: { addressKey: "TREASURY_CONTROLLER", abi: TREASURY_ABI as unknown as Abi },
+  validators: { addressKey: "VALIDATOR_REGISTRY", abi: REGISTRY_ABI as unknown as Abi },
+  gas: { addressKey: "GAS_REFILLER", abi: GAS_REFILLER_ABI as unknown as Abi },
 };
 
 export function getContractConfig(name: ContractName) {

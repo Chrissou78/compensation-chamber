@@ -1,10 +1,13 @@
+// src/app/proposals/[id]/page.tsx
 "use client";
 
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useProposal } from "@/hooks/useProposals";
+import { useCancelProposal } from "@/hooks/useVoting";
 import { ThresholdIndicator } from "@/components/ThresholdIndicator";
 import { CooldownTimer } from "@/components/CooldownTimer";
+import { ProposalCardSkeleton } from "@/components/Skeleton";
 import {
   Card,
   CardContent,
@@ -23,6 +26,7 @@ import {
   Calendar,
   Shield,
   FileText,
+  Loader2,
 } from "lucide-react";
 
 const severityStyle: Record<string, string> = {
@@ -47,6 +51,7 @@ export default function ProposalDetailPage() {
   const params = useParams();
   const proposalId = params?.id as string;
   const { data: proposal, isLoading } = useProposal(proposalId);
+  const { cancelProposal, isPending: isCancelling } = useCancelProposal();
 
   if (isLoading) {
     return (
@@ -57,9 +62,8 @@ export default function ProposalDetailPage() {
             Back to Proposals
           </Link>
         </Button>
-        <div className="flex items-center justify-center py-16">
-          <p className="text-sm text-muted-foreground">Loading proposal...</p>
-        </div>
+        <ProposalCardSkeleton />
+        <ProposalCardSkeleton />
       </div>
     );
   }
@@ -81,7 +85,8 @@ export default function ProposalDetailPage() {
     );
   }
 
-  const totalVotes = proposal.forVotes + proposal.againstVotes + proposal.abstainVotes;
+  const totalVotes =
+    proposal.forVotes + proposal.againstVotes + proposal.abstainVotes;
 
   return (
     <div className="space-y-8">
@@ -133,12 +138,13 @@ export default function ProposalDetailPage() {
           )}
 
           {/* Cooldown */}
-          {proposal.state === "Succeeded" && proposal.readyForExecutionAt && (
-            <CooldownTimer
-              readyForExecutionAt={proposal.readyForExecutionAt}
-              severity={proposal.severity}
-            />
-          )}
+          {proposal.state === "Succeeded" &&
+            proposal.readyForExecutionAt && (
+              <CooldownTimer
+                readyForExecutionAt={proposal.readyForExecutionAt}
+                severity={proposal.severity}
+              />
+            )}
 
           {/* Votes */}
           <Card>
@@ -176,39 +182,40 @@ export default function ProposalDetailPage() {
           </Card>
 
           {/* Targets */}
-          {proposal.targets.length > 0 && proposal.targets[0] !== "0x" && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Execution Targets</CardTitle>
-                <CardDescription>
-                  Contracts and calldata to execute
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {proposal.targets.map((target, i) => (
-                  <div
-                    key={i}
-                    className="rounded-lg bg-accent/50 p-3 space-y-1"
-                  >
-                    <p className="text-[11px] text-muted-foreground uppercase font-medium">
-                      Target {i + 1}
-                    </p>
-                    <p className="font-mono text-xs break-all">{target}</p>
-                    {proposal.calldatas[i] && (
-                      <div className="mt-2">
-                        <p className="text-[11px] text-muted-foreground uppercase font-medium">
-                          Calldata
-                        </p>
-                        <p className="font-mono text-xs break-all text-muted-foreground">
-                          {proposal.calldatas[i]}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          )}
+          {proposal.targets.length > 0 &&
+            proposal.targets[0] !== "0x" && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Execution Targets</CardTitle>
+                  <CardDescription>
+                    Contracts and calldata to execute
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {proposal.targets.map((target, i) => (
+                    <div
+                      key={i}
+                      className="rounded-lg bg-accent/50 p-3 space-y-1"
+                    >
+                      <p className="text-[11px] text-muted-foreground uppercase font-medium">
+                        Target {i + 1}
+                      </p>
+                      <p className="font-mono text-xs break-all">{target}</p>
+                      {proposal.calldatas[i] && (
+                        <div className="mt-2">
+                          <p className="text-[11px] text-muted-foreground uppercase font-medium">
+                            Calldata
+                          </p>
+                          <p className="font-mono text-xs break-all text-muted-foreground">
+                            {proposal.calldatas[i]}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
         </div>
 
         {/* Sidebar */}
@@ -233,9 +240,23 @@ export default function ProposalDetailPage() {
                   </Link>
                 </Button>
               )}
-              {(proposal.state === "Active" || proposal.state === "Pending") && (
-                <Button variant="destructive" className="w-full" size="sm">
-                  Cancel Proposal
+              {(proposal.state === "Active" ||
+                proposal.state === "Pending") && (
+                <Button
+                  variant="destructive"
+                  className="w-full"
+                  size="sm"
+                  disabled={isCancelling}
+                  onClick={() => cancelProposal(proposal.id)}
+                >
+                  {isCancelling ? (
+                    <>
+                      <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                      Cancelling...
+                    </>
+                  ) : (
+                    "Cancel Proposal"
+                  )}
                 </Button>
               )}
             </CardContent>
@@ -257,7 +278,9 @@ export default function ProposalDetailPage() {
                 <span className="text-muted-foreground flex items-center gap-1.5">
                   <Shield className="h-3 w-3" /> Severity
                 </span>
-                <span className="font-medium">{proposal.severity || "ROUTINE"}</span>
+                <span className="font-medium">
+                  {proposal.severity || "ROUTINE"}
+                </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground flex items-center gap-1.5">
@@ -271,7 +294,9 @@ export default function ProposalDetailPage() {
                     <Calendar className="h-3 w-3" /> Created
                   </span>
                   <span className="text-xs">
-                    {new Date(proposal.createdAt * 1000).toLocaleString()}
+                    {new Date(
+                      proposal.createdAt * 1000
+                    ).toLocaleString()}
                   </span>
                 </div>
               )}
@@ -281,17 +306,23 @@ export default function ProposalDetailPage() {
                     <CheckCircle className="h-3 w-3" /> Threshold
                   </span>
                   <span className="text-xs">
-                    {new Date(proposal.thresholdReachedAt * 1000).toLocaleString()}
+                    {new Date(
+                      proposal.thresholdReachedAt * 1000
+                    ).toLocaleString()}
                   </span>
                 </div>
               )}
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">Start Block</span>
-                <span className="font-mono text-xs">{proposal.startBlock}</span>
+                <span className="font-mono text-xs">
+                  {proposal.startBlock}
+                </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-muted-foreground">End Block</span>
-                <span className="font-mono text-xs">{proposal.endBlock}</span>
+                <span className="font-mono text-xs">
+                  {proposal.endBlock}
+                </span>
               </div>
             </CardContent>
           </Card>

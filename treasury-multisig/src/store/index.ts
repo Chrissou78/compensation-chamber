@@ -1,38 +1,41 @@
+// src/store/index.ts
 import { create } from "zustand";
 
 export interface Toast {
   id: string;
   type: "success" | "error" | "info" | "warning";
   title: string;
+  message?: string;
   description?: string;
   duration?: number;
 }
 
 interface AppState {
-  // Toasts
   toasts: Toast[];
   addToast: (toast: Omit<Toast, "id">) => void;
   removeToast: (id: string) => void;
 
-  // Pending actions
   pendingTxCount: number;
   incrementPendingTx: () => void;
   decrementPendingTx: () => void;
 
-  // UI state
   sidebarCollapsed: boolean;
   toggleSidebar: () => void;
 }
 
 export const useAppStore = create<AppState>((set) => ({
-  // Toasts
   toasts: [],
   addToast: (toast) => {
     const id = Math.random().toString(36).slice(2, 9);
+    // Normalize: accept both `message` and `description`
+    const normalized = {
+      ...toast,
+      description: toast.description || toast.message,
+      id,
+    };
     set((state) => ({
-      toasts: [...state.toasts, { ...toast, id }],
+      toasts: [...state.toasts, normalized],
     }));
-    // Auto-remove after duration
     const duration = toast.duration ?? 5000;
     if (duration > 0) {
       setTimeout(() => {
@@ -47,7 +50,6 @@ export const useAppStore = create<AppState>((set) => ({
       toasts: state.toasts.filter((t) => t.id !== id),
     })),
 
-  // Pending actions
   pendingTxCount: 0,
   incrementPendingTx: () =>
     set((state) => ({ pendingTxCount: state.pendingTxCount + 1 })),
@@ -56,7 +58,6 @@ export const useAppStore = create<AppState>((set) => ({
       pendingTxCount: Math.max(0, state.pendingTxCount - 1),
     })),
 
-  // UI state
   sidebarCollapsed: false,
   toggleSidebar: () =>
     set((state) => ({ sidebarCollapsed: !state.sidebarCollapsed })),
