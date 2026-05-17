@@ -8,7 +8,7 @@ import { type Address } from "viem";
 import { useOrderFlow } from "@/hooks/useOrderSigning";
 import { useTokenInfo } from "@/hooks/useTreasury";
 import { OrderType } from "@/lib/eip712";
-import { TOKEN_ADDRESSES } from "@/lib/constants";
+import { TOKEN_ADDRESSES, CONTRACT_ADDRESSES } from "@/lib/constants";
 import { formatAddress } from "@/lib/utils";
 import {
   Card,
