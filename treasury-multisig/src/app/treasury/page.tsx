@@ -6,53 +6,18 @@ import Link from "next/link";
 import { useAccount } from "wagmi";
 import { CONTRACT_ADDRESSES } from "@/lib/constants";
 import { formatNumber } from "@/lib/utils";
-import {
-  useTreasuryBalance,
-  useTreasuryPaused,
-  useGasReserves,
-  useAccumulatedFees,
-} from "@/hooks/useTreasury";
+import {useTreasuryBalance, useTreasuryPaused, useGasReserves, useAccumulatedFees,} from "@/hooks/useTreasury";
 import { CardSkeleton } from "@/components/Skeleton";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle,} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  Shield,
-  PauseCircle,
-  PlayCircle,
-  Fuel,
-  Wallet,
-  Timer,
-  Coins,
-  ShieldCheck,
-  Users,
-  Landmark,
-  RefreshCw,
-  TrendingUp,
-  ChevronDown,
-  ChevronRight,
-  ArrowUpRight,
-  Crown,
-  DollarSign,
-  AlertTriangle,
-} from "lucide-react";
+import {Shield, PauseCircle, PlayCircle, Fuel, Wallet, Timer, Coins,
+  ShieldCheck, Users, Landmark, RefreshCw, TrendingUp, ChevronDown, ChevronRight,
+  ArrowUpRight, Crown, DollarSign, AlertTriangle, FileSignature,} from "lucide-react";
 
 const ICON_MAP: Record<string, React.ElementType> = {
-  VariableTimelockController: Timer,
-  GovernanceTokenV2: Coins,
-  UpgradeGovernor: ShieldCheck,
-  DynamicValidatorRegistry: Users,
-  TreasuryController: Landmark,
-  GasRefiller: Fuel,
-  PayoutExecutor: Wallet,
-  RebalancingExecutor: RefreshCw,
-  StakingExecutor: TrendingUp,
-};
+  VariableTimelockController: Timer, GovernanceTokenV2: Coins, UpgradeGovernor: ShieldCheck,
+  DynamicValidatorRegistry: Users, TreasuryController: Landmark, GasRefiller: Fuel,
+  PayoutExecutor: Wallet, RebalancingExecutor: RefreshCw, StakingExecutor: TrendingUp,};
 
 export default function TreasuryPage() {
   const { isConnected } = useAccount();
@@ -246,7 +211,7 @@ export default function TreasuryPage() {
       ) : null}
 
       {/* Emergency Actions */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         <Button
           variant="destructive"
           className="h-auto py-3 justify-start"
@@ -286,6 +251,21 @@ export default function TreasuryPage() {
               <div className="text-sm font-medium">Emergency Withdraw</div>
               <div className="text-[11px] text-muted-foreground">
                 Extract funds
+              </div>
+            </div>
+          </Link>
+        </Button>
+        <Button
+          variant="outline"
+          className="h-auto py-3 justify-start"
+          asChild
+        >
+          <Link href="/treasury/orders">
+            <FileSignature className="h-4 w-4 mr-2" />
+            <div className="text-left">
+              <div className="text-sm font-medium">Create Order</div>
+              <div className="text-[11px] text-muted-foreground">
+                EIP-712 signed order
               </div>
             </div>
           </Link>

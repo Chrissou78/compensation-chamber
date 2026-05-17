@@ -6,25 +6,10 @@ import { formatNumber, formatAddress } from "@/lib/utils";
 import { useTreasuryBalance, useGasReserves } from "@/hooks/useTreasury";
 import { useActiveProposals } from "@/hooks/useProposals";
 import { DashboardSkeleton } from "@/components/Skeleton";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { EventLog } from "@/components/EventLog";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle,} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  DollarSign,
-  CircleDot,
-  Hexagon,
-  ScrollText,
-  Fuel,
-  PauseCircle,
-  ChevronRight,
-  ArrowUpRight,
-  Shield,
-} from "lucide-react";
+import {DollarSign, CircleDot, Hexagon, ScrollText, Fuel, PauseCircle, ChevronRight, ArrowUpRight, Shield,} from "lucide-react";
 
 export function Dashboard() {
   const { address, isConnected } = useAccount();
@@ -331,6 +316,8 @@ export function Dashboard() {
           </div>
         </CardContent>
       </Card>
+      {/* Recent Activity */}
+      <EventLog maxEvents={10} />
     </div>
   );
 }
