@@ -45,7 +45,7 @@ export function BalanceChart({ usdc, usdt, matic }: BalanceChartProps) {
           ))}
         </Pie>
         <Tooltip
-          formatter={(value: number, name: string) => [`$${formatNumber(value)}`, name]}
+          formatter={(value, name) => [`$${formatNumber(Number(value))}`, String(name)]}
           contentStyle={{
             backgroundColor: "hsl(var(--card))",
             border: "1px solid hsl(var(--border))",
