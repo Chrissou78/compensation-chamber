@@ -5,7 +5,10 @@ import Link from "next/link";
 import { useAccount } from "wagmi";
 import { useAdminOverview } from "@/hooks/useAdmin";
 import { formatNumber, formatAddress } from "@/lib/utils";
+import { useAppStore } from "@/store";
 import { DashboardSkeleton } from "@/components/Skeleton";
+import { SupplyMeter } from "@/components/SupplyMeter";
+import { ExportButton } from "@/components/ExportButton";
 import {
   Card, CardContent, CardDescription, CardHeader, CardTitle,
 } from "@/components/ui/card";
@@ -17,6 +20,7 @@ import {
 export default function AdminOverviewPage() {
   const { isConnected } = useAccount();
   const overview = useAdminOverview();
+  const resolveLabel = useAppStore((s) => s.resolveAddressLabel);
 
   if (!isConnected) {
     return (
@@ -28,11 +32,25 @@ export default function AdminOverviewPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Admin Dashboard</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Token supply, validators, and governance overview
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Admin Dashboard</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Token supply, validators, and governance overview
+          </p>
+        </div>
+        {overview.recentMints.length > 0 && (
+          <ExportButton
+            data={overview.recentMints.map((m) => ({
+              to: m.to,
+              amount: m.amount,
+              block: m.blockNumber,
+              txHash: m.txHash,
+            }))}
+            filename="admin-mints"
+            label="Export Mints"
+          />
+        )}
       </div>
 
       {/* Stats grid */}
@@ -56,13 +74,7 @@ export default function AdminOverviewPage() {
             <Percent className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{overview.circulatingPct.toFixed(1)}%</div>
-            <div className="w-full bg-secondary rounded-full h-2 mt-2">
-              <div
-                className="bg-primary rounded-full h-2 transition-all"
-                style={{ width: `${Math.min(overview.circulatingPct, 100)}%` }}
-              />
-            </div>
+            <SupplyMeter minted={overview.totalMinted} maxSupply={overview.maxSupply} />
           </CardContent>
         </Card>
 
@@ -153,7 +165,11 @@ export default function AdminOverviewPage() {
                   className="flex items-center justify-between rounded-lg border border-border p-3"
                 >
                   <div>
-                    <p className="text-sm font-medium font-mono">{formatAddress(mint.to)}</p>
+                    <p className="text-sm font-medium">
+                      {resolveLabel(mint.to) || (
+                        <span className="font-mono">{formatAddress(mint.to)}</span>
+                      )}
+                    </p>
                     <p className="text-xs text-muted-foreground">Block #{mint.blockNumber}</p>
                   </div>
                   <div className="text-right">

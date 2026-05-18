@@ -6,13 +6,17 @@ import { useAccount } from "wagmi";
 import { useWalletOverview } from "@/hooks/useFunds";
 import { useTreasuryBalance, useAccumulatedFees, useGasReserves } from "@/hooks/useTreasury";
 import { formatNumber, formatAddress } from "@/lib/utils";
+import { useAppStore } from "@/store";
 import { DashboardSkeleton } from "@/components/Skeleton";
+import { BalanceChart } from "@/components/BalanceChart";
+import { GasChart } from "@/components/GasChart";
+import { ExportButton } from "@/components/ExportButton";
 import {
   Card, CardContent, CardDescription, CardHeader, CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
-  DollarSign, Wallet, Receipt, ArrowLeftRight, Fuel, Coins, ChevronRight,
+  DollarSign, Wallet, Receipt, Fuel, Coins, ChevronRight,
 } from "lucide-react";
 
 export default function FundsOverviewPage() {
@@ -21,6 +25,7 @@ export default function FundsOverviewPage() {
   const { data: wallets, isLoading: walletsLoading } = useWalletOverview();
   const fees = useAccumulatedFees();
   const { data: gasReserves } = useGasReserves();
+  const resolveLabel = useAppStore((s) => s.resolveAddressLabel);
 
   if (!isConnected) {
     return (
@@ -36,9 +41,24 @@ export default function FundsOverviewPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Funds Flow</h1>
-        <p className="text-sm text-muted-foreground mt-1">Treasury balances, payouts, and fund allocation</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Funds Flow</h1>
+          <p className="text-sm text-muted-foreground mt-1">Treasury balances, payouts, and fund allocation</p>
+        </div>
+        {wallets && wallets.length > 0 && (
+          <ExportButton
+            data={wallets.map((w) => ({
+              name: w.name,
+              address: w.address,
+              usdc: w.usdc,
+              usdt: w.usdt,
+              matic: w.matic,
+              total: w.total,
+            }))}
+            filename="funds-wallets"
+          />
+        )}
       </div>
 
       {/* Summary cards */}
@@ -82,6 +102,34 @@ export default function FundsOverviewPage() {
         </Card>
       </div>
 
+      {/* Charts row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <Card>
+          <CardHeader>
+            <CardTitle>Treasury Allocation</CardTitle>
+            <CardDescription>Stablecoin and MATIC distribution</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <BalanceChart
+              usdc={balance?.usdc ?? 0}
+              usdt={balance?.usdt ?? 0}
+              matic={balance?.matic ?? 0}
+            />
+          </CardContent>
+        </Card>
+        {gasReserves && gasReserves.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Gas Reserves</CardTitle>
+              <CardDescription>MATIC balance per contract vs target</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <GasChart reserves={gasReserves} />
+            </CardContent>
+          </Card>
+        )}
+      </div>
+
       {/* Wallet breakdown */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
@@ -109,7 +157,7 @@ export default function FundsOverviewPage() {
                 {wallets?.map((w) => (
                   <tr key={w.address} className="border-b border-border last:border-0 hover:bg-accent/30">
                     <td className="px-6 py-3">
-                      <div className="font-medium">{w.name}</div>
+                      <div className="font-medium">{resolveLabel(w.address) || w.name}</div>
                       <div className="text-xs font-mono text-muted-foreground">{formatAddress(w.address)}</div>
                     </td>
                     <td className="px-6 py-3 text-right">${formatNumber(w.usdc)}</td>

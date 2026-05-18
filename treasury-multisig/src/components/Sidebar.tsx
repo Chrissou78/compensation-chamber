@@ -14,7 +14,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   LayoutDashboard, ScrollText, Landmark, Wallet, Settings, ShieldCheck,
   Zap, ChevronDown, Users, Coins, Ban, ArrowLeftRight, Fuel, Receipt,
-  Activity, Heart, FileText, BarChart3, Monitor, Server,
+  Activity, Heart, FileText, BarChart3, Monitor, Server, FileSearch, PenSquare,
 } from "lucide-react";
 
 interface NavSection {
@@ -36,6 +36,7 @@ const NAV_SECTIONS: NavSection[] = [
       { name: "Treasury", icon: Landmark, route: "/treasury" },
       { name: "Actions", icon: Zap, route: "/actions" },
       { name: "Settings", icon: Settings, route: "/settings" },
+      { name: "Create Proposal", icon: PenSquare, route: "/proposals/create" },
     ],
   },
   {
@@ -70,6 +71,7 @@ const NAV_SECTIONS: NavSection[] = [
       { name: "Dashboard", icon: Activity, route: "/monitoring" },
       { name: "Events", icon: FileText, route: "/monitoring/events" },
       { name: "Health", icon: Heart, route: "/monitoring/health" },
+      { name: "Audit Trail", icon: FileSearch, route: "/monitoring/audit" },
     ],
   },
 ];
