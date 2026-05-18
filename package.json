@@ -1,0 +1,19 @@
+{
+  "name": "compensation-chamber",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Compensation Chamber — Treasury governance monorepo",
+  "workspaces": [
+    "treasury-multisig",
+    "mobile"
+  ],
+  "scripts": {
+    "dev:web": "npm run dev --workspace=treasury-multisig",
+    "build:web": "npm run build --workspace=treasury-multisig",
+    "lint:web": "npm run lint --workspace=treasury-multisig",
+    "dev:mobile": "npm run start --workspace=mobile"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
