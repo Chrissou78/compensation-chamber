@@ -86,6 +86,7 @@ export default function CreateProposalPage() {
       // Build the 4-byte selector manually and encode args via low-level approach
       // Use viem's ABI encoding with a manually constructed ABI item
       const abiItem = parseAbiItem(`function ${sig}`);
+      const fnName = sig.slice(0, sig.indexOf("("));
 
       // Parse user-provided arguments
       const args: unknown[] = fnArgs.trim() ? JSON.parse(`[${fnArgs}]`) : [];
@@ -93,7 +94,7 @@ export default function CreateProposalPage() {
       // Encode using viem — cast through unknown to satisfy strict generics
       const encoded = encodeFunctionData({
         abi: [abiItem],
-        functionName: abiItem.name,
+        functionName: fnName,
         args,
       } as unknown as Parameters<typeof encodeFunctionData>[0]);
 
