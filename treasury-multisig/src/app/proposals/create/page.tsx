@@ -27,11 +27,17 @@ const STEPS: { id: Step; label: string; icon: React.ElementType }[] = [
   { id: "review", label: "Review", icon: Check },
 ];
 
+function formatDelay(seconds: number, fallback: string): string {
+  if (!seconds) return fallback;
+  const hours = seconds / 3600;
+  return hours >= 24 ? `${hours / 24} days` : `${hours} hours`;
+}
+
 const SEVERITY_OPTIONS: { value: Severity; label: string; delay: string; color: string }[] = [
-  { value: "EMERGENCY", label: "Emergency", delay: SEVERITY_DELAYS.EMERGENCY || "1 hour", color: "text-red-400 bg-red-500/10 ring-red-500/20" },
-  { value: "CRITICAL", label: "Critical", delay: SEVERITY_DELAYS.CRITICAL || "6 hours", color: "text-amber-400 bg-amber-500/10 ring-amber-500/20" },
-  { value: "IMPORTANT", label: "Important", delay: SEVERITY_DELAYS.IMPORTANT || "24 hours", color: "text-blue-400 bg-blue-500/10 ring-blue-500/20" },
-  { value: "ROUTINE", label: "Routine", delay: SEVERITY_DELAYS.ROUTINE || "48 hours", color: "text-emerald-400 bg-emerald-500/10 ring-emerald-500/20" },
+  { value: "EMERGENCY", label: "Emergency", delay: formatDelay(SEVERITY_DELAYS.EMERGENCY, "1 hour"), color: "text-red-400 bg-red-500/10 ring-red-500/20" },
+  { value: "CRITICAL", label: "Critical", delay: formatDelay(SEVERITY_DELAYS.CRITICAL, "6 hours"), color: "text-amber-400 bg-amber-500/10 ring-amber-500/20" },
+  { value: "IMPORTANT", label: "Important", delay: formatDelay(SEVERITY_DELAYS.IMPORTANT, "24 hours"), color: "text-blue-400 bg-blue-500/10 ring-blue-500/20" },
+  { value: "ROUTINE", label: "Routine", delay: formatDelay(SEVERITY_DELAYS.ROUTINE, "48 hours"), color: "text-emerald-400 bg-emerald-500/10 ring-emerald-500/20" },
 ];
 
 const TARGET_PRESETS = Object.entries(CONTRACT_ADDRESSES).map(([key, addr]) => ({
@@ -86,9 +92,10 @@ export default function CreateProposalPage() {
 
       // Encode using viem — cast through unknown to satisfy strict generics
       const encoded = encodeFunctionData({
-        abi: [abiItem] as const,
+        abi: [abiItem],
+        functionName: abiItem.name,
         args,
-      } as Parameters<typeof encodeFunctionData>[0]);
+      } as unknown as Parameters<typeof encodeFunctionData>[0]);
 
       setCalldata(encoded);
       addToast({ type: "success", title: "Calldata built", message: `${encoded.slice(0, 20)}...` });

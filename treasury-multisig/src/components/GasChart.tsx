@@ -35,8 +35,8 @@ export function GasChart({ reserves }: GasChartProps) {
           tickFormatter={(v) => `${v}`}
         />
         <Tooltip
-          formatter={(value: number, name: string) => [
-            `${formatNumber(value)} MATIC`,
+          formatter={(value, name) => [
+            `${formatNumber(Number(value))} MATIC`,
             name === "current" ? "Balance" : name === "target" ? "Target" : "Threshold",
           ]}
           contentStyle={{
