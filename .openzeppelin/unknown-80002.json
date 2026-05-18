@@ -1,0 +1,1951 @@
+{
+  "manifestVersion": "3.2",
+  "proxies": [
+    {
+      "address": "0x65A2aAdeB52C610aF29D00Ced77Eb73bD139Fc7D",
+      "txHash": "0xdec6231b1b138b0c8caf1a271094cf621849353fd3473b4cbcf766db452a8789",
+      "kind": "uups"
+    },
+    {
+      "address": "0xC02d2E3a33482C8aAca896aF86B25B611d49Be0b",
+      "txHash": "0xf1f306308198e571409690dcdaba43a290c1d25f980047bb8abc06529dc24a6f",
+      "kind": "uups"
+    },
+    {
+      "address": "0x908cEC0FcB05a3363b1f3CF258746a85fb273635",
+      "txHash": "0x53adb9ce1e63ad7953bde6b06ff97365040cce67122869f03d6cfc452db23761",
+      "kind": "uups"
+    },
+    {
+      "address": "0x2D2a6AD725b925F2A378988F8C7c009028e1CD6F",
+      "txHash": "0x6f0c9f284af3dd4ebe1c507f19c2fbef91df026dba79c8a1b4d54be91cec47c4",
+      "kind": "uups"
+    },
+    {
+      "address": "0x2b8cbbD5C6A1739Eb203603cae105aDC3eCf5F63",
+      "txHash": "0x53c05ce473a7cc8087b513392fe8845a5d2509822931eb101ab92ca1ad31747d",
+      "kind": "uups"
+    },
+    {
+      "address": "0x85e6070CDcf581eDCD0c8138A3170431b76a7D36",
+      "txHash": "0x66287ad95dc79b27cfe8a212a3f31082a0e0235f37c4c28dc46bb891c3ccc979",
+      "kind": "uups"
+    }
+  ],
+  "impls": {
+    "fbbda358a22cacae25a4056fc215cd9b06f6e02eee2f8d0327a4ec12331f8bd6": {
+      "address": "0xc2Ea5EC203BdD32f0ECE4381f7A990304fDE0389",
+      "txHash": "0x6c6ce43f78c754c5dada51b59f9144d734eac494e96ef8df5c81ee6ecef97e44",
+      "layout": {
+        "solcVersion": "0.8.27",
+        "storage": [
+          {
+            "label": "blacklist",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_mapping(t_address,t_bool)",
+            "contract": "GovernanceTokenV2",
+            "src": "Contracts\\GovernanceTokenV2.sol:33"
+          },
+          {
+            "label": "blacklistTimestamp",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_mapping(t_address,t_uint256)",
+            "contract": "GovernanceTokenV2",
+            "src": "Contracts\\GovernanceTokenV2.sol:34"
+          },
+          {
+            "label": "mintRequests",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_mapping(t_bytes32,t_struct(MintRequest)20276_storage)",
+            "contract": "GovernanceTokenV2",
+            "src": "Contracts\\GovernanceTokenV2.sol:35"
+          },
+          {
+            "label": "blacklistRequests",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_mapping(t_bytes32,t_struct(BlacklistRequest)20287_storage)",
+            "contract": "GovernanceTokenV2",
+            "src": "Contracts\\GovernanceTokenV2.sol:36"
+          },
+          {
+            "label": "mintRequestIds",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_array(t_bytes32)dyn_storage",
+            "contract": "GovernanceTokenV2",
+            "src": "Contracts\\GovernanceTokenV2.sol:38"
+          },
+          {
+            "label": "blacklistRequestIds",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_array(t_bytes32)dyn_storage",
+            "contract": "GovernanceTokenV2",
+            "src": "Contracts\\GovernanceTokenV2.sol:39"
+          },
+          {
+            "label": "totalMintRequested",
+            "offset": 0,
+            "slot": "6",
+            "type": "t_uint256",
+            "contract": "GovernanceTokenV2",
+            "src": "Contracts\\GovernanceTokenV2.sol:40"
+          },
+          {
+            "label": "totalBlacklistRequests",
+            "offset": 0,
+            "slot": "7",
+            "type": "t_uint256",
+            "contract": "GovernanceTokenV2",
+            "src": "Contracts\\GovernanceTokenV2.sol:41"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_struct(Checkpoint208)6435_storage)dyn_storage": {
+            "label": "struct Checkpoints.Checkpoint208[]",
+            "numberOfBytes": "32"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_address)": {
+            "label": "mapping(address => address)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_mapping(t_address,t_uint256))": {
+            "label": "mapping(address => mapping(address => uint256))",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_struct(Trace208)6430_storage)": {
+            "label": "mapping(address => struct Checkpoints.Trace208)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_struct(Checkpoint208)6435_storage": {
+            "label": "struct Checkpoints.Checkpoint208",
+            "members": [
+              {
+                "label": "_key",
+                "type": "t_uint48",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_value",
+                "type": "t_uint208",
+                "offset": 6,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_struct(EIP712Storage)2540_storage": {
+            "label": "struct EIP712Upgradeable.EIP712Storage",
+            "members": [
+              {
+                "label": "_hashedName",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_hashedVersion",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "_name",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "_version",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "3"
+              }
+            ],
+            "numberOfBytes": "128"
+          },
+          "t_struct(ERC20Storage)2104_storage": {
+            "label": "struct ERC20Upgradeable.ERC20Storage",
+            "members": [
+              {
+                "label": "_balances",
+                "type": "t_mapping(t_address,t_uint256)",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_allowances",
+                "type": "t_mapping(t_address,t_mapping(t_address,t_uint256))",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "_totalSupply",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "_name",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "_symbol",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "4"
+              }
+            ],
+            "numberOfBytes": "160"
+          },
+          "t_struct(InitializableStorage)3417_storage": {
+            "label": "struct Initializable.InitializableStorage",
+            "members": [
+              {
+                "label": "_initialized",
+                "type": "t_uint64",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_initializing",
+                "type": "t_bool",
+                "offset": 8,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_struct(NoncesStorage)2473_storage": {
+            "label": "struct NoncesUpgradeable.NoncesStorage",
+            "members": [
+              {
+                "label": "_nonces",
+                "type": "t_mapping(t_address,t_uint256)",
+                "offset": 0,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_struct(Ownable2StepStorage)151_storage": {
+            "label": "struct Ownable2StepUpgradeable.Ownable2StepStorage",
+            "members": [
+              {
+                "label": "_pendingOwner",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_struct(OwnableStorage)206_storage": {
+            "label": "struct OwnableUpgradeable.OwnableStorage",
+            "members": [
+              {
+                "label": "_owner",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_struct(Trace208)6430_storage": {
+            "label": "struct Checkpoints.Trace208",
+            "members": [
+              {
+                "label": "_checkpoints",
+                "type": "t_array(t_struct(Checkpoint208)6435_storage)dyn_storage",
+                "offset": 0,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_struct(VotesStorage)1873_storage": {
+            "label": "struct VotesUpgradeable.VotesStorage",
+            "members": [
+              {
+                "label": "_delegatee",
+                "type": "t_mapping(t_address,t_address)",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_delegateCheckpoints",
+                "type": "t_mapping(t_address,t_struct(Trace208)6430_storage)",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "_totalCheckpoints",
+                "type": "t_struct(Trace208)6430_storage",
+                "offset": 0,
+                "slot": "2"
+              }
+            ],
+            "numberOfBytes": "96"
+          },
+          "t_uint208": {
+            "label": "uint208",
+            "numberOfBytes": "26"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint48": {
+            "label": "uint48",
+            "numberOfBytes": "6"
+          },
+          "t_uint64": {
+            "label": "uint64",
+            "numberOfBytes": "8"
+          },
+          "t_array(t_bytes32)dyn_storage": {
+            "label": "bytes32[]",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_struct(BlacklistRequest)20287_storage)": {
+            "label": "mapping(bytes32 => struct GovernanceTokenV2.BlacklistRequest)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_struct(MintRequest)20276_storage)": {
+            "label": "mapping(bytes32 => struct GovernanceTokenV2.MintRequest)",
+            "numberOfBytes": "32"
+          },
+          "t_struct(BlacklistRequest)20287_storage": {
+            "label": "struct GovernanceTokenV2.BlacklistRequest",
+            "members": [
+              {
+                "label": "account",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "reason",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "requestedAt",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "executed",
+                "type": "t_bool",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "governanceProposalId",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "4"
+              }
+            ],
+            "numberOfBytes": "160"
+          },
+          "t_struct(MintRequest)20276_storage": {
+            "label": "struct GovernanceTokenV2.MintRequest",
+            "members": [
+              {
+                "label": "recipient",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "amount",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "reason",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "requestedAt",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "executed",
+                "type": "t_bool",
+                "offset": 0,
+                "slot": "4"
+              },
+              {
+                "label": "governanceProposalId",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "5"
+              }
+            ],
+            "numberOfBytes": "192"
+          }
+        },
+        "namespaces": {
+          "erc7201:openzeppelin.storage.Ownable2Step": [
+            {
+              "contract": "Ownable2StepUpgradeable",
+              "label": "_pendingOwner",
+              "type": "t_address",
+              "src": "@openzeppelin\\contracts-upgradeable\\access\\Ownable2StepUpgradeable.sol:29",
+              "offset": 0,
+              "slot": "0"
+            }
+          ],
+          "erc7201:openzeppelin.storage.Ownable": [
+            {
+              "contract": "OwnableUpgradeable",
+              "label": "_owner",
+              "type": "t_address",
+              "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:24",
+              "offset": 0,
+              "slot": "0"
+            }
+          ],
+          "erc7201:openzeppelin.storage.Votes": [
+            {
+              "contract": "VotesUpgradeable",
+              "label": "_delegatee",
+              "type": "t_mapping(t_address,t_address)",
+              "src": "@openzeppelin\\contracts-upgradeable\\governance\\utils\\VotesUpgradeable.sol:42",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "VotesUpgradeable",
+              "label": "_delegateCheckpoints",
+              "type": "t_mapping(t_address,t_struct(Trace208)6430_storage)",
+              "src": "@openzeppelin\\contracts-upgradeable\\governance\\utils\\VotesUpgradeable.sol:44",
+              "offset": 0,
+              "slot": "1"
+            },
+            {
+              "contract": "VotesUpgradeable",
+              "label": "_totalCheckpoints",
+              "type": "t_struct(Trace208)6430_storage",
+              "src": "@openzeppelin\\contracts-upgradeable\\governance\\utils\\VotesUpgradeable.sol:46",
+              "offset": 0,
+              "slot": "2"
+            }
+          ],
+          "erc7201:openzeppelin.storage.Nonces": [
+            {
+              "contract": "NoncesUpgradeable",
+              "label": "_nonces",
+              "type": "t_mapping(t_address,t_uint256)",
+              "src": "@openzeppelin\\contracts-upgradeable\\utils\\NoncesUpgradeable.sol:17",
+              "offset": 0,
+              "slot": "0"
+            }
+          ],
+          "erc7201:openzeppelin.storage.EIP712": [
+            {
+              "contract": "EIP712Upgradeable",
+              "label": "_hashedName",
+              "type": "t_bytes32",
+              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:37",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "EIP712Upgradeable",
+              "label": "_hashedVersion",
+              "type": "t_bytes32",
+              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:38",
+              "offset": 0,
+              "slot": "1"
+            },
+            {
+              "contract": "EIP712Upgradeable",
+              "label": "_name",
+              "type": "t_string_storage",
+              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:40",
+              "offset": 0,
+              "slot": "2"
+            },
+            {
+              "contract": "EIP712Upgradeable",
+              "label": "_version",
+              "type": "t_string_storage",
+              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:41",
+              "offset": 0,
+              "slot": "3"
+            }
+          ],
+          "erc7201:openzeppelin.storage.ERC20": [
+            {
+              "contract": "ERC20Upgradeable",
+              "label": "_balances",
+              "type": "t_mapping(t_address,t_uint256)",
+              "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC20\\ERC20Upgradeable.sol:33",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "ERC20Upgradeable",
+              "label": "_allowances",
+              "type": "t_mapping(t_address,t_mapping(t_address,t_uint256))",
+              "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC20\\ERC20Upgradeable.sol:35",
+              "offset": 0,
+              "slot": "1"
+            },
+            {
+              "contract": "ERC20Upgradeable",
+              "label": "_totalSupply",
+              "type": "t_uint256",
+              "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC20\\ERC20Upgradeable.sol:37",
+              "offset": 0,
+              "slot": "2"
+            },
+            {
+              "contract": "ERC20Upgradeable",
+              "label": "_name",
+              "type": "t_string_storage",
+              "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC20\\ERC20Upgradeable.sol:39",
+              "offset": 0,
+              "slot": "3"
+            },
+            {
+              "contract": "ERC20Upgradeable",
+              "label": "_symbol",
+              "type": "t_string_storage",
+              "src": "@openzeppelin\\contracts-upgradeable\\token\\ERC20\\ERC20Upgradeable.sol:40",
+              "offset": 0,
+              "slot": "4"
+            }
+          ],
+          "erc7201:openzeppelin.storage.Initializable": [
+            {
+              "contract": "Initializable",
+              "label": "_initialized",
+              "type": "t_uint64",
+              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:69",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "Initializable",
+              "label": "_initializing",
+              "type": "t_bool",
+              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:73",
+              "offset": 8,
+              "slot": "0"
+            }
+          ]
+        }
+      }
+    },
+    "f2afd185432469a17c5f6a4f86c15a9d3a94b5269b365677136e495eed4420ec": {
+      "address": "0xA1228E4C587e076DCCEc47DE4b2887e4F7EF83eB",
+      "txHash": "0x56771fa5977e8ca76fd1b26b3822511fec89532c4795f27c4375e9fc9ef71df1",
+      "layout": {
+        "solcVersion": "0.8.27",
+        "storage": [
+          {
+            "label": "validators",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_mapping(t_bytes32,t_struct(Validator)20276_storage)",
+            "contract": "DynamicValidatorRegistry",
+            "src": "Contracts\\DynamicValidatorRegistry.sol:40"
+          },
+          {
+            "label": "validatorIds",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_bytes32)dyn_storage",
+            "contract": "DynamicValidatorRegistry",
+            "src": "Contracts\\DynamicValidatorRegistry.sol:41"
+          },
+          {
+            "label": "walletToValidatorId",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_mapping(t_address,t_bytes32)",
+            "contract": "DynamicValidatorRegistry",
+            "src": "Contracts\\DynamicValidatorRegistry.sol:42"
+          },
+          {
+            "label": "isActiveValidator",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_mapping(t_address,t_bool)",
+            "contract": "DynamicValidatorRegistry",
+            "src": "Contracts\\DynamicValidatorRegistry.sol:43"
+          },
+          {
+            "label": "activeValidators",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_array(t_address)dyn_storage",
+            "contract": "DynamicValidatorRegistry",
+            "src": "Contracts\\DynamicValidatorRegistry.sol:44"
+          },
+          {
+            "label": "actionThresholds",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_mapping(t_enum(ActionType)20260,t_struct(ActionThreshold)20290_storage)",
+            "contract": "DynamicValidatorRegistry",
+            "src": "Contracts\\DynamicValidatorRegistry.sol:46"
+          },
+          {
+            "label": "configurationHistory",
+            "offset": 0,
+            "slot": "6",
+            "type": "t_array(t_struct(ConfigurationSnapshot)20301_storage)dyn_storage",
+            "contract": "DynamicValidatorRegistry",
+            "src": "Contracts\\DynamicValidatorRegistry.sol:47"
+          },
+          {
+            "label": "minValidators",
+            "offset": 0,
+            "slot": "7",
+            "type": "t_uint256",
+            "contract": "DynamicValidatorRegistry",
+            "src": "Contracts\\DynamicValidatorRegistry.sol:49"
+          },
+          {
+            "label": "maxValidators",
+            "offset": 0,
+            "slot": "8",
+            "type": "t_uint256",
+            "contract": "DynamicValidatorRegistry",
+            "src": "Contracts\\DynamicValidatorRegistry.sol:50"
+          },
+          {
+            "label": "configurationVersion",
+            "offset": 0,
+            "slot": "9",
+            "type": "t_uint256",
+            "contract": "DynamicValidatorRegistry",
+            "src": "Contracts\\DynamicValidatorRegistry.sol:51"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_struct(InitializableStorage)3417_storage": {
+            "label": "struct Initializable.InitializableStorage",
+            "members": [
+              {
+                "label": "_initialized",
+                "type": "t_uint64",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_initializing",
+                "type": "t_bool",
+                "offset": 8,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_struct(Ownable2StepStorage)151_storage": {
+            "label": "struct Ownable2StepUpgradeable.Ownable2StepStorage",
+            "members": [
+              {
+                "label": "_pendingOwner",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_struct(OwnableStorage)206_storage": {
+            "label": "struct OwnableUpgradeable.OwnableStorage",
+            "members": [
+              {
+                "label": "_owner",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_uint64": {
+            "label": "uint64",
+            "numberOfBytes": "8"
+          },
+          "t_array(t_address)dyn_storage": {
+            "label": "address[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_bytes32)dyn_storage": {
+            "label": "bytes32[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_struct(ConfigurationSnapshot)20301_storage)dyn_storage": {
+            "label": "struct DynamicValidatorRegistry.ConfigurationSnapshot[]",
+            "numberOfBytes": "32"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_enum(ActionType)20260": {
+            "label": "enum DynamicValidatorRegistry.ActionType",
+            "members": [
+              "PAYOUT",
+              "REBALANCE",
+              "STAKING",
+              "UPGRADE",
+              "PARAMETER_CHANGE",
+              "VALIDATOR_ADD",
+              "VALIDATOR_REMOVE",
+              "BLACKLIST",
+              "MINTING",
+              "GOVERNANCE"
+            ],
+            "numberOfBytes": "1"
+          },
+          "t_enum(ValidatorStatus)20249": {
+            "label": "enum DynamicValidatorRegistry.ValidatorStatus",
+            "members": [
+              "ACTIVE",
+              "BLACKLISTED"
+            ],
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_bytes32)": {
+            "label": "mapping(address => bytes32)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_struct(Validator)20276_storage)": {
+            "label": "mapping(bytes32 => struct DynamicValidatorRegistry.Validator)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_enum(ActionType)20260,t_struct(ActionThreshold)20290_storage)": {
+            "label": "mapping(enum DynamicValidatorRegistry.ActionType => struct DynamicValidatorRegistry.ActionThreshold)",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_struct(ActionThreshold)20290_storage": {
+            "label": "struct DynamicValidatorRegistry.ActionThreshold",
+            "members": [
+              {
+                "label": "id",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "actionType",
+                "type": "t_enum(ActionType)20260",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "requiredSignatures",
+                "type": "t_uint8",
+                "offset": 1,
+                "slot": "1"
+              },
+              {
+                "label": "setAt",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "description",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "active",
+                "type": "t_bool",
+                "offset": 0,
+                "slot": "4"
+              }
+            ],
+            "numberOfBytes": "160"
+          },
+          "t_struct(ConfigurationSnapshot)20301_storage": {
+            "label": "struct DynamicValidatorRegistry.ConfigurationSnapshot",
+            "members": [
+              {
+                "label": "timestamp",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "validatorCount",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "activeCount",
+                "type": "t_uint8",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "snapshotHash",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "version",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "4"
+              }
+            ],
+            "numberOfBytes": "160"
+          },
+          "t_struct(Validator)20276_storage": {
+            "label": "struct DynamicValidatorRegistry.Validator",
+            "members": [
+              {
+                "label": "id",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "wallet",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "name",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "role",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "status",
+                "type": "t_enum(ValidatorStatus)20249",
+                "offset": 0,
+                "slot": "4"
+              },
+              {
+                "label": "addedAt",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "5"
+              },
+              {
+                "label": "removedAt",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "6"
+              }
+            ],
+            "numberOfBytes": "224"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        },
+        "namespaces": {
+          "erc7201:openzeppelin.storage.Ownable2Step": [
+            {
+              "contract": "Ownable2StepUpgradeable",
+              "label": "_pendingOwner",
+              "type": "t_address",
+              "src": "@openzeppelin\\contracts-upgradeable\\access\\Ownable2StepUpgradeable.sol:29",
+              "offset": 0,
+              "slot": "0"
+            }
+          ],
+          "erc7201:openzeppelin.storage.Ownable": [
+            {
+              "contract": "OwnableUpgradeable",
+              "label": "_owner",
+              "type": "t_address",
+              "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:24",
+              "offset": 0,
+              "slot": "0"
+            }
+          ],
+          "erc7201:openzeppelin.storage.Initializable": [
+            {
+              "contract": "Initializable",
+              "label": "_initialized",
+              "type": "t_uint64",
+              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:69",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "Initializable",
+              "label": "_initializing",
+              "type": "t_bool",
+              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:73",
+              "offset": 8,
+              "slot": "0"
+            }
+          ]
+        }
+      }
+    },
+    "e94112c21859b3d3b69883c7283426d4d89e572f11322ef36b99a6e093ce80c0": {
+      "address": "0x3bAEdf91C76eF9fE8469088C0B36F40EA27D443F",
+      "txHash": "0xc54ae9a0c2b8013ff980633ab355d396918438fc2ebeac46108d944b5c2abe27",
+      "layout": {
+        "solcVersion": "0.8.27",
+        "storage": [
+          {
+            "label": "validators",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_mapping(t_bytes32,t_struct(Validator)7813_storage)",
+            "contract": "DynamicValidatorRegistry",
+            "src": "Contracts\\DynamicValidatorRegistry.sol:40"
+          },
+          {
+            "label": "validatorIds",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_bytes32)dyn_storage",
+            "contract": "DynamicValidatorRegistry",
+            "src": "Contracts\\DynamicValidatorRegistry.sol:41"
+          },
+          {
+            "label": "walletToValidatorId",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_mapping(t_address,t_bytes32)",
+            "contract": "DynamicValidatorRegistry",
+            "src": "Contracts\\DynamicValidatorRegistry.sol:42"
+          },
+          {
+            "label": "isActiveValidator",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_mapping(t_address,t_bool)",
+            "contract": "DynamicValidatorRegistry",
+            "src": "Contracts\\DynamicValidatorRegistry.sol:43"
+          },
+          {
+            "label": "activeValidators",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_array(t_address)dyn_storage",
+            "contract": "DynamicValidatorRegistry",
+            "src": "Contracts\\DynamicValidatorRegistry.sol:44"
+          },
+          {
+            "label": "actionThresholds",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_mapping(t_enum(ActionType)7797,t_struct(ActionThreshold)7827_storage)",
+            "contract": "DynamicValidatorRegistry",
+            "src": "Contracts\\DynamicValidatorRegistry.sol:46"
+          },
+          {
+            "label": "configurationHistory",
+            "offset": 0,
+            "slot": "6",
+            "type": "t_array(t_struct(ConfigurationSnapshot)7838_storage)dyn_storage",
+            "contract": "DynamicValidatorRegistry",
+            "src": "Contracts\\DynamicValidatorRegistry.sol:47"
+          },
+          {
+            "label": "minValidators",
+            "offset": 0,
+            "slot": "7",
+            "type": "t_uint256",
+            "contract": "DynamicValidatorRegistry",
+            "src": "Contracts\\DynamicValidatorRegistry.sol:49"
+          },
+          {
+            "label": "maxValidators",
+            "offset": 0,
+            "slot": "8",
+            "type": "t_uint256",
+            "contract": "DynamicValidatorRegistry",
+            "src": "Contracts\\DynamicValidatorRegistry.sol:50"
+          },
+          {
+            "label": "configurationVersion",
+            "offset": 0,
+            "slot": "9",
+            "type": "t_uint256",
+            "contract": "DynamicValidatorRegistry",
+            "src": "Contracts\\DynamicValidatorRegistry.sol:51"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_struct(InitializableStorage)275_storage": {
+            "label": "struct Initializable.InitializableStorage",
+            "members": [
+              {
+                "label": "_initialized",
+                "type": "t_uint64",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_initializing",
+                "type": "t_bool",
+                "offset": 8,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_struct(Ownable2StepStorage)13_storage": {
+            "label": "struct Ownable2StepUpgradeable.Ownable2StepStorage",
+            "members": [
+              {
+                "label": "_pendingOwner",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_struct(OwnableStorage)68_storage": {
+            "label": "struct OwnableUpgradeable.OwnableStorage",
+            "members": [
+              {
+                "label": "_owner",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_uint64": {
+            "label": "uint64",
+            "numberOfBytes": "8"
+          },
+          "t_array(t_address)dyn_storage": {
+            "label": "address[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_bytes32)dyn_storage": {
+            "label": "bytes32[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_struct(ConfigurationSnapshot)7838_storage)dyn_storage": {
+            "label": "struct DynamicValidatorRegistry.ConfigurationSnapshot[]",
+            "numberOfBytes": "32"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_enum(ActionType)7797": {
+            "label": "enum DynamicValidatorRegistry.ActionType",
+            "members": [
+              "PAYOUT",
+              "REBALANCE",
+              "STAKING",
+              "UPGRADE",
+              "PARAMETER_CHANGE",
+              "VALIDATOR_ADD",
+              "VALIDATOR_REMOVE",
+              "BLACKLIST",
+              "MINTING",
+              "GOVERNANCE"
+            ],
+            "numberOfBytes": "1"
+          },
+          "t_enum(ValidatorStatus)7786": {
+            "label": "enum DynamicValidatorRegistry.ValidatorStatus",
+            "members": [
+              "ACTIVE",
+              "BLACKLISTED"
+            ],
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_bytes32)": {
+            "label": "mapping(address => bytes32)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_bytes32,t_struct(Validator)7813_storage)": {
+            "label": "mapping(bytes32 => struct DynamicValidatorRegistry.Validator)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_enum(ActionType)7797,t_struct(ActionThreshold)7827_storage)": {
+            "label": "mapping(enum DynamicValidatorRegistry.ActionType => struct DynamicValidatorRegistry.ActionThreshold)",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_struct(ActionThreshold)7827_storage": {
+            "label": "struct DynamicValidatorRegistry.ActionThreshold",
+            "members": [
+              {
+                "label": "id",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "actionType",
+                "type": "t_enum(ActionType)7797",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "requiredSignatures",
+                "type": "t_uint8",
+                "offset": 1,
+                "slot": "1"
+              },
+              {
+                "label": "setAt",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "description",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "active",
+                "type": "t_bool",
+                "offset": 0,
+                "slot": "4"
+              }
+            ],
+            "numberOfBytes": "160"
+          },
+          "t_struct(ConfigurationSnapshot)7838_storage": {
+            "label": "struct DynamicValidatorRegistry.ConfigurationSnapshot",
+            "members": [
+              {
+                "label": "timestamp",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "validatorCount",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "activeCount",
+                "type": "t_uint8",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "snapshotHash",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "version",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "4"
+              }
+            ],
+            "numberOfBytes": "160"
+          },
+          "t_struct(Validator)7813_storage": {
+            "label": "struct DynamicValidatorRegistry.Validator",
+            "members": [
+              {
+                "label": "id",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "wallet",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "name",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "role",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "status",
+                "type": "t_enum(ValidatorStatus)7786",
+                "offset": 0,
+                "slot": "4"
+              },
+              {
+                "label": "addedAt",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "5"
+              },
+              {
+                "label": "removedAt",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "6"
+              }
+            ],
+            "numberOfBytes": "224"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        },
+        "namespaces": {
+          "erc7201:openzeppelin.storage.Ownable2Step": [
+            {
+              "contract": "Ownable2StepUpgradeable",
+              "label": "_pendingOwner",
+              "type": "t_address",
+              "src": "@openzeppelin\\contracts-upgradeable\\access\\Ownable2StepUpgradeable.sol:29",
+              "offset": 0,
+              "slot": "0"
+            }
+          ],
+          "erc7201:openzeppelin.storage.Ownable": [
+            {
+              "contract": "OwnableUpgradeable",
+              "label": "_owner",
+              "type": "t_address",
+              "src": "@openzeppelin\\contracts-upgradeable\\access\\OwnableUpgradeable.sol:24",
+              "offset": 0,
+              "slot": "0"
+            }
+          ],
+          "erc7201:openzeppelin.storage.Initializable": [
+            {
+              "contract": "Initializable",
+              "label": "_initialized",
+              "type": "t_uint64",
+              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:69",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "Initializable",
+              "label": "_initializing",
+              "type": "t_bool",
+              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:73",
+              "offset": 8,
+              "slot": "0"
+            }
+          ]
+        }
+      }
+    },
+    "3b71ae4ef8bd417d3bf0b3a1f620ba3d2d70f3bab94dd161d919146cd1473425": {
+      "address": "0x04881b9a1B2793F8e94CE09bda7540d40883Cd68",
+      "txHash": "0x0269dc59d58ad4736889a992885e60c8adf6e34983bd381dc4bd81fcab7c135a",
+      "layout": {
+        "solcVersion": "0.8.27",
+        "storage": [
+          {
+            "label": "variableTimelock",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_contract(IVariableTimelock)23659",
+            "contract": "UpgradeGovernor",
+            "src": "Contracts\\UpgradeGovernor.sol:33"
+          },
+          {
+            "label": "proposalStates",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_mapping(t_uint256,t_struct(ProposalState_Extended)23699_storage)",
+            "contract": "UpgradeGovernor",
+            "src": "Contracts\\UpgradeGovernor.sol:35"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_struct(Checkpoint208)6435_storage)dyn_storage": {
+            "label": "struct Checkpoints.Checkpoint208[]",
+            "numberOfBytes": "32"
+          },
+          "t_bool": {
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_contract(IERC5805)3187": {
+            "label": "contract IERC5805",
+            "numberOfBytes": "20"
+          },
+          "t_contract(TimelockControllerUpgradeable)1280": {
+            "label": "contract TimelockControllerUpgradeable",
+            "numberOfBytes": "20"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint128,t_bytes32)": {
+            "label": "mapping(uint128 => bytes32)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_bytes32)": {
+            "label": "mapping(uint256 => bytes32)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_struct(ProposalCore)331_storage)": {
+            "label": "mapping(uint256 => struct GovernorUpgradeable.ProposalCore)",
+            "numberOfBytes": "32"
+          },
+          "t_mapping(t_uint256,t_struct(ProposalVote)1307_storage)": {
+            "label": "mapping(uint256 => struct GovernorCountingSimpleUpgradeable.ProposalVote)",
+            "numberOfBytes": "32"
+          },
+          "t_string_storage": {
+            "label": "string",
+            "numberOfBytes": "32"
+          },
+          "t_struct(Bytes32Deque)6760_storage": {
+            "label": "struct DoubleEndedQueue.Bytes32Deque",
+            "members": [
+              {
+                "label": "_begin",
+                "type": "t_uint128",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_end",
+                "type": "t_uint128",
+                "offset": 16,
+                "slot": "0"
+              },
+              {
+                "label": "_data",
+                "type": "t_mapping(t_uint128,t_bytes32)",
+                "offset": 0,
+                "slot": "1"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_struct(Checkpoint208)6435_storage": {
+            "label": "struct Checkpoints.Checkpoint208",
+            "members": [
+              {
+                "label": "_key",
+                "type": "t_uint48",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_value",
+                "type": "t_uint208",
+                "offset": 6,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_struct(EIP712Storage)2540_storage": {
+            "label": "struct EIP712Upgradeable.EIP712Storage",
+            "members": [
+              {
+                "label": "_hashedName",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_hashedVersion",
+                "type": "t_bytes32",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "_name",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "_version",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "3"
+              }
+            ],
+            "numberOfBytes": "128"
+          },
+          "t_struct(GovernorCountingSimpleStorage)1314_storage": {
+            "label": "struct GovernorCountingSimpleUpgradeable.GovernorCountingSimpleStorage",
+            "members": [
+              {
+                "label": "_proposalVotes",
+                "type": "t_mapping(t_uint256,t_struct(ProposalVote)1307_storage)",
+                "offset": 0,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_struct(GovernorSettingsStorage)1412_storage": {
+            "label": "struct GovernorSettingsUpgradeable.GovernorSettingsStorage",
+            "members": [
+              {
+                "label": "_proposalThreshold",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_votingDelay",
+                "type": "t_uint48",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "_votingPeriod",
+                "type": "t_uint32",
+                "offset": 6,
+                "slot": "1"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_struct(GovernorStorage)363_storage": {
+            "label": "struct GovernorUpgradeable.GovernorStorage",
+            "members": [
+              {
+                "label": "_name",
+                "type": "t_string_storage",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_proposals",
+                "type": "t_mapping(t_uint256,t_struct(ProposalCore)331_storage)",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "_governanceCall",
+                "type": "t_struct(Bytes32Deque)6760_storage",
+                "offset": 0,
+                "slot": "2"
+              }
+            ],
+            "numberOfBytes": "128"
+          },
+          "t_struct(GovernorTimelockControlStorage)1522_storage": {
+            "label": "struct GovernorTimelockControlUpgradeable.GovernorTimelockControlStorage",
+            "members": [
+              {
+                "label": "_timelock",
+                "type": "t_contract(TimelockControllerUpgradeable)1280",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_timelockIds",
+                "type": "t_mapping(t_uint256,t_bytes32)",
+                "offset": 0,
+                "slot": "1"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_struct(GovernorVotesQuorumFractionStorage)1674_storage": {
+            "label": "struct GovernorVotesQuorumFractionUpgradeable.GovernorVotesQuorumFractionStorage",
+            "members": [
+              {
+                "label": "_quorumNumeratorHistory",
+                "type": "t_struct(Trace208)6430_storage",
+                "offset": 0,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_struct(GovernorVotesStorage)1767_storage": {
+            "label": "struct GovernorVotesUpgradeable.GovernorVotesStorage",
+            "members": [
+              {
+                "label": "_token",
+                "type": "t_contract(IERC5805)3187",
+                "offset": 0,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_struct(InitializableStorage)3417_storage": {
+            "label": "struct Initializable.InitializableStorage",
+            "members": [
+              {
+                "label": "_initialized",
+                "type": "t_uint64",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "_initializing",
+                "type": "t_bool",
+                "offset": 8,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_struct(NoncesStorage)2473_storage": {
+            "label": "struct NoncesUpgradeable.NoncesStorage",
+            "members": [
+              {
+                "label": "_nonces",
+                "type": "t_mapping(t_address,t_uint256)",
+                "offset": 0,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_struct(ProposalCore)331_storage": {
+            "label": "struct GovernorUpgradeable.ProposalCore",
+            "members": [
+              {
+                "label": "proposer",
+                "type": "t_address",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "voteStart",
+                "type": "t_uint48",
+                "offset": 20,
+                "slot": "0"
+              },
+              {
+                "label": "voteDuration",
+                "type": "t_uint32",
+                "offset": 26,
+                "slot": "0"
+              },
+              {
+                "label": "executed",
+                "type": "t_bool",
+                "offset": 30,
+                "slot": "0"
+              },
+              {
+                "label": "canceled",
+                "type": "t_bool",
+                "offset": 31,
+                "slot": "0"
+              },
+              {
+                "label": "etaSeconds",
+                "type": "t_uint48",
+                "offset": 0,
+                "slot": "1"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_struct(ProposalVote)1307_storage": {
+            "label": "struct GovernorCountingSimpleUpgradeable.ProposalVote",
+            "members": [
+              {
+                "label": "againstVotes",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "forVotes",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "abstainVotes",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "hasVoted",
+                "type": "t_mapping(t_address,t_bool)",
+                "offset": 0,
+                "slot": "3"
+              }
+            ],
+            "numberOfBytes": "128"
+          },
+          "t_struct(Trace208)6430_storage": {
+            "label": "struct Checkpoints.Trace208",
+            "members": [
+              {
+                "label": "_checkpoints",
+                "type": "t_array(t_struct(Checkpoint208)6435_storage)dyn_storage",
+                "offset": 0,
+                "slot": "0"
+              }
+            ],
+            "numberOfBytes": "32"
+          },
+          "t_uint128": {
+            "label": "uint128",
+            "numberOfBytes": "16"
+          },
+          "t_uint208": {
+            "label": "uint208",
+            "numberOfBytes": "26"
+          },
+          "t_uint256": {
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint32": {
+            "label": "uint32",
+            "numberOfBytes": "4"
+          },
+          "t_uint48": {
+            "label": "uint48",
+            "numberOfBytes": "6"
+          },
+          "t_uint64": {
+            "label": "uint64",
+            "numberOfBytes": "8"
+          },
+          "t_contract(IVariableTimelock)23659": {
+            "label": "contract IVariableTimelock",
+            "numberOfBytes": "20"
+          },
+          "t_enum(ActionSeverity)23624": {
+            "label": "enum IVariableTimelock.ActionSeverity",
+            "members": [
+              "EMERGENCY",
+              "CRITICAL",
+              "IMPORTANT",
+              "ROUTINE"
+            ],
+            "numberOfBytes": "1"
+          },
+          "t_mapping(t_uint256,t_struct(ProposalState_Extended)23699_storage)": {
+            "label": "mapping(uint256 => struct UpgradeGovernor.ProposalState_Extended)",
+            "numberOfBytes": "32"
+          },
+          "t_struct(ProposalState_Extended)23699_storage": {
+            "label": "struct UpgradeGovernor.ProposalState_Extended",
+            "members": [
+              {
+                "label": "severity",
+                "type": "t_enum(ActionSeverity)23624",
+                "offset": 0,
+                "slot": "0"
+              },
+              {
+                "label": "thresholdReachedAt",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "1"
+              },
+              {
+                "label": "readyForExecutionAt",
+                "type": "t_uint256",
+                "offset": 0,
+                "slot": "2"
+              },
+              {
+                "label": "thresholdMet",
+                "type": "t_bool",
+                "offset": 0,
+                "slot": "3"
+              },
+              {
+                "label": "executed",
+                "type": "t_bool",
+                "offset": 1,
+                "slot": "3"
+              }
+            ],
+            "numberOfBytes": "128"
+          }
+        },
+        "namespaces": {
+          "erc7201:openzeppelin.storage.GovernorTimelockControl": [
+            {
+              "contract": "GovernorTimelockControlUpgradeable",
+              "label": "_timelock",
+              "type": "t_contract(TimelockControllerUpgradeable)1280",
+              "src": "@openzeppelin\\contracts-upgradeable\\governance\\extensions\\GovernorTimelockControlUpgradeable.sol:29",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "GovernorTimelockControlUpgradeable",
+              "label": "_timelockIds",
+              "type": "t_mapping(t_uint256,t_bytes32)",
+              "src": "@openzeppelin\\contracts-upgradeable\\governance\\extensions\\GovernorTimelockControlUpgradeable.sol:30",
+              "offset": 0,
+              "slot": "1"
+            }
+          ],
+          "erc7201:openzeppelin.storage.GovernorVotesQuorumFraction": [
+            {
+              "contract": "GovernorVotesQuorumFractionUpgradeable",
+              "label": "_quorumNumeratorHistory",
+              "type": "t_struct(Trace208)6430_storage",
+              "src": "@openzeppelin\\contracts-upgradeable\\governance\\extensions\\GovernorVotesQuorumFractionUpgradeable.sol:21",
+              "offset": 0,
+              "slot": "0"
+            }
+          ],
+          "erc7201:openzeppelin.storage.GovernorVotes": [
+            {
+              "contract": "GovernorVotesUpgradeable",
+              "label": "_token",
+              "type": "t_contract(IERC5805)3187",
+              "src": "@openzeppelin\\contracts-upgradeable\\governance\\extensions\\GovernorVotesUpgradeable.sol:19",
+              "offset": 0,
+              "slot": "0"
+            }
+          ],
+          "erc7201:openzeppelin.storage.GovernorCountingSimple": [
+            {
+              "contract": "GovernorCountingSimpleUpgradeable",
+              "label": "_proposalVotes",
+              "type": "t_mapping(t_uint256,t_struct(ProposalVote)1307_storage)",
+              "src": "@openzeppelin\\contracts-upgradeable\\governance\\extensions\\GovernorCountingSimpleUpgradeable.sol:32",
+              "offset": 0,
+              "slot": "0"
+            }
+          ],
+          "erc7201:openzeppelin.storage.GovernorSettings": [
+            {
+              "contract": "GovernorSettingsUpgradeable",
+              "label": "_proposalThreshold",
+              "type": "t_uint256",
+              "src": "@openzeppelin\\contracts-upgradeable\\governance\\extensions\\GovernorSettingsUpgradeable.sol:17",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "GovernorSettingsUpgradeable",
+              "label": "_votingDelay",
+              "type": "t_uint48",
+              "src": "@openzeppelin\\contracts-upgradeable\\governance\\extensions\\GovernorSettingsUpgradeable.sol:19",
+              "offset": 0,
+              "slot": "1"
+            },
+            {
+              "contract": "GovernorSettingsUpgradeable",
+              "label": "_votingPeriod",
+              "type": "t_uint32",
+              "src": "@openzeppelin\\contracts-upgradeable\\governance\\extensions\\GovernorSettingsUpgradeable.sol:21",
+              "offset": 6,
+              "slot": "1"
+            }
+          ],
+          "erc7201:openzeppelin.storage.Governor": [
+            {
+              "contract": "GovernorUpgradeable",
+              "label": "_name",
+              "type": "t_string_storage",
+              "src": "@openzeppelin\\contracts-upgradeable\\governance\\GovernorUpgradeable.sol:53",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "GovernorUpgradeable",
+              "label": "_proposals",
+              "type": "t_mapping(t_uint256,t_struct(ProposalCore)331_storage)",
+              "src": "@openzeppelin\\contracts-upgradeable\\governance\\GovernorUpgradeable.sol:55",
+              "offset": 0,
+              "slot": "1"
+            },
+            {
+              "contract": "GovernorUpgradeable",
+              "label": "_governanceCall",
+              "type": "t_struct(Bytes32Deque)6760_storage",
+              "src": "@openzeppelin\\contracts-upgradeable\\governance\\GovernorUpgradeable.sol:61",
+              "offset": 0,
+              "slot": "2"
+            }
+          ],
+          "erc7201:openzeppelin.storage.Nonces": [
+            {
+              "contract": "NoncesUpgradeable",
+              "label": "_nonces",
+              "type": "t_mapping(t_address,t_uint256)",
+              "src": "@openzeppelin\\contracts-upgradeable\\utils\\NoncesUpgradeable.sol:17",
+              "offset": 0,
+              "slot": "0"
+            }
+          ],
+          "erc7201:openzeppelin.storage.EIP712": [
+            {
+              "contract": "EIP712Upgradeable",
+              "label": "_hashedName",
+              "type": "t_bytes32",
+              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:37",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "EIP712Upgradeable",
+              "label": "_hashedVersion",
+              "type": "t_bytes32",
+              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:38",
+              "offset": 0,
+              "slot": "1"
+            },
+            {
+              "contract": "EIP712Upgradeable",
+              "label": "_name",
+              "type": "t_string_storage",
+              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:40",
+              "offset": 0,
+              "slot": "2"
+            },
+            {
+              "contract": "EIP712Upgradeable",
+              "label": "_version",
+              "type": "t_string_storage",
+              "src": "@openzeppelin\\contracts-upgradeable\\utils\\cryptography\\EIP712Upgradeable.sol:41",
+              "offset": 0,
+              "slot": "3"
+            }
+          ],
+          "erc7201:openzeppelin.storage.Initializable": [
+            {
+              "contract": "Initializable",
+              "label": "_initialized",
+              "type": "t_uint64",
+              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:69",
+              "offset": 0,
+              "slot": "0"
+            },
+            {
+              "contract": "Initializable",
+              "label": "_initializing",
+              "type": "t_bool",
+              "src": "@openzeppelin\\contracts\\proxy\\utils\\Initializable.sol:73",
+              "offset": 8,
+              "slot": "0"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

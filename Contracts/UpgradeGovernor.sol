@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts-upgradeable/governance/GovernorUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorSettingsUpgradeable.sol";
@@ -8,6 +8,8 @@ import "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorVotesU
 import "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorVotesQuorumFractionUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorTimelockControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
+import "@openzeppelin/contracts/governance/utils/IVotes.sol";
+import "@openzeppelin/contracts-upgradeable/governance/TimelockControllerUpgradeable.sol";
 
 interface IVariableTimelock {
     enum ActionSeverity { EMERGENCY, CRITICAL, IMPORTANT, ROUTINE }
@@ -17,24 +19,24 @@ interface IVariableTimelock {
 
 contract UpgradeGovernor is GovernorUpgradeable, GovernorSettingsUpgradeable, GovernorCountingSimpleUpgradeable, GovernorVotesUpgradeable, GovernorVotesQuorumFractionUpgradeable, GovernorTimelockControlUpgradeable, UUPSUpgradeable
 {
-    // ============================================================================
+    // ================================================================
     // Constants
-    // ============================================================================
+    // ================================================================
     
-    uint256 public constant PASSAGE_THRESHOLD = 60; // 60% = 3-of-5 threshold (basis points)
+    uint256 public constant PASSAGE_THRESHOLD = 60; // 60% = 3-of-5 threshold
     uint256 public constant QUORUM_PERCENTAGE = 4; // 4% quorum
     
-    // ============================================================================
+    // ================================================================
     // State Variables
-    // ============================================================================
+    // ================================================================
     
     IVariableTimelock public variableTimelock;
     
     mapping(uint256 => ProposalState_Extended) public proposalStates;
     
-    // ============================================================================
+    // ================================================================
     // Structs
-    // ============================================================================
+    // ================================================================
     
     struct ProposalState_Extended {
         IVariableTimelock.ActionSeverity severity;
@@ -44,18 +46,18 @@ contract UpgradeGovernor is GovernorUpgradeable, GovernorSettingsUpgradeable, Go
         bool executed;
     }
     
-    // ============================================================================
+    // ================================================================
     // Events
-    // ============================================================================
+    // ================================================================
     
     event ProposalCreatedWithSeverity(uint256 indexed proposalId, IVariableTimelock.ActionSeverity indexed severity, string description);
     event ThresholdReached(uint256 indexed proposalId, uint256 timestamp, IVariableTimelock.ActionSeverity severity, uint256 cooldownEndsAt);
     event ProposalReadyForExecution(uint256 indexed proposalId, uint256 timestamp);
     event ProposalExecutedWithCooldown(uint256 indexed proposalId, uint256 timestamp);
     
-    // ============================================================================
+    // ================================================================
     // Errors
-    // ============================================================================
+    // ================================================================
     
     error VotingNotStarted();
     error CooldownNotExpired(uint256 timeRemaining);
@@ -63,25 +65,24 @@ contract UpgradeGovernor is GovernorUpgradeable, GovernorSettingsUpgradeable, Go
     error ProposalAlreadyExecuted();
     error InvalidProposalId();
     
-    // ============================================================================
+    // ================================================================
     // Constructor & Initialization
-    // ============================================================================
+    // ================================================================
     
     constructor() {_disableInitializers();}
 
-    function initialize(IVotesUpgradeable token, TimelockControllerUpgradeable timelock, uint48 votingDelay, uint32 votingPeriod, uint256 proposalThreshold) external initializer {
+    function initialize(IVotes token, TimelockControllerUpgradeable timelock, uint48 _votingDelay, uint32 _votingPeriod, uint256 _proposalThreshold) external initializer {
         __Governor_init("Treasury Governor");
-        __GovernorSettings_init(votingDelay, votingPeriod, proposalThreshold);
+        __GovernorSettings_init(_votingDelay, _votingPeriod, _proposalThreshold);
         __GovernorCountingSimple_init();
         __GovernorVotes_init(token);
         __GovernorVotesQuorumFraction_init(QUORUM_PERCENTAGE);
         __GovernorTimelockControl_init(timelock);
-        __UUPSUpgradeable_init();
     }
     
-    // ============================================================================
+    // ================================================================
     // Core Functions
-    // ============================================================================
+    // ================================================================
     
     function proposeWithSeverity(address[] memory targets, uint256[] memory values, bytes[] memory calldatas, string memory description, IVariableTimelock.ActionSeverity severity) external returns (uint256) {
         uint256 proposalId = propose(targets, values, calldatas, description);
@@ -108,13 +109,7 @@ contract UpgradeGovernor is GovernorUpgradeable, GovernorSettingsUpgradeable, Go
         return weight;
     }
     
-    function castVoteBySig(uint256 proposalId, uint8 support, uint8 v, bytes32 r, bytes32 s) public override(GovernorUpgradeable) returns (uint256) {
-        uint256 weight = super.castVoteBySig(proposalId, support, v, r, s);
-        if (!proposalStates[proposalId].thresholdMet) { _checkThresholdReached(proposalId); }
-        return weight;
-    }
-    
-    function executeProposal(address[] memory targets, uint256[] memory values, bytes[] memory calldatas, bytes32 descriptionHash, uint256 proposalId) external {
+    function executeProposal(address[] memory targets, uint256[] memory values, bytes[] memory calldatas, bytes32, uint256 proposalId) external {
         ProposalState_Extended storage pState = proposalStates[proposalId];
         require(pState.thresholdMet, "Threshold not reached");
         require(!pState.executed, "Proposal already executed");
@@ -128,9 +123,9 @@ contract UpgradeGovernor is GovernorUpgradeable, GovernorSettingsUpgradeable, Go
         emit ProposalExecutedWithCooldown(proposalId, block.timestamp);
     }
     
-    // ============================================================================
+    // ================================================================
     // Internal Functions
-    // ============================================================================
+    // ================================================================
     
     function _checkThresholdReached(uint256 proposalId) internal {
         (uint256 againstVotes, uint256 forVotes, uint256 abstainVotes) = proposalVotes(proposalId);
@@ -162,9 +157,9 @@ contract UpgradeGovernor is GovernorUpgradeable, GovernorSettingsUpgradeable, Go
         return 24 hours;
     }
     
-    // ============================================================================
+    // ================================================================
     // Query Functions
-    // ============================================================================
+    // ================================================================
     
     function getProposalState(uint256 proposalId) external view returns (ProposalState_Extended memory) {return proposalStates[proposalId];}
     
@@ -187,9 +182,9 @@ contract UpgradeGovernor is GovernorUpgradeable, GovernorSettingsUpgradeable, Go
         pState.executed = true;
     }
     
-    // ============================================================================
+    // ================================================================
     // Required Overrides
-    // ============================================================================
+    // ================================================================
     
     function votingDelay() public view override(GovernorUpgradeable, GovernorSettingsUpgradeable) returns (uint256) {return super.votingDelay();}
     function votingPeriod() public view override(GovernorUpgradeable, GovernorSettingsUpgradeable) returns (uint256) {return super.votingPeriod();}
@@ -197,10 +192,10 @@ contract UpgradeGovernor is GovernorUpgradeable, GovernorSettingsUpgradeable, Go
     function state(uint256 proposalId) public view override(GovernorUpgradeable, GovernorTimelockControlUpgradeable) returns (ProposalState) {return super.state(proposalId);}
     function proposalNeedsQueuing(uint256 proposalId) public view override(GovernorUpgradeable, GovernorTimelockControlUpgradeable) returns (bool) {return super.proposalNeedsQueuing(proposalId);}
     function proposalThreshold() public view override(GovernorUpgradeable, GovernorSettingsUpgradeable) returns (uint256) {return super.proposalThreshold();}
-    function _queueOperations(uint256 proposalId, address[] memory targets, uint256[] memory values, bytes[] memory calldatas, bytes32 descriptionHash) internal override(GovernorUpgradeable, GovernorTimelockControlUpgradeable) {super._queueOperations(proposalId, targets, values, calldatas, descriptionHash);}
+    function _queueOperations(uint256 proposalId, address[] memory targets, uint256[] memory values, bytes[] memory calldatas, bytes32 descriptionHash) internal override(GovernorUpgradeable, GovernorTimelockControlUpgradeable) returns (uint48) {return super._queueOperations(proposalId, targets, values, calldatas, descriptionHash);}
     function _executeOperations(uint256 proposalId, address[] memory targets, uint256[] memory values, bytes[] memory calldatas, bytes32 descriptionHash) internal override(GovernorUpgradeable, GovernorTimelockControlUpgradeable) {super._executeOperations(proposalId, targets, values, calldatas, descriptionHash);}
     function _cancel(address[] memory targets, uint256[] memory values, bytes[] memory calldatas, bytes32 descriptionHash) internal override(GovernorUpgradeable, GovernorTimelockControlUpgradeable) returns (uint256) {return super._cancel(targets, values, calldatas, descriptionHash);}
     function _executor() internal view override(GovernorUpgradeable, GovernorTimelockControlUpgradeable) returns (address) {return super._executor();}
-    function supportsInterface(bytes4 interfaceId) public view override(GovernorUpgradeable, GovernorTimelockControlUpgradeable) returns (bool) {return super.supportsInterface(interfaceId);}
+    function supportsInterface(bytes4 interfaceId) public view override(GovernorUpgradeable) returns (bool) {return super.supportsInterface(interfaceId);}
     function _authorizeUpgrade(address newImplementation) internal override onlyGovernance {}
 }

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 interface IDynamicValidatorRegistry {
@@ -13,7 +13,7 @@ interface IDynamicValidatorRegistry {
 
 interface IGasRefiller {function receiveFees(address token, uint256 amount) external;}
 
-contract TreasuryController is Ownable2StepUpgradeable, UUPSUpgradeable, ReentrancyGuard {
+contract TreasuryController is Ownable2StepUpgradeable, UUPSUpgradeable, ReentrancyGuardUpgradeable {
     
     enum OrderType { PAYOUT, REBALANCE, STAKING }
     
@@ -33,7 +33,7 @@ contract TreasuryController is Ownable2StepUpgradeable, UUPSUpgradeable, Reentra
     mapping(bytes32 => bool) public executedOrders;
     mapping(address => uint256) public agentNonce;
     mapping(address => bool) public supportedTokens;
-    mapping(string => mapping(address => uint256)) public countryTokenBalance;
+    mapping(address => mapping(address => uint256)) public countryTokenBalance;
     
     address public gasRefiller;
     IDynamicValidatorRegistry public validatorRegistry;
@@ -62,7 +62,7 @@ contract TreasuryController is Ownable2StepUpgradeable, UUPSUpgradeable, Reentra
     function initialize(address owner, address _validatorRegistry, address _gasRefiller) external initializer {
         __Ownable_init(owner);
         __Ownable2Step_init();
-        __UUPSUpgradeable_init();
+        __ReentrancyGuard_init();
         
         validatorRegistry = IDynamicValidatorRegistry(_validatorRegistry);
         gasRefiller = _gasRefiller;
@@ -72,7 +72,7 @@ contract TreasuryController is Ownable2StepUpgradeable, UUPSUpgradeable, Reentra
         DOMAIN_SEPARATOR = keccak256(abi.encode(keccak256("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"), keccak256(bytes("TreasuryController")), keccak256(bytes("1")), chainId, address(this)));
     }
 
-    function executeOrder(Order calldata order, bytes[] calldata signatures, address fromWallet) external nonReentrant returns (bytes32) {
+    function executeOrder(Order calldata order, bytes[] calldata signatures) external nonReentrant returns (bytes32) {
         require(!paused, "Contract paused");
         require(authorizedAgents[msg.sender], "Unauthorized agent");
         require(order.deadline >= block.timestamp, "Deadline expired");

@@ -614,10 +614,10 @@ export default function SettingsPage() {
             <p className="text-xs text-muted-foreground mb-1">RPC Endpoints</p>
             <div className="space-y-1">
               <p className="font-mono text-xs p-2 rounded bg-accent/50 break-all">
-                Amoy: {process.env.NEXT_PUBLIC_RPC_AMOY || "Not configured"}
+                Amoy: {process.env.AMOY_RPC_URL || "Not configured"}
               </p>
               <p className="font-mono text-xs p-2 rounded bg-accent/50 break-all">
-                Mainnet: {process.env.NEXT_PUBLIC_RPC_MAINNET || "Not configured"}
+                Mainnet: {process.env.RPC_MAINNET || "Not configured"}
               </p>
             </div>
           </div>

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol";
@@ -45,7 +45,7 @@ contract GasRefiller is Ownable2StepUpgradeable, UUPSUpgradeable {
     
     uint256 public usdcAccumulated;
     uint256 public usdtAccumulated;
-    uint256 public slippageTolerance = 100; // 1% in bps
+    uint256 public slippageTolerance;
     
     event WalletAdded(address indexed wallet, string country, uint256 maxBalance);
     event WalletRemoved(address indexed wallet);
@@ -65,12 +65,12 @@ contract GasRefiller is Ownable2StepUpgradeable, UUPSUpgradeable {
     function initialize(address owner, address _router, address _usdc, address _usdt, address _wmatic) external initializer {
         __Ownable_init(owner);
         __Ownable2Step_init();
-        __UUPSUpgradeable_init();
         
         swapRouter = _router;
         usdc = _usdc;
         usdt = _usdt;
         wmatic = _wmatic;
+        slippageTolerance = 100;
     }
     
     function addManagedWallet(address wallet, string calldata country, uint256 maxBalance) external onlyOwner {

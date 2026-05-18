@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
 contract TreasuryDeploymentFactory is Ownable, ReentrancyGuard {
     
@@ -107,7 +107,7 @@ contract TreasuryDeploymentFactory is Ownable, ReentrancyGuard {
         emit ImplementationsDeployed(msg.sender, block.timestamp);
     }
 
-    function deployAndInitializeProxies(InitialValidatorSet calldata validators, ActionThresholdSet calldata thresholds) external onlyOwner nonReentrant {
+    function deployAndInitializeProxies(InitialValidatorSet calldata validators) external onlyOwner nonReentrant {
         require(phase == DeploymentPhase.DEPLOYED, "Invalid phase");
         require(!finalized, "Already finalized");
         require(validators.wallets.length >= 3, "Minimum 3 validators");

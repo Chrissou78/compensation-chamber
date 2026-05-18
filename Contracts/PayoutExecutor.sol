@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol";
@@ -39,7 +39,6 @@ contract PayoutExecutor is Ownable2StepUpgradeable, UUPSUpgradeable {
     function initialize(address owner, address _treasuryController) external initializer {
         __Ownable_init(owner);
         __Ownable2Step_init();
-        __UUPSUpgradeable_init();
         
         treasuryController = _treasuryController;
     }

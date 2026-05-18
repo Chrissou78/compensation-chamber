@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol";
@@ -43,7 +43,6 @@ contract RebalancingExecutor is Ownable2StepUpgradeable, UUPSUpgradeable {
     function initialize(address owner, address _treasuryController) external initializer {
         __Ownable_init(owner);
         __Ownable2Step_init();
-        __UUPSUpgradeable_init();
         
         treasuryController = _treasuryController;
     }
@@ -73,7 +72,7 @@ contract RebalancingExecutor is Ownable2StepUpgradeable, UUPSUpgradeable {
         emit CountryWalletRemoved(country);
     }
 
-    function executeRebalance(bytes32 orderId, string calldata sourceCountry, string calldata targetCountry, uint256 amount) external onlyOwner returns (bool) {
+    function executeRebalance(bytes32, string calldata sourceCountry, string calldata targetCountry, uint256 amount) external onlyOwner returns (bool) {
         require(countryExists[sourceCountry], "Source country not found");
         require(countryExists[targetCountry], "Target country not found");
         require(amount > 0, "Invalid amount");
@@ -115,4 +114,3 @@ contract RebalancingExecutor is Ownable2StepUpgradeable, UUPSUpgradeable {
     function getRebalanceSchedule(string calldata country) external view returns (RebalanceSchedule memory) {return rebalanceSchedules[country];}
     function _authorizeUpgrade(address newImplementation) internal override onlyOwner {}
 }
-s

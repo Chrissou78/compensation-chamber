@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol";
@@ -71,7 +71,6 @@ contract GovernanceTokenV2 is ERC20Upgradeable, ERC20VotesUpgradeable, ERC20Burn
         __ERC20Permit_init("Treasury Governance Token");
         __Ownable_init(owner);
         __Ownable2Step_init();
-        __UUPSUpgradeable_init();
     }
 
     function requestMint(address recipient, uint256 amount, string calldata reason) external onlyOwner returns (bytes32) {
@@ -156,7 +155,7 @@ contract GovernanceTokenV2 is ERC20Upgradeable, ERC20VotesUpgradeable, ERC20Burn
         
         uint256 balance = balanceOf(account);
         if (balance > 0) { _burn(account, balance); }
-        _delegates[account] = address(0);
+        _delegate(account, address(0));
         
         emit BlacklistExecuted(requestId, account, proposalId, balance, block.timestamp);
         emit AddressBlacklisted(account, request.reason, block.timestamp);
@@ -212,7 +211,7 @@ contract GovernanceTokenV2 is ERC20Upgradeable, ERC20VotesUpgradeable, ERC20Burn
     function getBlacklistRequest(bytes32 requestId) external view returns (BlacklistRequest memory) {return blacklistRequests[requestId];}
     function getTotalMinted() external view returns (uint256) {return totalSupply();}
     function getRemainingMintCapacity() external view returns (uint256) {return MAX_SUPPLY - totalSupply();}
-    function getBlacklistedAddresses() external view returns (address[] memory) {revert("Use event logs for blacklist enumeration");}
+    function getBlacklistedAddresses() external pure returns (address[] memory) {revert("Use event logs for blacklist enumeration");}
 
     function _update(address from, address to, uint256 value) internal override(ERC20Upgradeable, ERC20VotesUpgradeable) {
         if (from != address(0)) { require(!blacklist[from], "Sender blacklisted"); }
@@ -220,7 +219,7 @@ contract GovernanceTokenV2 is ERC20Upgradeable, ERC20VotesUpgradeable, ERC20Burn
         super._update(from, to, value);
     }
 
-    function delegate(address delegatee) public override(ERC20VotesUpgradeable) {
+    function delegate(address delegatee) public virtual override {
         require(!blacklist[delegatee], "Delegatee blacklisted");
         super.delegate(delegatee);
     }

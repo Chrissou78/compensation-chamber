@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol";
@@ -46,9 +46,9 @@ contract DynamicValidatorRegistry is Ownable2StepUpgradeable, UUPSUpgradeable {
     mapping(ActionType => ActionThreshold) public actionThresholds;
     ConfigurationSnapshot[] public configurationHistory;
     
-    uint256 public minValidators = 3;
-    uint256 public maxValidators = 20;
-    uint256 public configurationVersion = 0;
+    uint256 public minValidators;
+    uint256 public maxValidators;
+    uint256 public configurationVersion;
     
     event ValidatorAdded(bytes32 indexed validatorId, address indexed wallet, string name, string role);
     event ValidatorRemoved(bytes32 indexed validatorId, address indexed wallet);
@@ -66,10 +66,12 @@ contract DynamicValidatorRegistry is Ownable2StepUpgradeable, UUPSUpgradeable {
     
     constructor() {_disableInitializers();}
  
-    function initialize(address owner) external initializer {
+     function initialize(address owner) external initializer {
         __Ownable_init(owner);
         __Ownable2Step_init();
-        __UUPSUpgradeable_init();
+        minValidators = 3;
+        maxValidators = 20;
+        configurationVersion = 0;
     }
 
     function addValidator(address wallet, string calldata name, string calldata role) external onlyOwner returns (bytes32) {
