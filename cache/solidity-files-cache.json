@@ -1087,8 +1087,8 @@
       ]
     },
     "D:\\Compensation-chamber\\Contracts\\TreasuryController.sol": {
-      "lastModificationDate": 1779131967055,
-      "contentHash": "7da77596ad42cddc3e4ed35dd27ed912",
+      "lastModificationDate": 1779142368204,
+      "contentHash": "a6a063ebbf57d64b568f7bad7c4e5277",
       "sourceName": "Contracts/TreasuryController.sol",
       "solcConfig": {
         "version": "0.8.27",

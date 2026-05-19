@@ -3,7 +3,7 @@ pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
 interface IDynamicValidatorRegistry {
@@ -13,8 +13,7 @@ interface IDynamicValidatorRegistry {
 
 interface IGasRefiller {function receiveFees(address token, uint256 amount) external;}
 
-contract TreasuryController is Ownable2StepUpgradeable, UUPSUpgradeable, ReentrancyGuardUpgradeable {
-    
+contract TreasuryController is Ownable2StepUpgradeable, UUPSUpgradeable, ReentrancyGuard {
     enum OrderType { PAYOUT, REBALANCE, STAKING }
     
     struct Order {
@@ -62,7 +61,6 @@ contract TreasuryController is Ownable2StepUpgradeable, UUPSUpgradeable, Reentra
     function initialize(address owner, address _validatorRegistry, address _gasRefiller) external initializer {
         __Ownable_init(owner);
         __Ownable2Step_init();
-        __ReentrancyGuard_init();
         
         validatorRegistry = IDynamicValidatorRegistry(_validatorRegistry);
         gasRefiller = _gasRefiller;

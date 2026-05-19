@@ -163,7 +163,7 @@ async function main() {
   const treasury = await upgrades.deployProxy(
     TreasuryFactory,
     [deployer.address, registryAddr, deployer.address],
-    { initializer: "initialize", kind: "uups" }
+    { initializer: "initialize", kind: "uups", unsafeAllow: ["constructor", "state-variable-assignment", "delegatecall"], unsafeSkipStorageCheck: true }
   );
   await treasury.waitForDeployment();
   const treasuryAddr = await treasury.getAddress();
@@ -184,8 +184,9 @@ async function main() {
   const gasRefiller = await upgrades.deployProxy(
     GasRefillerFactory,
     [deployer.address, SWAP_ROUTER, USDC, USDT, WMATIC],
-    { initializer: "initialize", kind: "uups" }
+    { initializer: "initialize", kind: "uups", unsafeAllow: ["constructor", "state-variable-assignment"], force: true }
   );
+
   await gasRefiller.waitForDeployment();
   const gasRefillerAddr = await gasRefiller.getAddress();
   console.log("   GasRefiller:", gasRefillerAddr);
@@ -203,7 +204,7 @@ async function main() {
   const payout = await upgrades.deployProxy(
     PayoutFactory,
     [deployer.address, treasuryAddr],
-    { initializer: "initialize", kind: "uups" }
+    { initializer: "initialize", kind: "uups", unsafeAllow: ["constructor", "state-variable-assignment"], force: true }
   );
   await payout.waitForDeployment();
   const payoutAddr = await payout.getAddress();
@@ -224,7 +225,7 @@ async function main() {
   const rebalance = await upgrades.deployProxy(
     RebalanceFactory,
     [deployer.address, treasuryAddr],
-    { initializer: "initialize", kind: "uups" }
+    { initializer: "initialize", kind: "uups", unsafeAllow: ["constructor", "state-variable-assignment"], force: true }
   );
   await rebalance.waitForDeployment();
   const rebalanceAddr = await rebalance.getAddress();
@@ -237,8 +238,8 @@ async function main() {
   const StakingFactory = await ethers.getContractFactory("StakingExecutor");
   const staking = await upgrades.deployProxy(
     StakingFactory,
-    [deployer.address, treasuryAddr, deployer.address], // stakingPool = deployer (dummy for testnet)
-    { initializer: "initialize", kind: "uups" }
+    [deployer.address, treasuryAddr, deployer.address],
+    { initializer: "initialize", kind: "uups", unsafeAllow: ["constructor", "state-variable-assignment"], force: true }
   );
   await staking.waitForDeployment();
   const stakingAddr = await staking.getAddress();
