@@ -34,6 +34,7 @@ const NAV_SECTIONS: NavSection[] = [
       { name: "Proposals", icon: ScrollText, route: "/proposals" },
       { name: "Governance", icon: ShieldCheck, route: "/governance" },
       { name: "Treasury", icon: Landmark, route: "/treasury" },
+      { name: "Fund Treasury", icon: Fuel, route: "/treasury/fund" },
       { name: "Actions", icon: Zap, route: "/actions" },
       { name: "Settings", icon: Settings, route: "/settings" },
       { name: "Create Proposal", icon: PenSquare, route: "/proposals/create" },
