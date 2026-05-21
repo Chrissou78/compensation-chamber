@@ -23,8 +23,8 @@ contract UpgradeGovernor is GovernorUpgradeable, GovernorSettingsUpgradeable, Go
     // Constants
     // ================================================================
     
-    uint256 public constant PASSAGE_THRESHOLD = 60; // 60% = 3-of-5 threshold
-    uint256 public constant QUORUM_PERCENTAGE = 4; // 4% quorum
+    uint256 public constant PASSAGE_THRESHOLD = 60;
+    uint256 public constant QUORUM_PERCENTAGE = 4;
     
     // ================================================================
     // State Variables
@@ -33,6 +33,9 @@ contract UpgradeGovernor is GovernorUpgradeable, GovernorSettingsUpgradeable, Go
     IVariableTimelock public variableTimelock;
     
     mapping(uint256 => ProposalState_Extended) public proposalStates;
+
+    /// @notice Guardian address (multisig) that can cancel proposals
+    address public guardian;
     
     // ================================================================
     // Structs
@@ -54,6 +57,8 @@ contract UpgradeGovernor is GovernorUpgradeable, GovernorSettingsUpgradeable, Go
     event ThresholdReached(uint256 indexed proposalId, uint256 timestamp, IVariableTimelock.ActionSeverity severity, uint256 cooldownEndsAt);
     event ProposalReadyForExecution(uint256 indexed proposalId, uint256 timestamp);
     event ProposalExecutedWithCooldown(uint256 indexed proposalId, uint256 timestamp);
+    event ProposalCancelled(uint256 indexed proposalId, uint256 timestamp);
+    event GuardianUpdated(address indexed oldGuardian, address indexed newGuardian);
     
     // ================================================================
     // Errors
@@ -64,6 +69,8 @@ contract UpgradeGovernor is GovernorUpgradeable, GovernorSettingsUpgradeable, Go
     error ThresholdNotReached();
     error ProposalAlreadyExecuted();
     error InvalidProposalId();
+    error NotGuardian();
+    error InvalidGuardian();
     
     // ================================================================
     // Constructor & Initialization
@@ -71,15 +78,35 @@ contract UpgradeGovernor is GovernorUpgradeable, GovernorSettingsUpgradeable, Go
     
     constructor() {_disableInitializers();}
 
-    function initialize(IVotes token, TimelockControllerUpgradeable timelock, uint48 _votingDelay, uint32 _votingPeriod, uint256 _proposalThreshold) external initializer {
+    function initialize(
+        IVotes token,
+        TimelockControllerUpgradeable timelock,
+        uint48 _votingDelay,
+        uint32 _votingPeriod,
+        uint256 _proposalThreshold,
+        address _guardian
+    ) external initializer {
         __Governor_init("Treasury Governor");
         __GovernorSettings_init(_votingDelay, _votingPeriod, _proposalThreshold);
         __GovernorCountingSimple_init();
         __GovernorVotes_init(token);
         __GovernorVotesQuorumFraction_init(QUORUM_PERCENTAGE);
         __GovernorTimelockControl_init(timelock);
+        
+        require(_guardian != address(0), "Invalid guardian");
+        guardian = _guardian;
+        emit GuardianUpdated(address(0), _guardian);
     }
     
+    // ================================================================
+    // Modifiers
+    // ================================================================
+
+    modifier onlyGuardian() {
+        if (msg.sender != guardian) revert NotGuardian();
+        _;
+    }
+
     // ================================================================
     // Core Functions
     // ================================================================
@@ -121,6 +148,31 @@ contract UpgradeGovernor is GovernorUpgradeable, GovernorSettingsUpgradeable, Go
             require(success, "Execution reverted");
         }
         emit ProposalExecutedWithCooldown(proposalId, block.timestamp);
+    }
+
+    // ================================================================
+    // Guardian Functions
+    // ================================================================
+
+    /// @notice Cancel a proposal. Only the guardian (multisig) can call.
+    ///         Can cancel at any stage: before voting, during voting,
+    ///         during cooldown, or after cooldown but before execution.
+    /// @param proposalId The ID of the proposal to cancel
+    function cancelProposal(uint256 proposalId) external onlyGuardian {
+        ProposalState_Extended storage pState = proposalStates[proposalId];
+        require(!pState.executed, "Cannot cancel executed proposal");
+        pState.executed = true;
+        emit ProposalCancelled(proposalId, block.timestamp);
+    }
+
+    /// @notice Update the guardian address. Only callable through governance
+    ///         to prevent the guardian from unilaterally replacing itself.
+    /// @param newGuardian The new guardian address
+    function setGuardian(address newGuardian) external onlyGovernance {
+        if (newGuardian == address(0)) revert InvalidGuardian();
+        address oldGuardian = guardian;
+        guardian = newGuardian;
+        emit GuardianUpdated(oldGuardian, newGuardian);
     }
     
     // ================================================================
@@ -174,12 +226,6 @@ contract UpgradeGovernor is GovernorUpgradeable, GovernorSettingsUpgradeable, Go
         if (pState.executed) return 0;
         if (block.timestamp >= pState.readyForExecutionAt) return 0;
         return pState.readyForExecutionAt - block.timestamp;
-    }
-    
-    function cancelProposal(uint256 proposalId) external onlyGovernance {
-        ProposalState_Extended storage pState = proposalStates[proposalId];
-        require(!pState.executed, "Cannot cancel executed proposal");
-        pState.executed = true;
     }
     
     // ================================================================

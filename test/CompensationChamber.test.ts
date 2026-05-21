@@ -3604,7 +3604,7 @@ describe("UpgradeGovernor – Cooldown & Execution Coverage", function () {
     const UpgradeGovernorFactory = await ethers.getContractFactory("UpgradeGovernor");
     const upgradeGovernor = await upgrades.deployProxy(
       UpgradeGovernorFactory,
-      [await govToken.getAddress(), await timelock.getAddress(), 1, 100, 0],
+      [await govToken.getAddress(), await timelock.getAddress(), 1, 100, 0, owner.address],
       { initializer: "initialize", kind: "uups", unsafeAllow: ["constructor", "state-variable-assignment"] }
     );
     await upgradeGovernor.waitForDeployment();
@@ -4691,7 +4691,7 @@ describe("UpgradeGovernor – cancelProposal and upgrade auth", function () {
     const UpgradeGovernorFactory = await ethers.getContractFactory("UpgradeGovernor");
     const upgradeGovernor = await upgrades.deployProxy(
       UpgradeGovernorFactory,
-      [await govToken.getAddress(), await timelock.getAddress(), 1, 100, 0],
+      [await govToken.getAddress(), await timelock.getAddress(), 1, 100, 0, owner.address],
       { initializer: "initialize", kind: "uups", unsafeAllow: ["constructor", "state-variable-assignment"] }
     );
     await upgradeGovernor.waitForDeployment();
@@ -4712,6 +4712,183 @@ describe("UpgradeGovernor – cancelProposal and upgrade auth", function () {
     // Non-governance caller should be rejected
     await expect(
       upgradeGovernor.connect(recipient).cancelProposal(proposalId)
+    ).to.be.reverted;
+  });
+});
+
+describe("UpgradeGovernor – Cancel & Guardian", function () {
+  async function deployGovernorWithGuardian() {
+    const base = await loadFixture(deployFullSystem);
+    const { govToken, owner, recipient } = base;
+
+    const mintTx = await govToken.requestMint(owner.address, ethers.parseEther("100000"), "For governance");
+    const receipt = await mintTx.wait();
+    const mintEvent = receipt?.logs.find((l: any) => {
+      try { return govToken.interface.parseLog(l as any)?.name === "MintRequested"; } catch { return false; }
+    });
+    const mintReqId = govToken.interface.parseLog(mintEvent as any)!.args[0];
+    await govToken.executeMint(mintReqId, ethers.id("mint-prop"));
+    await govToken.connect(owner).delegate(owner.address);
+
+    const TimelockFactory = await ethers.getContractFactory("TimelockControllerUpgradeable");
+    const timelockImpl = await TimelockFactory.deploy();
+    await timelockImpl.waitForDeployment();
+    const ERC1967ProxyFactory = await ethers.getContractFactory("ERC1967Proxy");
+    const initData = TimelockFactory.interface.encodeFunctionData("initialize", [
+      0, [owner.address], [owner.address], owner.address,
+    ]);
+    const timelockProxy = await ERC1967ProxyFactory.deploy(await timelockImpl.getAddress(), initData);
+    await timelockProxy.waitForDeployment();
+    const timelock = TimelockFactory.attach(await timelockProxy.getAddress());
+
+    const { upgrades } = require("hardhat");
+    const UpgradeGovernorFactory = await ethers.getContractFactory("UpgradeGovernor");
+    const upgradeGovernor = await upgrades.deployProxy(
+      UpgradeGovernorFactory,
+      [await govToken.getAddress(), await timelock.getAddress(), 1, 100, 0, owner.address],
+      { initializer: "initialize", kind: "uups", unsafeAllow: ["constructor", "state-variable-assignment"] }
+    );
+    await upgradeGovernor.waitForDeployment();
+    await ethers.provider.send("evm_mine", []);
+
+    return { ...base, upgradeGovernor, timelock };
+  }
+
+  async function createAndPassProposal(upgradeGovernor: any, owner: any, description: string, severity: number) {
+    const targets = [owner.address];
+    const values = [0];
+    const calldatas = ["0x"];
+
+    const tx = await upgradeGovernor.proposeWithSeverity(targets, values, calldatas, description, severity);
+    const receipt = await tx.wait();
+    const event = receipt?.logs.find((l: any) => {
+      try { return upgradeGovernor.interface.parseLog(l as any)?.name === "ProposalCreatedWithSeverity"; } catch { return false; }
+    });
+    const proposalId = upgradeGovernor.interface.parseLog(event as any)!.args[0];
+
+    await ethers.provider.send("evm_mine", []);
+    await ethers.provider.send("evm_mine", []);
+    await upgradeGovernor.castVote(proposalId, 1);
+
+    return proposalId;
+  }
+
+  it("should set guardian during initialization", async function () {
+    const { upgradeGovernor, owner } = await deployGovernorWithGuardian();
+    expect(await upgradeGovernor.guardian()).to.equal(owner.address);
+  });
+
+  it("should cancel a proposal during cooldown", async function () {
+    const { upgradeGovernor, owner } = await deployGovernorWithGuardian();
+    const proposalId = await createAndPassProposal(upgradeGovernor, owner, "Cancel during cooldown", 1);
+
+    expect(await upgradeGovernor.isReadyForExecution(proposalId)).to.equal(false);
+
+    await expect(upgradeGovernor.cancelProposal(proposalId))
+      .to.emit(upgradeGovernor, "ProposalCancelled");
+
+    const pState = await upgradeGovernor.getProposalState(proposalId);
+    expect(pState.executed).to.equal(true);
+
+    // Cannot execute after cancel
+    await ethers.provider.send("evm_increaseTime", [86401]);
+    await ethers.provider.send("evm_mine", []);
+    await expect(
+      upgradeGovernor.executeProposal([owner.address], [0], ["0x"], ethers.id("Cancel during cooldown"), proposalId)
+    ).to.be.revertedWith("Proposal already executed");
+  });
+
+  it("should cancel an EMERGENCY proposal before execution", async function () {
+    const { upgradeGovernor, owner } = await deployGovernorWithGuardian();
+    const proposalId = await createAndPassProposal(upgradeGovernor, owner, "Emergency cancel", 0);
+
+    await upgradeGovernor.cancelProposal(proposalId);
+
+    const pState = await upgradeGovernor.getProposalState(proposalId);
+    expect(pState.executed).to.equal(true);
+  });
+
+  it("should cancel a proposal before any votes", async function () {
+    const { upgradeGovernor, owner } = await deployGovernorWithGuardian();
+
+    const tx = await upgradeGovernor.proposeWithSeverity(
+      [owner.address], [0], ["0x"], "Pre-vote cancel", 1
+    );
+    const receipt = await tx.wait();
+    const event = receipt?.logs.find((l: any) => {
+      try { return upgradeGovernor.interface.parseLog(l as any)?.name === "ProposalCreatedWithSeverity"; } catch { return false; }
+    });
+    const proposalId = upgradeGovernor.interface.parseLog(event as any)!.args[0];
+
+    await upgradeGovernor.cancelProposal(proposalId);
+
+    const pState = await upgradeGovernor.getProposalState(proposalId);
+    expect(pState.executed).to.equal(true);
+  });
+
+  it("should reject cancel from non-guardian", async function () {
+    const { upgradeGovernor, owner, recipient } = await deployGovernorWithGuardian();
+    const proposalId = await createAndPassProposal(upgradeGovernor, owner, "Non-guardian cancel", 0);
+
+    await expect(
+      upgradeGovernor.connect(recipient).cancelProposal(proposalId)
+    ).to.be.revertedWithCustomError(upgradeGovernor, "NotGuardian");
+  });
+
+  it("should reject cancel of already executed proposal", async function () {
+    const { upgradeGovernor, owner } = await deployGovernorWithGuardian();
+    const proposalId = await createAndPassProposal(upgradeGovernor, owner, "Already executed", 0);
+
+    await upgradeGovernor.executeProposal(
+      [owner.address], [0], ["0x"], ethers.id("Already executed"), proposalId
+    );
+
+    await expect(
+      upgradeGovernor.cancelProposal(proposalId)
+    ).to.be.revertedWith("Cannot cancel executed proposal");
+  });
+
+  it("should reject double cancel", async function () {
+    const { upgradeGovernor, owner } = await deployGovernorWithGuardian();
+    const proposalId = await createAndPassProposal(upgradeGovernor, owner, "Double cancel", 0);
+
+    await upgradeGovernor.cancelProposal(proposalId);
+
+    await expect(
+      upgradeGovernor.cancelProposal(proposalId)
+    ).to.be.revertedWith("Cannot cancel executed proposal");
+  });
+
+  it("should reject setGuardian from non-governance", async function () {
+    const { upgradeGovernor, recipient } = await deployGovernorWithGuardian();
+    await expect(
+      upgradeGovernor.connect(recipient).setGuardian(recipient.address)
+    ).to.be.reverted;
+  });
+
+  it("should reject zero guardian in initialization", async function () {
+    const base = await loadFixture(deployFullSystem);
+    const { govToken, owner } = base;
+
+    const TimelockFactory = await ethers.getContractFactory("TimelockControllerUpgradeable");
+    const timelockImpl = await TimelockFactory.deploy();
+    await timelockImpl.waitForDeployment();
+    const ERC1967ProxyFactory = await ethers.getContractFactory("ERC1967Proxy");
+    const initData = TimelockFactory.interface.encodeFunctionData("initialize", [
+      0, [owner.address], [owner.address], owner.address,
+    ]);
+    const timelockProxy = await ERC1967ProxyFactory.deploy(await timelockImpl.getAddress(), initData);
+    await timelockProxy.waitForDeployment();
+
+    const { upgrades } = require("hardhat");
+    const UpgradeGovernorFactory = await ethers.getContractFactory("UpgradeGovernor");
+
+    await expect(
+      upgrades.deployProxy(
+        UpgradeGovernorFactory,
+        [await govToken.getAddress(), await timelockProxy.getAddress(), 1, 100, 0, ethers.ZeroAddress],
+        { initializer: "initialize", kind: "uups", unsafeAllow: ["constructor", "state-variable-assignment"] }
+      )
     ).to.be.reverted;
   });
 });
