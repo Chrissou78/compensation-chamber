@@ -1,7 +1,7 @@
 // src/app/governance/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import {
   useValidators,
@@ -39,7 +39,6 @@ import {
 function formatTGV(amount: number): string {
   if (amount >= 1000) {
     const k = amount / 1000;
-    // Show decimal only when needed: 200K not 200.00K
     return `${k % 1 === 0 ? k.toFixed(0) : formatNumber(k)}K`;
   }
   return formatNumber(amount, 0);
@@ -55,6 +54,20 @@ export default function GovernancePage() {
   const [expandedValidator, setExpandedValidator] = useState<string | null>(
     null
   );
+
+  // Compute total voting power once for percentage calculations
+  const totalVotingPower = useMemo(
+    () => validators?.reduce((sum, v) => sum + v.votingPower, 0) ?? 0,
+    [validators]
+  );
+
+  /** Voting power as a percentage of total supply held by validators */
+  function votingPercent(power: number): string {
+    if (totalVotingPower === 0) return "0";
+    const pct = (power / totalVotingPower) * 100;
+    // Show one decimal when below 10%, whole number otherwise
+    return pct < 10 ? pct.toFixed(1) : pct.toFixed(0);
+  }
 
   return (
     <div className="space-y-8">
@@ -170,103 +183,112 @@ export default function GovernancePage() {
             </div>
           ) : (
             <div className="divide-y divide-border">
-              {validators.map((validator, index) => (
-                <div key={validator.address}>
-                  <button
-                    onClick={() =>
-                      setExpandedValidator(
-                        expandedValidator === validator.address
-                          ? null
-                          : validator.address
-                      )
-                    }
-                    className="w-full px-6 py-4 flex items-center justify-between hover:bg-accent/50 transition-colors text-left"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary text-sm font-bold">
-                        {index + 1}
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">
-                          {validator.name}
-                        </p>
-                        <p className="text-xs font-mono text-muted-foreground">
-                          {formatAddress(validator.address)}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="hidden sm:flex items-center gap-4">
-                      <div className="text-right">
-                        <p className="text-sm font-medium">
-                          {formatTGV(validator.votingPower)} TGV
-                        </p>
-                      </div>
-                      <span
-                        className={`inline-flex items-center rounded-md px-2 py-1 text-[11px] font-medium ring-1 ring-inset ${
-                          validator.status === "ACTIVE"
-                            ? "bg-emerald-500/10 text-emerald-400 ring-emerald-500/20"
-                            : "bg-red-500/10 text-red-400 ring-red-500/20"
-                        }`}
-                      >
-                        {validator.status}
-                      </span>
-                      {expandedValidator === validator.address ? (
-                        <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                      ) : (
-                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                      )}
-                    </div>
-                  </button>
-
-                  {expandedValidator === validator.address && (
-                    <div className="px-6 py-4 bg-accent/30 border-t border-border">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                        <div>
-                          <p className="text-muted-foreground mb-1">
-                            Wallet Address
-                          </p>
-                          <p className="font-mono text-xs break-all">
-                            {validator.address}
-                          </p>
+              {validators.map((validator, index) => {
+                const pct = votingPercent(validator.votingPower);
+                return (
+                  <div key={validator.address}>
+                    <button
+                      onClick={() =>
+                        setExpandedValidator(
+                          expandedValidator === validator.address
+                            ? null
+                            : validator.address
+                        )
+                      }
+                      className="w-full px-6 py-4 flex items-center justify-between hover:bg-accent/50 transition-colors text-left"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary text-sm font-bold">
+                          {index + 1}
                         </div>
                         <div>
-                          <p className="text-muted-foreground mb-1">
-                            TGV Balance
+                          <p className="text-sm font-medium">
+                            {validator.name}
                           </p>
-                          <p className="font-bold">
+                          <p className="text-xs font-mono text-muted-foreground">
+                            {formatAddress(validator.address)}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="hidden sm:flex items-center gap-4">
+                        <div className="text-right">
+                          <p className="text-sm font-medium">
                             {formatTGV(validator.votingPower)} TGV
                           </p>
+                          <p className="text-[11px] text-muted-foreground">
+                            {pct}% voting power
+                          </p>
                         </div>
-                        {validator.joinedAt && (
+                        <span
+                          className={`inline-flex items-center rounded-md px-2 py-1 text-[11px] font-medium ring-1 ring-inset ${
+                            validator.status === "ACTIVE"
+                              ? "bg-emerald-500/10 text-emerald-400 ring-emerald-500/20"
+                              : "bg-red-500/10 text-red-400 ring-red-500/20"
+                          }`}
+                        >
+                          {validator.status}
+                        </span>
+                        {expandedValidator === validator.address ? (
+                          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                        ) : (
+                          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                        )}
+                      </div>
+                    </button>
+
+                    {expandedValidator === validator.address && (
+                      <div className="px-6 py-4 bg-accent/30 border-t border-border">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                           <div>
                             <p className="text-muted-foreground mb-1">
-                              Joined
+                              Wallet Address
                             </p>
-                            <p>
-                              {new Date(
-                                validator.joinedAt * 1000
-                              ).toLocaleDateString()}
+                            <p className="font-mono text-xs break-all">
+                              {validator.address}
                             </p>
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground mb-1">
+                              TGV Balance
+                            </p>
+                            <p className="font-bold">
+                              {formatTGV(validator.votingPower)} TGV
+                              <span className="ml-2 text-xs font-normal text-muted-foreground">
+                                ({pct}%)
+                              </span>
+                            </p>
+                          </div>
+                          {validator.joinedAt && (
+                            <div>
+                              <p className="text-muted-foreground mb-1">
+                                Joined
+                              </p>
+                              <p>
+                                {new Date(
+                                  validator.joinedAt * 1000
+                                ).toLocaleDateString()}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                        {validator.status === "ACTIVE" && (
+                          <div className="mt-4">
+                            <Button variant="destructive" size="sm" asChild>
+                              <Link
+                                href={`/actions/propose_remove_validator?address=${validator.address}`}
+                              >
+                                <UserMinus className="h-3 w-3 mr-1" />
+                                Remove
+                              </Link>
+                            </Button>
                           </div>
                         )}
                       </div>
-                      {validator.status === "ACTIVE" && (
-                        <div className="mt-4">
-                          <Button variant="destructive" size="sm" asChild>
-                            <Link
-                              href={`/actions/propose_remove_validator?address=${validator.address}`}
-                            >
-                              <UserMinus className="h-3 w-3 mr-1" />
-                              Remove
-                            </Link>
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
         </CardContent>
