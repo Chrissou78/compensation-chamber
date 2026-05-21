@@ -6,7 +6,7 @@ import { useAccount } from "wagmi";
 import { Proposal } from "@/types";
 import { SUBGRAPH_QUERY } from "@/lib/constants";
 
-const SUBGRAPH_URL = process.env.NEXT_PUBLIC_SUBGRAPH_URL;
+const SUBGRAPH_URL = process.env.SUBGRAPH_URL;
 
 // Fallback mock data
 const MOCK_PROPOSALS: Proposal[] = [

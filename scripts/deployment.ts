@@ -436,22 +436,22 @@ async function main() {
   // FRONTEND .env.local OUTPUT
   // ──────────────────────────────────────────────────────────────
   console.log("\n─── Copy to treasury-multisig/.env.local ───\n");
-  console.log(`NEXT_PUBLIC_VARIABLE_TIMELOCK=${state.timelockAddr}`);
-  console.log(`NEXT_PUBLIC_GOVERNANCE_TOKEN=${state.govTokenAddr}`);
-  console.log(`NEXT_PUBLIC_VALIDATOR_REGISTRY=${state.registryAddr}`);
-  console.log(`NEXT_PUBLIC_OZ_TIMELOCK=${state.ozTimelockAddr}`);
-  console.log(`NEXT_PUBLIC_UPGRADE_GOVERNOR=${state.governorAddr}`);
-  console.log(`NEXT_PUBLIC_TREASURY_CONTROLLER=${state.treasuryAddr}`);
-  console.log(`NEXT_PUBLIC_GAS_REFILLER=${state.gasRefillerAddr}`);
-  console.log(`NEXT_PUBLIC_PAYOUT_EXECUTOR=${state.payoutAddr}`);
-  console.log(`NEXT_PUBLIC_REBALANCING_EXECUTOR=${state.rebalanceAddr}`);
-  console.log(`NEXT_PUBLIC_STAKING_EXECUTOR=${state.stakingAddr}`);
-  console.log(`NEXT_PUBLIC_USDC_ADDRESS=${USDC}`);
-  console.log(`NEXT_PUBLIC_USDT_ADDRESS=${USDT}`);
-  console.log(`NEXT_PUBLIC_WMATIC_ADDRESS=${WMATIC}`);
-  console.log(`NEXT_PUBLIC_SWAP_ROUTER=${SWAP_ROUTER}`);
-  console.log(`NEXT_PUBLIC_CHAIN_ID=80002`);
-  console.log(`NEXT_PUBLIC_NETWORK_NAME=Polygon Amoy`);
+  console.log(`VARIABLE_TIMELOCK=${state.timelockAddr}`);
+  console.log(`GOVERNANCE_TOKEN=${state.govTokenAddr}`);
+  console.log(`VALIDATOR_REGISTRY=${state.registryAddr}`);
+  console.log(`OZ_TIMELOCK=${state.ozTimelockAddr}`);
+  console.log(`UPGRADE_GOVERNOR=${state.governorAddr}`);
+  console.log(`TREASURY_CONTROLLER=${state.treasuryAddr}`);
+  console.log(`GAS_REFILLER=${state.gasRefillerAddr}`);
+  console.log(`PAYOUT_EXECUTOR=${state.payoutAddr}`);
+  console.log(`REBALANCING_EXECUTOR=${state.rebalanceAddr}`);
+  console.log(`STAKING_EXECUTOR=${state.stakingAddr}`);
+  console.log(`USDC_ADDRESS=${USDC}`);
+  console.log(`USDT_ADDRESS=${USDT}`);
+  console.log(`WMATIC_ADDRESS=${WMATIC}`);
+  console.log(`SWAP_ROUTER=${SWAP_ROUTER}`);
+  console.log(`CHAIN_ID=80002`);
+  console.log(`NETWORK_NAME=Polygon Amoy`);
 
   // ──────────────────────────────────────────────────────────────
   // OWNERSHIP TRANSFER REMINDER

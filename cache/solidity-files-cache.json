@@ -2971,8 +2971,8 @@
       ]
     },
     "D:\\Compensation-chamber\\Contracts\\UpgradeGovernor.sol": {
-      "lastModificationDate": 1779347460962,
-      "contentHash": "3e50d13b25be45360924288a808c084e",
+      "lastModificationDate": 1779356056356,
+      "contentHash": "77c1eaef26a3f4c2ba4db26e2d5f4cd2",
       "sourceName": "Contracts/UpgradeGovernor.sol",
       "solcConfig": {
         "version": "0.8.24",

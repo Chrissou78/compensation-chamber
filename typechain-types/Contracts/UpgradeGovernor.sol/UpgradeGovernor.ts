@@ -72,7 +72,6 @@ export interface UpgradeGovernorInterface extends Interface {
       | "getProposalState"
       | "getVotes"
       | "getVotesWithParams"
-      | "guardian"
       | "hasVoted"
       | "hashProposal"
       | "initialize"
@@ -99,7 +98,6 @@ export interface UpgradeGovernorInterface extends Interface {
       | "quorumNumerator(uint256)"
       | "quorumNumerator()"
       | "relay"
-      | "setGuardian"
       | "setProposalThreshold"
       | "setVotingDelay"
       | "setVotingPeriod"
@@ -120,10 +118,8 @@ export interface UpgradeGovernorInterface extends Interface {
   getEvent(
     nameOrSignatureOrTopic:
       | "EIP712DomainChanged"
-      | "GuardianUpdated"
       | "Initialized"
       | "ProposalCanceled"
-      | "ProposalCancelled"
       | "ProposalCreated"
       | "ProposalCreatedWithSeverity"
       | "ProposalExecuted"
@@ -239,7 +235,6 @@ export interface UpgradeGovernorInterface extends Interface {
     functionFragment: "getVotesWithParams",
     values: [AddressLike, BigNumberish, BytesLike]
   ): string;
-  encodeFunctionData(functionFragment: "guardian", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "hasVoted",
     values: [BigNumberish, AddressLike]
@@ -250,14 +245,7 @@ export interface UpgradeGovernorInterface extends Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [
-      AddressLike,
-      AddressLike,
-      BigNumberish,
-      BigNumberish,
-      BigNumberish,
-      AddressLike
-    ]
+    values: [AddressLike, AddressLike, BigNumberish, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "isReadyForExecution",
@@ -350,10 +338,6 @@ export interface UpgradeGovernorInterface extends Interface {
   encodeFunctionData(
     functionFragment: "relay",
     values: [AddressLike, BigNumberish, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setGuardian",
-    values: [AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "setProposalThreshold",
@@ -474,7 +458,6 @@ export interface UpgradeGovernorInterface extends Interface {
     functionFragment: "getVotesWithParams",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "guardian", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hasVoted", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "hashProposal",
@@ -556,10 +539,6 @@ export interface UpgradeGovernorInterface extends Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "relay", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "setGuardian",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "setProposalThreshold",
     data: BytesLike
   ): Result;
@@ -619,19 +598,6 @@ export namespace EIP712DomainChangedEvent {
   export type LogDescription = TypedLogDescription<Event>;
 }
 
-export namespace GuardianUpdatedEvent {
-  export type InputTuple = [oldGuardian: AddressLike, newGuardian: AddressLike];
-  export type OutputTuple = [oldGuardian: string, newGuardian: string];
-  export interface OutputObject {
-    oldGuardian: string;
-    newGuardian: string;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
 export namespace InitializedEvent {
   export type InputTuple = [version: BigNumberish];
   export type OutputTuple = [version: bigint];
@@ -649,19 +615,6 @@ export namespace ProposalCanceledEvent {
   export type OutputTuple = [proposalId: bigint];
   export interface OutputObject {
     proposalId: bigint;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace ProposalCancelledEvent {
-  export type InputTuple = [proposalId: BigNumberish, timestamp: BigNumberish];
-  export type OutputTuple = [proposalId: bigint, timestamp: bigint];
-  export interface OutputObject {
-    proposalId: bigint;
-    timestamp: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -1152,8 +1105,6 @@ export interface UpgradeGovernor extends BaseContract {
     "view"
   >;
 
-  guardian: TypedContractMethod<[], [string], "view">;
-
   hasVoted: TypedContractMethod<
     [proposalId: BigNumberish, account: AddressLike],
     [boolean],
@@ -1177,8 +1128,7 @@ export interface UpgradeGovernor extends BaseContract {
       timelock: AddressLike,
       _votingDelay: BigNumberish,
       _votingPeriod: BigNumberish,
-      _proposalThreshold: BigNumberish,
-      _guardian: AddressLike
+      _proposalThreshold: BigNumberish
     ],
     [void],
     "nonpayable"
@@ -1334,12 +1284,6 @@ export interface UpgradeGovernor extends BaseContract {
     [target: AddressLike, value: BigNumberish, data: BytesLike],
     [void],
     "payable"
-  >;
-
-  setGuardian: TypedContractMethod<
-    [newGuardian: AddressLike],
-    [void],
-    "nonpayable"
   >;
 
   setProposalThreshold: TypedContractMethod<
@@ -1575,9 +1519,6 @@ export interface UpgradeGovernor extends BaseContract {
     "view"
   >;
   getFunction(
-    nameOrSignature: "guardian"
-  ): TypedContractMethod<[], [string], "view">;
-  getFunction(
     nameOrSignature: "hasVoted"
   ): TypedContractMethod<
     [proposalId: BigNumberish, account: AddressLike],
@@ -1604,8 +1545,7 @@ export interface UpgradeGovernor extends BaseContract {
       timelock: AddressLike,
       _votingDelay: BigNumberish,
       _votingPeriod: BigNumberish,
-      _proposalThreshold: BigNumberish,
-      _guardian: AddressLike
+      _proposalThreshold: BigNumberish
     ],
     [void],
     "nonpayable"
@@ -1758,9 +1698,6 @@ export interface UpgradeGovernor extends BaseContract {
     "payable"
   >;
   getFunction(
-    nameOrSignature: "setGuardian"
-  ): TypedContractMethod<[newGuardian: AddressLike], [void], "nonpayable">;
-  getFunction(
     nameOrSignature: "setProposalThreshold"
   ): TypedContractMethod<
     [newProposalThreshold: BigNumberish],
@@ -1826,13 +1763,6 @@ export interface UpgradeGovernor extends BaseContract {
     EIP712DomainChangedEvent.OutputObject
   >;
   getEvent(
-    key: "GuardianUpdated"
-  ): TypedContractEvent<
-    GuardianUpdatedEvent.InputTuple,
-    GuardianUpdatedEvent.OutputTuple,
-    GuardianUpdatedEvent.OutputObject
-  >;
-  getEvent(
     key: "Initialized"
   ): TypedContractEvent<
     InitializedEvent.InputTuple,
@@ -1845,13 +1775,6 @@ export interface UpgradeGovernor extends BaseContract {
     ProposalCanceledEvent.InputTuple,
     ProposalCanceledEvent.OutputTuple,
     ProposalCanceledEvent.OutputObject
-  >;
-  getEvent(
-    key: "ProposalCancelled"
-  ): TypedContractEvent<
-    ProposalCancelledEvent.InputTuple,
-    ProposalCancelledEvent.OutputTuple,
-    ProposalCancelledEvent.OutputObject
   >;
   getEvent(
     key: "ProposalCreated"
@@ -1971,17 +1894,6 @@ export interface UpgradeGovernor extends BaseContract {
       EIP712DomainChangedEvent.OutputObject
     >;
 
-    "GuardianUpdated(address,address)": TypedContractEvent<
-      GuardianUpdatedEvent.InputTuple,
-      GuardianUpdatedEvent.OutputTuple,
-      GuardianUpdatedEvent.OutputObject
-    >;
-    GuardianUpdated: TypedContractEvent<
-      GuardianUpdatedEvent.InputTuple,
-      GuardianUpdatedEvent.OutputTuple,
-      GuardianUpdatedEvent.OutputObject
-    >;
-
     "Initialized(uint64)": TypedContractEvent<
       InitializedEvent.InputTuple,
       InitializedEvent.OutputTuple,
@@ -2002,17 +1914,6 @@ export interface UpgradeGovernor extends BaseContract {
       ProposalCanceledEvent.InputTuple,
       ProposalCanceledEvent.OutputTuple,
       ProposalCanceledEvent.OutputObject
-    >;
-
-    "ProposalCancelled(uint256,uint256)": TypedContractEvent<
-      ProposalCancelledEvent.InputTuple,
-      ProposalCancelledEvent.OutputTuple,
-      ProposalCancelledEvent.OutputObject
-    >;
-    ProposalCancelled: TypedContractEvent<
-      ProposalCancelledEvent.InputTuple,
-      ProposalCancelledEvent.OutputTuple,
-      ProposalCancelledEvent.OutputObject
     >;
 
     "ProposalCreated(uint256,address,address[],uint256[],string[],bytes[],uint256,uint256,string)": TypedContractEvent<

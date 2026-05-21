@@ -3,7 +3,7 @@ import { polygonAmoy, polygon, mainnet } from 'wagmi/chains';
 
 export const config = getDefaultConfig({
   appName: 'Treasury Multisig',
-  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID!,
+  projectId: process.env.WALLET_CONNECT_PROJECT_ID!,
   chains: [polygonAmoy, polygon, mainnet],
   ssr: true,
 });

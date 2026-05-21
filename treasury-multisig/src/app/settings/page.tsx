@@ -607,7 +607,7 @@ export default function SettingsPage() {
           <div>
             <p className="text-xs text-muted-foreground mb-1">Subgraph URL</p>
             <p className="font-mono text-xs p-2 rounded bg-accent/50 break-all">
-              {process.env.NEXT_PUBLIC_SUBGRAPH_URL || "Not configured"}
+              {process.env.SUBGRAPH_URL || "Not configured"}
             </p>
           </div>
           <div>
