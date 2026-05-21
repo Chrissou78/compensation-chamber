@@ -88,6 +88,8 @@ export type { IERC1155Receiver } from "./@openzeppelin/contracts/token/ERC1155/I
 export { IERC1155Receiver__factory } from "./factories/@openzeppelin/contracts/token/ERC1155/IERC1155Receiver__factory";
 export type { ERC1155Holder } from "./@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder";
 export { ERC1155Holder__factory } from "./factories/@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder__factory";
+export type { ERC20 } from "./@openzeppelin/contracts/token/ERC20/ERC20";
+export { ERC20__factory } from "./factories/@openzeppelin/contracts/token/ERC20/ERC20__factory";
 export type { IERC20Metadata } from "./@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata";
 export { IERC20Metadata__factory } from "./factories/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata__factory";
 export type { IERC20Permit } from "./@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit";
@@ -126,6 +128,10 @@ export type { IUniswapV3Router } from "./Contracts/GasRefiller.sol/IUniswapV3Rou
 export { IUniswapV3Router__factory } from "./factories/Contracts/GasRefiller.sol/IUniswapV3Router__factory";
 export type { GovernanceTokenV2 } from "./Contracts/GovernanceTokenV2";
 export { GovernanceTokenV2__factory } from "./factories/Contracts/GovernanceTokenV2__factory";
+export type { MockERC20 } from "./Contracts/MockERC20";
+export { MockERC20__factory } from "./factories/Contracts/MockERC20__factory";
+export type { MockUniswapV3Router } from "./Contracts/MockUniswapV3Router";
+export { MockUniswapV3Router__factory } from "./factories/Contracts/MockUniswapV3Router__factory";
 export type { PayoutExecutor } from "./Contracts/PayoutExecutor";
 export { PayoutExecutor__factory } from "./factories/Contracts/PayoutExecutor__factory";
 export type { RebalancingExecutor } from "./Contracts/RebalancingExecutor";

@@ -6,8 +6,9 @@
       "contentHash": "8a627cbad7980ee883b4f2db9bcaf329",
       "sourceName": "Contracts/DynamicValidatorRegistry.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -27,6 +28,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -47,8 +51,9 @@
       "contentHash": "a62f27be44025626314771cdfbdb315c",
       "sourceName": "@openzeppelin/contracts-upgradeable/access/Ownable2StepUpgradeable.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -68,6 +73,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -87,8 +95,9 @@
       "contentHash": "d2fa243e766a193585b7e9bf36898d80",
       "sourceName": "@openzeppelin/contracts/utils/Strings.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -108,6 +117,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -129,8 +141,9 @@
       "contentHash": "12eb449e159b95e2812b0f17c758ebb2",
       "sourceName": "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -150,6 +163,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -166,8 +182,9 @@
       "contentHash": "bcfb6430f07521142c3725a35f1e65ef",
       "sourceName": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -187,6 +204,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -206,8 +226,9 @@
       "contentHash": "2acae54ad209714bca07edf4bae32f72",
       "sourceName": "@openzeppelin/contracts/proxy/utils/Initializable.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -227,6 +248,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -243,8 +267,9 @@
       "contentHash": "dd4ac3512e42e62e26ec342fb9f2a033",
       "sourceName": "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -264,6 +289,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -282,8 +310,9 @@
       "contentHash": "3b32ea3a40a2d708f61e7161f081ca93",
       "sourceName": "@openzeppelin/contracts/utils/Bytes.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -303,6 +332,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -321,8 +353,9 @@
       "contentHash": "ae3528afb8bdb0a7dcfba5b115ee8074",
       "sourceName": "@openzeppelin/contracts/utils/math/SignedMath.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -342,6 +375,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -360,8 +396,9 @@
       "contentHash": "f28a38cd37f4225d0a91fb5405dd850f",
       "sourceName": "@openzeppelin/contracts/utils/math/SafeCast.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -381,6 +418,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -397,8 +437,9 @@
       "contentHash": "5b8c6935ac52b7494df19d6feb38f5cc",
       "sourceName": "@openzeppelin/contracts/utils/math/Math.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -418,6 +459,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -437,8 +481,9 @@
       "contentHash": "2133dc13536b4a6a98131e431fac59e1",
       "sourceName": "@openzeppelin/contracts/utils/Panic.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -458,6 +503,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -474,8 +522,9 @@
       "contentHash": "59a325652a58784f0c3050d8b71f8595",
       "sourceName": "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -495,6 +544,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -514,8 +566,9 @@
       "contentHash": "9b2cafd2153b51bcfd7f4cb4cfc975aa",
       "sourceName": "@openzeppelin/contracts/interfaces/draft-IERC1822.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -535,6 +588,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -551,8 +607,9 @@
       "contentHash": "45c0af7785dd530ca1243ebd7a6fb4c1",
       "sourceName": "@openzeppelin/contracts/proxy/ERC1967/ERC1967Utils.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -572,6 +629,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -593,8 +653,9 @@
       "contentHash": "44f61b7a5cd41aa205efaebb4686f797",
       "sourceName": "@openzeppelin/contracts/utils/Address.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -614,6 +675,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -633,8 +697,9 @@
       "contentHash": "e656d64c4ce918f3d13030b91c935134",
       "sourceName": "@openzeppelin/contracts/utils/StorageSlot.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -654,6 +719,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -670,8 +738,9 @@
       "contentHash": "3c9577899f440b0c66e880c96e9250bb",
       "sourceName": "@openzeppelin/contracts/interfaces/IERC1967.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -691,6 +760,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -707,8 +779,9 @@
       "contentHash": "ee2e46607ed2be58bd554306d068acba",
       "sourceName": "@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -728,6 +801,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -744,8 +820,9 @@
       "contentHash": "0474caccabcd255a35c82fe878701271",
       "sourceName": "@openzeppelin/contracts/utils/LowLevelCall.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -765,6 +842,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -781,8 +861,9 @@
       "contentHash": "6b5eac2b85500c3012977849cfd633d8",
       "sourceName": "@openzeppelin/contracts/utils/Errors.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -802,6 +883,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -818,8 +902,9 @@
       "contentHash": "6e5efb502dd6652d12ad15eea2c5bdf4",
       "sourceName": "@openzeppelin/contracts/utils/ReentrancyGuard.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -839,6 +924,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -857,8 +945,9 @@
       "contentHash": "13a3a8c228da4ab6e10262797889b777",
       "sourceName": "Contracts/VariableTimelockController.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -878,6 +967,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -897,8 +989,9 @@
       "contentHash": "d3c790edc9ccf808a17c5a6cd13614fd",
       "sourceName": "@openzeppelin/contracts/access/Ownable.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -918,6 +1011,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -936,8 +1032,9 @@
       "contentHash": "67bfbc07588eb8683b3fd8f6f909563e",
       "sourceName": "@openzeppelin/contracts/utils/Context.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -957,6 +1054,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -973,8 +1073,9 @@
       "contentHash": "c9ee2fee6927899aa27c1b6800da50de",
       "sourceName": "Contracts/TreasuryDeploymentFactory.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -994,6 +1095,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1014,8 +1118,9 @@
       "contentHash": "890143cf72e953bc5b025a8927b76312",
       "sourceName": "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1035,6 +1140,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1054,8 +1162,9 @@
       "contentHash": "d6990e3360038a838779837da682e223",
       "sourceName": "@openzeppelin/contracts/proxy/Proxy.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1075,6 +1184,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1091,8 +1203,9 @@
       "contentHash": "a6a063ebbf57d64b568f7bad7c4e5277",
       "sourceName": "Contracts/TreasuryController.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1112,6 +1225,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1135,8 +1251,9 @@
       "contentHash": "b038f3665d2262af34fe6009e3cd78dd",
       "sourceName": "@openzeppelin/contracts/utils/cryptography/ECDSA.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1156,6 +1273,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1172,8 +1292,9 @@
       "contentHash": "be270829ebfb6224e5d07ee6dced0541",
       "sourceName": "@openzeppelin/contracts/utils/cryptography/SignatureChecker.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1193,6 +1314,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1214,8 +1338,9 @@
       "contentHash": "a051a14c8a262117cb4c5f4cbd13ed95",
       "sourceName": "@openzeppelin/contracts/interfaces/IERC7913.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1235,6 +1360,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1251,8 +1379,9 @@
       "contentHash": "97c727fa357056eddfe826ab58943611",
       "sourceName": "@openzeppelin/contracts/interfaces/IERC1271.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1272,6 +1401,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1288,8 +1420,9 @@
       "contentHash": "86a3095ec3737d63c3da92111dc03630",
       "sourceName": "@openzeppelin/contracts/utils/types/Time.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1309,6 +1442,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1328,8 +1464,9 @@
       "contentHash": "fab97298382d4c32182a66ec35255b71",
       "sourceName": "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1349,6 +1486,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1367,8 +1507,9 @@
       "contentHash": "e37d3e71ad03eddd5170c4c6364c2826",
       "sourceName": "@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1388,6 +1529,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1408,8 +1552,9 @@
       "contentHash": "6e00d2fe4bc0d5f1add753824498bb35",
       "sourceName": "@openzeppelin/contracts/interfaces/IERC5267.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1429,6 +1574,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1445,8 +1593,9 @@
       "contentHash": "e420012bdc00876fb5be2f6bc221c494",
       "sourceName": "@openzeppelin/contracts-upgradeable/governance/utils/VotesUpgradeable.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1466,6 +1615,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1492,8 +1644,9 @@
       "contentHash": "f3285226645c4f9d1200c742a7e8f59b",
       "sourceName": "@openzeppelin/contracts-upgradeable/utils/NoncesUpgradeable.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1513,6 +1666,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1531,8 +1687,9 @@
       "contentHash": "4ca519ef7ae252e5aaff422172d4e8a9",
       "sourceName": "@openzeppelin/contracts/interfaces/IERC5805.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1552,6 +1709,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1571,8 +1731,9 @@
       "contentHash": "8cfed5423bee842475e95d90ac24c8df",
       "sourceName": "@openzeppelin/contracts/utils/structs/Checkpoints.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1592,6 +1753,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1610,8 +1774,9 @@
       "contentHash": "56e24e557bfbcd235c9e0792075a055e",
       "sourceName": "@openzeppelin/contracts/governance/utils/IVotes.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1631,6 +1796,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1647,8 +1815,9 @@
       "contentHash": "af8cb4a1b941a8230c36de0b4aacf653",
       "sourceName": "@openzeppelin/contracts/interfaces/IERC6372.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1668,6 +1837,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1684,8 +1856,9 @@
       "contentHash": "de08a39b55f8b271e3e2c2c313e2bc2f",
       "sourceName": "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1705,6 +1878,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1726,8 +1902,9 @@
       "contentHash": "cd93bc5bd62a1e7bea1bfab7aec3d86d",
       "sourceName": "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1747,6 +1924,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1766,8 +1946,9 @@
       "contentHash": "def1e8f7b6cac577cf2600655bf3bdf8",
       "sourceName": "@openzeppelin/contracts/access/IAccessControl.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1787,6 +1968,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1803,8 +1987,9 @@
       "contentHash": "7074c93b1ea0a122063f26ddd1db1032",
       "sourceName": "@openzeppelin/contracts/utils/introspection/IERC165.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1824,6 +2009,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1840,8 +2028,9 @@
       "contentHash": "0906d06dca25210d4696dcef6dad2909",
       "sourceName": "@openzeppelin/contracts/utils/introspection/ERC165.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1861,6 +2050,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1879,8 +2071,9 @@
       "contentHash": "d8d44002e1a5a2f1718659645dbba2ff",
       "sourceName": "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1900,6 +2093,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1919,8 +2115,9 @@
       "contentHash": "9bb9e05bd69d13dd8c8b098ecb542e6d",
       "sourceName": "@openzeppelin/contracts/token/ERC1155/IERC1155Receiver.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1940,6 +2137,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -1958,8 +2158,9 @@
       "contentHash": "565802515ae5abb186eee7713c567be1",
       "sourceName": "@openzeppelin/contracts-upgradeable/governance/GovernorUpgradeable.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -1979,6 +2180,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2011,8 +2215,9 @@
       "contentHash": "ba51691b7b3dca7027cdb9d48bcb94ce",
       "sourceName": "@openzeppelin/contracts/governance/IGovernor.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2032,6 +2237,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2051,8 +2259,9 @@
       "contentHash": "d61660a41ce200e99816e4734f7fd202",
       "sourceName": "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2072,6 +2281,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2088,8 +2300,9 @@
       "contentHash": "a6cf2a90ff5f4a29fb02ac22810121f6",
       "sourceName": "@openzeppelin/contracts/utils/structs/DoubleEndedQueue.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2109,6 +2322,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2127,8 +2343,9 @@
       "contentHash": "947853028399b7de34bcc3704ee06e99",
       "sourceName": "@openzeppelin/contracts/interfaces/IERC165.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2148,6 +2365,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2164,8 +2384,9 @@
       "contentHash": "a99f2c15b24b097703458f3244f1bc28",
       "sourceName": "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorTimelockControlUpgradeable.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2185,6 +2406,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2207,8 +2431,9 @@
       "contentHash": "0b516766c9bf0482a0ca16fd18313555",
       "sourceName": "@openzeppelin/contracts-upgradeable/governance/TimelockControllerUpgradeable.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2228,6 +2453,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2250,8 +2478,9 @@
       "contentHash": "861b44fce3ecc2bca40b20c3fe9ec8f5",
       "sourceName": "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2271,6 +2500,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2289,8 +2521,9 @@
       "contentHash": "da05cab602786d7b6f64a0bbd1efebb9",
       "sourceName": "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorVotesUpgradeable.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2310,6 +2543,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2332,8 +2568,9 @@
       "contentHash": "144643a1dcd1f86b91b12ee26fb3bc23",
       "sourceName": "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorVotesQuorumFractionUpgradeable.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2353,6 +2590,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2375,8 +2615,9 @@
       "contentHash": "633b7fb24fddcce3967c7aceb5cfd2a4",
       "sourceName": "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20VotesUpgradeable.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2396,6 +2637,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2417,8 +2661,9 @@
       "contentHash": "db681efc0ba429bde356c763f3ba09cb",
       "sourceName": "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2438,6 +2683,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2460,8 +2708,9 @@
       "contentHash": "bcc76f4747d56c28c40ae272ef3470a6",
       "sourceName": "@openzeppelin/contracts/interfaces/draft-IERC6093.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2481,6 +2730,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2499,8 +2751,9 @@
       "contentHash": "9261adf6457863de3e9892f51317ec89",
       "sourceName": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2520,6 +2773,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2536,8 +2792,9 @@
       "contentHash": "513778b30d2750f5d2b9b19bbcf748a5",
       "sourceName": "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2557,6 +2814,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2575,8 +2835,9 @@
       "contentHash": "7d183146555d9e089c3bb7ecbe632c2c",
       "sourceName": "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2596,6 +2857,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2619,8 +2883,9 @@
       "contentHash": "274b0eacbd66ff78b8f749cd8105bab0",
       "sourceName": "@openzeppelin/contracts/token/ERC20/extensions/IERC20Permit.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2640,6 +2905,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2652,12 +2920,13 @@
       ]
     },
     "D:\\Compensation-chamber\\Contracts\\GovernanceTokenV2.sol": {
-      "lastModificationDate": 1779131606618,
-      "contentHash": "6ce4abf509df197c6f41b097bd6e545a",
+      "lastModificationDate": 1779206415808,
+      "contentHash": "0ee465f9386b4bb0c8b78943c730f854",
       "sourceName": "Contracts/GovernanceTokenV2.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2677,6 +2946,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2700,8 +2972,9 @@
       "contentHash": "bf26579804aaab313849390e5d2598c4",
       "sourceName": "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20BurnableUpgradeable.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2721,6 +2994,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2741,8 +3017,9 @@
       "contentHash": "e98d7b1d232432205fa8c900d65ce6a2",
       "sourceName": "Contracts/StakingExecutor.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2762,6 +3039,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2781,8 +3061,9 @@
       "contentHash": "ca740a937c570b968295865fa8eca589",
       "sourceName": "Contracts/RebalancingExecutor.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2802,6 +3083,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2821,8 +3105,9 @@
       "contentHash": "4b7cb1a6f9dcde71265f5ce031bba83e",
       "sourceName": "Contracts/PayoutExecutor.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2842,6 +3127,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2861,8 +3149,9 @@
       "contentHash": "c0fb16f13df3b3079fd1e4c82ee1773d",
       "sourceName": "Contracts/GasRefiller.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2882,6 +3171,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2902,8 +3194,9 @@
       "contentHash": "77c1eaef26a3f4c2ba4db26e2d5f4cd2",
       "sourceName": "Contracts/UpgradeGovernor.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2923,6 +3216,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2950,8 +3246,9 @@
       "contentHash": "c09dc85d7240af6a4b9b1507ede7fe63",
       "sourceName": "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorSettingsUpgradeable.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -2971,6 +3268,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -2991,8 +3291,9 @@
       "contentHash": "3b655b829cad854ffd340f8a6f6f3a20",
       "sourceName": "@openzeppelin/contracts-upgradeable/governance/extensions/GovernorCountingSimpleUpgradeable.sol",
       "solcConfig": {
-        "version": "0.8.27",
+        "version": "0.8.24",
         "settings": {
+          "viaIR": true,
           "optimizer": {
             "enabled": true,
             "runs": 200
@@ -3012,6 +3313,9 @@
                 "ast"
               ]
             }
+          },
+          "metadata": {
+            "useLiteralContent": false
           }
         }
       },
@@ -3025,6 +3329,138 @@
       ],
       "artifacts": [
         "GovernorCountingSimpleUpgradeable"
+      ]
+    },
+    "D:\\Compensation-chamber\\node_modules\\@openzeppelin\\contracts\\token\\ERC20\\ERC20.sol": {
+      "lastModificationDate": 1779118449451,
+      "contentHash": "d15c4d05583536e080f1960ab282772d",
+      "sourceName": "@openzeppelin/contracts/token/ERC20/ERC20.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "viaIR": true,
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "cancun",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": false
+          }
+        }
+      },
+      "imports": [
+        "./IERC20.sol",
+        "./extensions/IERC20Metadata.sol",
+        "../../utils/Context.sol",
+        "../../interfaces/draft-IERC6093.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "ERC20"
+      ]
+    },
+    "D:\\Compensation-chamber\\Contracts\\MockERC20.sol": {
+      "lastModificationDate": 1779174776068,
+      "contentHash": "92b8d673216baeb7f3a831ff2cd4336a",
+      "sourceName": "Contracts/MockERC20.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "viaIR": true,
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "cancun",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": false
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/ERC20.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "MockERC20"
+      ]
+    },
+    "D:\\Compensation-chamber\\Contracts\\MockUniswapV3Router.sol": {
+      "lastModificationDate": 1779306432123,
+      "contentHash": "e279499585974d64386306fcfbbcb00a",
+      "sourceName": "Contracts/MockUniswapV3Router.sol",
+      "solcConfig": {
+        "version": "0.8.24",
+        "settings": {
+          "viaIR": true,
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "cancun",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata",
+                "storageLayout"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          },
+          "metadata": {
+            "useLiteralContent": false
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.24"
+      ],
+      "artifacts": [
+        "MockUniswapV3Router"
       ]
     }
   }

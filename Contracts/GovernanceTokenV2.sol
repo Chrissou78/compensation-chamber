@@ -39,6 +39,7 @@ contract GovernanceTokenV2 is ERC20Upgradeable, ERC20VotesUpgradeable, ERC20Burn
     bytes32[] public blacklistRequestIds;
     uint256 public totalMintRequested;
     uint256 public totalBlacklistRequests;
+    bool private _executingBlacklist;
     
     event MintRequested(bytes32 indexed requestId, address indexed recipient, uint256 amount, string reason, uint256 timestamp);
     event MintExecuted(bytes32 indexed requestId, address indexed recipient, uint256 amount, bytes32 indexed governanceProposalId, uint256 timestamp);
@@ -149,14 +150,18 @@ contract GovernanceTokenV2 is ERC20Upgradeable, ERC20VotesUpgradeable, ERC20Burn
         address account = request.account;
         request.executed = true;
         request.governanceProposalId = proposalId;
-        
+
         blacklist[account] = true;
         blacklistTimestamp[account] = block.timestamp;
         
         uint256 balance = balanceOf(account);
-        if (balance > 0) { _burn(account, balance); }
+        if (balance > 0) { 
+            _executingBlacklist = true;
+            _burn(account, balance);
+            _executingBlacklist = false;
+        }
         _delegate(account, address(0));
-        
+
         emit BlacklistExecuted(requestId, account, proposalId, balance, block.timestamp);
         emit AddressBlacklisted(account, request.reason, block.timestamp);
     }
@@ -214,8 +219,10 @@ contract GovernanceTokenV2 is ERC20Upgradeable, ERC20VotesUpgradeable, ERC20Burn
     function getBlacklistedAddresses() external pure returns (address[] memory) {revert("Use event logs for blacklist enumeration");}
 
     function _update(address from, address to, uint256 value) internal override(ERC20Upgradeable, ERC20VotesUpgradeable) {
-        if (from != address(0)) { require(!blacklist[from], "Sender blacklisted"); }
-        if (to != address(0)) { require(!blacklist[to], "Recipient blacklisted"); }
+        if (!_executingBlacklist) {
+            if (from != address(0)) { require(!blacklist[from], "Sender blacklisted"); }
+            if (to != address(0)) { require(!blacklist[to], "Recipient blacklisted"); }
+        }
         super._update(from, to, value);
     }
 

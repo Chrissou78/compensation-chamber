@@ -1,13 +1,17 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
 import "@openzeppelin/hardhat-upgrades";
+import "solidity-coverage";
 import dotenv from "dotenv";
 dotenv.config();
 
+const COVERAGE = process.env.COVERAGE === "true";
 const config: HardhatUserConfig = {
+  
   solidity: {
-    version: "0.8.27",
+    version: "0.8.24",
     settings: {
+      ...(COVERAGE && { viaIR: true }),
       optimizer: { enabled: true, runs: 200 },
       evmVersion: "cancun",
     },

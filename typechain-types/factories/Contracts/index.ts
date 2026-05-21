@@ -6,6 +6,8 @@ export * as treasuryControllerSol from "./TreasuryController.sol";
 export * as upgradeGovernorSol from "./UpgradeGovernor.sol";
 export { DynamicValidatorRegistry__factory } from "./DynamicValidatorRegistry__factory";
 export { GovernanceTokenV2__factory } from "./GovernanceTokenV2__factory";
+export { MockERC20__factory } from "./MockERC20__factory";
+export { MockUniswapV3Router__factory } from "./MockUniswapV3Router__factory";
 export { PayoutExecutor__factory } from "./PayoutExecutor__factory";
 export { RebalancingExecutor__factory } from "./RebalancingExecutor__factory";
 export { StakingExecutor__factory } from "./StakingExecutor__factory";

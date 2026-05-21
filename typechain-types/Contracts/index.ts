@@ -9,6 +9,8 @@ import type * as upgradeGovernorSol from "./UpgradeGovernor.sol";
 export type { upgradeGovernorSol };
 export type { DynamicValidatorRegistry } from "./DynamicValidatorRegistry";
 export type { GovernanceTokenV2 } from "./GovernanceTokenV2";
+export type { MockERC20 } from "./MockERC20";
+export type { MockUniswapV3Router } from "./MockUniswapV3Router";
 export type { PayoutExecutor } from "./PayoutExecutor";
 export type { RebalancingExecutor } from "./RebalancingExecutor";
 export type { StakingExecutor } from "./StakingExecutor";
