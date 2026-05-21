@@ -199,7 +199,6 @@ async function main() {
       1,                        // votingDelay: 1 block
       50400,                    // votingPeriod: ~7 days on Polygon
       ethers.parseEther("1000"),// proposalThreshold: 1000 TGV
-      MULTISIG,                 // guardian (multisig for emergency cancel)
     ],
     {
       initializer: "initialize",
