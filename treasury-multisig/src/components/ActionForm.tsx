@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm, FieldValues } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { type Address } from "viem";
 import { usePropose, usePauseTreasury, useRefillGas, useAuthorizeAgent } from "@/hooks/useVoting";
 import { ActionConfig, ActionType, FormField as FormFieldType } from "@/types";
@@ -142,13 +142,25 @@ function FormField({
   }
 }
 
-export default function ActionForm({ action }: { action: ActionConfig }) {
+export default function ActionForm({action, onActionTypeChange,}: {
+  action: ActionConfig;
+  onActionTypeChange?: (value: string | undefined) => void;
+}) {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
     reset,
   } = useForm({ mode: "onBlur" });
+
+  const watchedActionType = watch("actionType");
+  // Fire callback whenever the watched value changes
+  // (use useEffect to avoid calling setState during render)
+  useEffect(() => {
+    onActionTypeChange?.(watchedActionType || undefined);
+  }, [watchedActionType, onActionTypeChange]);
+
 
   const { propose, isPending: isProposing } = usePropose();
   const { pause, unpause, isPending: isPausing } = usePauseTreasury();
