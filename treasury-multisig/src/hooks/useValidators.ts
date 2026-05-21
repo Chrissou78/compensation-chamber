@@ -3,8 +3,11 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useAccount, usePublicClient } from "wagmi";
+import { erc20Abi } from "viem";
 import { Validator } from "@/types";
 import { getContractConfig } from "@/lib/contract";
+import { CONTRACT_ADDRESSES } from "@/lib/constants";
+import { REGISTRY_ABI } from "@/lib/abi";
 
 // Fallback mock data — used when contracts aren't deployed yet
 const MOCK_VALIDATORS: Validator[] = [
@@ -77,11 +80,33 @@ export function useValidators() {
             removedAt: bigint;
           }>;
 
-          return rawValidators.map((v) => ({
+          // Batch-read TGV balances for all validators
+          const balanceCalls = rawValidators.map((v) => ({
+            address: CONTRACT_ADDRESSES.GOVERNANCE_TOKEN as `0x${string}`,
+            abi: erc20Abi,
+            functionName: "balanceOf" as const,
+            args: [v.wallet as `0x${string}`],
+          }));
+
+          let balances: bigint[] = [];
+          try {
+            const results = await publicClient.multicall({
+              contracts: balanceCalls,
+            });
+            balances = results.map((r) =>
+              r.status === "success" ? (r.result as bigint) : 0n
+            );
+          } catch {
+            // If multicall fails, fall back to 0 for all
+            balances = rawValidators.map(() => 0n);
+          }
+
+          return rawValidators.map((v, i) => ({
             address: v.wallet,
             name: v.name || v.role || "Validator",
             status: STATUS_MAP[v.status] ?? "ACTIVE",
-            votingPower: 200000, // Each validator gets equal 200K TGV
+            // TGV has 18 decimals — convert to a whole-token number
+            votingPower: Number(balances[i] / 10n ** 18n),
             joinedAt: Number(v.addedAt),
           }));
         } catch {
@@ -130,6 +155,61 @@ export function useValidatorThreshold(actionType: number) {
         }
       }
       return 3; // Default 3-of-5
+    },
+    refetchInterval: 120000,
+  });
+}
+
+/**
+ * Read all action thresholds in one batch.
+ * Matches the Solidity enum:
+ *   PAYOUT=0, REBALANCE=1, STAKING=2, UPGRADE=3, PARAMETER_CHANGE=4,
+ *   VALIDATOR_ADD=5, VALIDATOR_REMOVE=6, BLACKLIST=7, MINTING=8, GOVERNANCE=9
+ */
+const ACTION_TYPES_FOR_DISPLAY = [
+  { name: "Payouts", enumIndex: 0 },
+  { name: "Rebalancing", enumIndex: 1 },
+  { name: "Staking", enumIndex: 2 },
+  { name: "Upgrades", enumIndex: 3 },
+  { name: "Minting", enumIndex: 8 },
+] as const;
+
+export function useAllActionThresholds() {
+  const publicClient = usePublicClient();
+
+  return useQuery({
+    queryKey: ["allActionThresholds"],
+    queryFn: async () => {
+      if (!publicClient) {
+        return ACTION_TYPES_FOR_DISPLAY.map((a) => ({
+          name: a.name,
+          threshold: 3,
+        }));
+      }
+
+      try {
+        const calls = ACTION_TYPES_FOR_DISPLAY.map((a) => ({
+          address: CONTRACT_ADDRESSES.VALIDATOR_REGISTRY as `0x${string}`,
+          abi: REGISTRY_ABI as typeof REGISTRY_ABI,
+          functionName: "getRequiredSignatures" as const,
+          args: [a.enumIndex],
+        }));
+
+        const results = await publicClient.multicall({ contracts: calls });
+
+        return ACTION_TYPES_FOR_DISPLAY.map((a, i) => ({
+          name: a.name,
+          threshold:
+            results[i].status === "success"
+              ? Number(results[i].result)
+              : 3,
+        }));
+      } catch {
+        return ACTION_TYPES_FOR_DISPLAY.map((a) => ({
+          name: a.name,
+          threshold: 3,
+        }));
+      }
     },
     refetchInterval: 120000,
   });

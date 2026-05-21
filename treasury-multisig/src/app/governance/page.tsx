@@ -3,7 +3,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useValidators, useValidatorCount } from "@/hooks/useValidators";
+import {
+  useValidators,
+  useValidatorCount,
+  useAllActionThresholds,
+} from "@/hooks/useValidators";
 import {
   useValidatorLimits,
   useGovernorConstants,
@@ -28,13 +32,26 @@ import {
   ChevronDown,
   ChevronRight,
   Settings,
+  Loader2,
 } from "lucide-react";
+
+/** Format TGV amount for display: 200000 → "200K", 1500 → "1.5K", 42 → "42" */
+function formatTGV(amount: number): string {
+  if (amount >= 1000) {
+    const k = amount / 1000;
+    // Show decimal only when needed: 200K not 200.00K
+    return `${k % 1 === 0 ? k.toFixed(0) : formatNumber(k)}K`;
+  }
+  return formatNumber(amount, 0);
+}
 
 export default function GovernancePage() {
   const { data: validators, isLoading } = useValidators();
   const { total, active, blacklisted } = useValidatorCount();
   const { minValidators, maxValidators } = useValidatorLimits();
   const { passageThreshold } = useGovernorConstants();
+  const { data: actionThresholds, isLoading: isLoadingThresholds } =
+    useAllActionThresholds();
   const [expandedValidator, setExpandedValidator] = useState<string | null>(
     null
   );
@@ -69,7 +86,11 @@ export default function GovernancePage() {
             <ShieldCheck className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">3/{total || 5}</div>
+            <div className="text-2xl font-bold">
+              {actionThresholds && actionThresholds.length > 0
+                ? `${actionThresholds[0].threshold}/${active || total || 5}`
+                : `3/${active || total || 5}`}
+            </div>
             <p className="text-xs text-muted-foreground mt-1">
               Required for actions
             </p>
@@ -178,7 +199,7 @@ export default function GovernancePage() {
                     <div className="hidden sm:flex items-center gap-4">
                       <div className="text-right">
                         <p className="text-sm font-medium">
-                          {formatNumber(validator.votingPower / 1000)}K TGV
+                          {formatTGV(validator.votingPower)} TGV
                         </p>
                       </div>
                       <span
@@ -211,10 +232,10 @@ export default function GovernancePage() {
                         </div>
                         <div>
                           <p className="text-muted-foreground mb-1">
-                            Voting Power
+                            TGV Balance
                           </p>
                           <p className="font-bold">
-                            {formatNumber(validator.votingPower / 1000)}K TGV
+                            {formatTGV(validator.votingPower)} TGV
                           </p>
                         </div>
                         {validator.joinedAt && (
@@ -294,23 +315,23 @@ export default function GovernancePage() {
             </Button>
           </CardHeader>
           <CardContent className="space-y-2">
-            {[
-              { name: "Payouts", threshold: 3 },
-              { name: "Rebalancing", threshold: 3 },
-              { name: "Staking", threshold: 3 },
-              { name: "Upgrades", threshold: 5 },
-              { name: "Minting", threshold: 3 },
-            ].map((action) => (
-              <div
-                key={action.name}
-                className="flex items-center justify-between p-3 rounded-lg bg-accent/50"
-              >
-                <span className="text-sm">{action.name}</span>
-                <span className="text-sm font-bold">
-                  {action.threshold}/{total || 5}
-                </span>
+            {isLoadingThresholds ? (
+              <div className="flex items-center justify-center py-6">
+                <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
               </div>
-            ))}
+            ) : (
+              (actionThresholds ?? []).map((action) => (
+                <div
+                  key={action.name}
+                  className="flex items-center justify-between p-3 rounded-lg bg-accent/50"
+                >
+                  <span className="text-sm">{action.name}</span>
+                  <span className="text-sm font-bold">
+                    {action.threshold}/{active || total || 5}
+                  </span>
+                </div>
+              ))
+            )}
           </CardContent>
         </Card>
       </div>
